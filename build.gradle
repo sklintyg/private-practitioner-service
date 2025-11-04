@@ -14,7 +14,6 @@ ext {
     ppTermsSchemasVersion = "1.0.5.2"
     rivtaItintegrationMonitoringSchemasVersion = "1.0.0.5.2"
     schemasContractVersion = "2.1.8.2"
-    logbackEcsEncoderVersion = "1.6.0"
     commonsIOVersion = "2.14.0"
     cxfVersion = "4.0.5"
     guavaVersion = "33.3.1-jre"

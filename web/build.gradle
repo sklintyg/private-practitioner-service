@@ -26,7 +26,6 @@ gretty {
     jvmArgs = [
             "-Dcatalina.base=${buildDirectory}/catalina.base",
             "-Dspring.profiles.active=dev,caching-enabled,testability,pu-integration-intyg-proxy-service",
-            "-Dlogback.file=${applicationDir}/config/logback-spring.xml",
             "-Dfile.encoding=UTF-8",
             "-Dapplication.dir=${applicationDir}",
             "-Ddev.config.file=${applicationDir}/config/application-dev.properties",
@@ -38,8 +37,6 @@ gretty {
 test {
     environment "catalina.base", "${buildDirectory}/catalina.base"
 }
-
-war.rootSpec.exclude "logback.xml"
 
 tasks.register('restAssuredTest', Test) {
     outputs.upToDateWhen { false }
@@ -59,8 +56,6 @@ dependencies {
     implementation project(":privatlakarportal-persistence")
     implementation project(":privatlakarportal-wc-integration")
     implementation project(":privatlakarportal-logging")
-
-    implementation "co.elastic.logging:logback-ecs-encoder:${logbackEcsEncoderVersion}"
 
     implementation "se.inera.intyg.schemas:schemas-contract:${schemasContractVersion}"
     implementation "se.riv.itintegration.monitoring:itintegration-monitoring-schemas:${rivtaItintegrationMonitoringSchemasVersion}"
