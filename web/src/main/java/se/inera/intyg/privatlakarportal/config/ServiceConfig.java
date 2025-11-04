@@ -22,14 +22,10 @@ package se.inera.intyg.privatlakarportal.config;
 
 
 import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
-import org.apache.cxf.ext.logging.LoggingFeature;
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitionerterms.v1.rivtabp21.GetPrivatePractitionerTermsResponderInterface;
 
 // CHECKSTYLE:ON LineLength
 
@@ -41,27 +37,10 @@ import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitione
 @ComponentScan({"se.inera.intyg.privatlakarportal.service",
     "se.inera.intyg.privatlakarportal.common.service"})
 public class ServiceConfig {
+    
+    @Bean
+    public JacksonJsonProvider jacksonJsonProvider() {
+        return new JacksonJsonProvider();
+    }
 
-  @Value("${terms.ws.services.url}")
-  private String termsUrl;
-
-  @Bean
-  public JacksonJsonProvider jacksonJsonProvider() {
-    return new JacksonJsonProvider();
-  }
-
-  @Bean
-  public LoggingFeature loggingFeature() {
-    LoggingFeature loggingFeature = new LoggingFeature();
-    loggingFeature.setPrettyLogging(true);
-    return loggingFeature;
-  }
-
-  @Bean
-  public GetPrivatePractitionerTermsResponderInterface termsWebServiceClient() {
-    JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
-    proxyFactoryBean.setServiceClass(GetPrivatePractitionerTermsResponderInterface.class);
-    proxyFactoryBean.setAddress(termsUrl);
-    return (GetPrivatePractitionerTermsResponderInterface) proxyFactoryBean.create();
-  }
 }

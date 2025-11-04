@@ -62,7 +62,6 @@ dependencies {
 
     implementation "co.elastic.logging:logback-ecs-encoder:${logbackEcsEncoderVersion}"
 
-    implementation "se.inera.intyg.infrastructure.directory.privatepractitioner.terms:intyg-infrastructure-directory-privatepractitioner-terms-schemas:${ppTermsSchemasVersion}"
     implementation "se.inera.intyg.schemas:schemas-contract:${schemasContractVersion}"
     implementation "se.riv.itintegration.monitoring:itintegration-monitoring-schemas:${rivtaItintegrationMonitoringSchemasVersion}"
 
@@ -78,9 +77,6 @@ dependencies {
     implementation "com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider"
     implementation "com.google.guava:guava:${guavaVersion}"
     implementation "jakarta.ws.rs:jakarta.ws.rs-api"
-    implementation "org.apache.cxf:cxf-rt-features-logging:${cxfVersion}"
-    implementation "org.apache.cxf:cxf-rt-frontend-jaxws:${cxfVersion}"
-    implementation "org.apache.cxf:cxf-rt-transports-http:${cxfVersion}"
     implementation 'org.springframework.security:spring-security-saml2-service-provider'
     implementation "org.springframework.security:spring-security-config"
     implementation "org.springframework.security:spring-security-web"

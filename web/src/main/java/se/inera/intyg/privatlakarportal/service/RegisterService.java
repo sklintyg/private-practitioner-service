@@ -36,8 +36,6 @@ public interface RegisterService {
 
   HospInformation getHospInformation();
 
-  RegistrationWithHospInformation getRegistration();
-
   boolean removePrivatlakare(String personId);
 
   void injectHsaInterval(int hsaIdNotificationInterval);

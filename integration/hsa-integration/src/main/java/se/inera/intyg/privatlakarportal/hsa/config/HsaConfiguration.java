@@ -21,7 +21,6 @@ package se.inera.intyg.privatlakarportal.hsa.config;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
 
 @Configuration
 @ComponentScan({
@@ -31,7 +30,6 @@ import org.springframework.context.annotation.ImportResource;
     "se.inera.intyg.privatlakarportal.logging"
 })
 @Import(HsaStubConfiguration.class)
-@ImportResource({"classpath:pp-hsa-services-config.xml"})
 public class HsaConfiguration {
 
 }

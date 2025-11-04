@@ -28,9 +28,7 @@ public interface IntegrationService {
 
   GetPrivatePractitionerResponseType getPrivatePractitionerByHsaId(String personHsaId);
 
-  GetPrivatePractitionerResponseType getPrivatePractitionerByPersonId(
-      String personalIdentityNumber);
+  GetPrivatePractitionerResponseType getPrivatePractitionerByPersonId(String personalIdentityNumber);
 
-  ValidatePrivatePractitionerResponse validatePrivatePractitionerByPersonId(
-      String personalIdentityNumber);
+  ValidatePrivatePractitionerResponse validatePrivatePractitionerByPersonId(String personalIdentityNumber);
 }
