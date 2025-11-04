@@ -21,6 +21,7 @@ ext {
     jakartaJwsApiVersion = "3.0.0"
     jakartaMail = "2.0.1"
     jsonSimpleVersion = "1.1.1"
+    liquibaseHibernate6Version = "4.29.2"
     picocliVersion = "4.7.5"
     stAntlr4Version = "4.3.4"
     shedlockSpringVersion = "5.16.0"

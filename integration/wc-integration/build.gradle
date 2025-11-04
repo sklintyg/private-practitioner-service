@@ -1,8 +1,8 @@
 dependencies {
-    implementation project(":privatlakarportal-common")
-    implementation project(":privatlakarportal-hsa-integration")
-    implementation project(":privatlakarportal-persistence")
-    implementation project(":privatlakarportal-logging")
+    implementation project(":private-practitioner-service-common")
+    implementation project(":private-practitioner-service-hsa-integration")
+    implementation project(":private-practitioner-service-persistence")
+    implementation project(":private-practitioner-service-logging")
 
     implementation "com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider"
     implementation "commons-io:commons-io:${commonsIOVersion}"

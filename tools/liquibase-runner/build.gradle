@@ -1,8 +1,5 @@
 apply plugin: 'application'
 
-mainClassName = "liquibase.integration.commandline.LiquibaseCommandLine"
-applicationDefaultJvmArgs = ["-Dfile.encoding=utf8", "-Dliquibase.headless=true"]
-
 startScripts {
     doLast {
         def persistenceDependency = configurations.runtimeOnly.filter { it.name.startsWith("privatlakarportal-persistence") }.singleFile.name
@@ -31,12 +28,10 @@ configurations.runtimeOnly {
     transitive = false
 }
 
-def liquibaseVersion = dependencyManagement.managedVersions['org.liquibase:liquibase-core']
-
 dependencies {
     implementation "info.picocli:picocli:${picocliVersion}"
     runtimeOnly "com.mysql:mysql-connector-j"
     runtimeOnly "org.liquibase:liquibase-core"
-    runtimeOnly "org.liquibase.ext:liquibase-hibernate6:" + liquibaseVersion
-    runtimeOnly project(':privatlakarportal-persistence')
+    runtimeOnly "org.liquibase.ext:liquibase-hibernate6:${liquibaseHibernate6Version}"
+    runtimeOnly project(':private-practitioner-service-persistence')
 }

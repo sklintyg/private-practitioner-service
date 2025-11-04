@@ -53,11 +53,11 @@ test { exclude '**/*IT*' }
 
 
 dependencies {
-    implementation project(":privatlakarportal-common")
-    implementation project(":privatlakarportal-hsa-integration")
-    implementation project(":privatlakarportal-persistence")
-    implementation project(":privatlakarportal-wc-integration")
-    implementation project(":privatlakarportal-logging")
+    implementation project(":private-practitioner-service-common")
+    implementation project(":private-practitioner-service-hsa-integration")
+    implementation project(":private-practitioner-service-persistence")
+    implementation project(":private-practitioner-service-wc-integration")
+    implementation project(":private-practitioner-service-logging")
 
     implementation "se.inera.intyg.schemas:schemas-contract:${schemasContractVersion}"
     implementation "se.riv.itintegration.monitoring:itintegration-monitoring-schemas:${rivtaItintegrationMonitoringSchemasVersion}"

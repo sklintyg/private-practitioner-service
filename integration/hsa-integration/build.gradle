@@ -7,9 +7,9 @@ sourceSets.main.java {
 clean.doLast { ant.delete(dir: generatedJavaDir.parent) }
 
 dependencies {
-    implementation project(":privatlakarportal-common")
-    implementation project(":privatlakarportal-persistence")
-    implementation project(":privatlakarportal-logging")
+    implementation project(":private-practitioner-service-common")
+    implementation project(":private-practitioner-service-persistence")
+    implementation project(":private-practitioner-service-logging")
 
     implementation "com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider"
     implementation "net.javacrumbs.shedlock:shedlock-provider-redis-spring:${shedlockSpringVersion}"

@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(":privatlakarportal-persistence")
+    implementation project(":private-practitioner-service-persistence")
 
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     implementation "com.sun.mail:jakarta.mail:${jakartaMail}"
