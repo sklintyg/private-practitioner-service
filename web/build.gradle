@@ -13,13 +13,15 @@ gretty {
     servletContainer = 'tomcat10'
     contextPath = '/'
 
+    // No webapp directory needed - pure backend service
+    inplaceMode = 'soft'
+
     integrationTestTask = null
     scanInterval = 0
-    debugPort = 8860 + (instance as Integer)
+    debugPort = 8960 + (instance as Integer)
     portPropertiesFileName = "gretty_ports_${instance}.properties"
     debugSuspend = false
     fastReload = true
-    inplaceMode = 'hard'
     enableNaming = true
     serverConfigFile = "tomcat-gretty.xml"
 
