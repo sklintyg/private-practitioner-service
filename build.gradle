@@ -1,7 +1,6 @@
 plugins {
     id "io.spring.dependency-management" version "1.1.6" apply false
     id "org.gretty" version "4.1.5" apply false
-    id "com.netflix.nebula.node" version "3.0.0" apply false
     id 'test-report-aggregation'
     id 'org.sonarqube' version '6.3.1.5724'
     id "org.owasp.dependencycheck" version "12.1.6"
@@ -25,9 +24,6 @@ ext {
     picocliVersion = "4.7.5"
     stAntlr4Version = "4.3.4"
     shedlockSpringVersion = "5.16.0"
-
-    nodeJsVersion = "12.22.12"
-    npmVersion = "6.14.16"
 
     springbootMavenBomVersion = "3.3.4"
 
