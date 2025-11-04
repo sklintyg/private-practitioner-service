@@ -20,7 +20,6 @@ package se.inera.intyg.privatlakarportal.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 
 /**
@@ -28,7 +27,6 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @ImportResource({"classpath:pu-services-config.xml", "classpath:pu-ignite-config.xml"})
-@Import(PuStubConfiguration.class)
 @ComponentScan("se.inera.intyg.infra.integration.pu.services")
 public class PuConfiguration {
 

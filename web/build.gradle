@@ -18,7 +18,7 @@ gretty {
 
     integrationTestTask = null
     scanInterval = 0
-    debugPort = 8960 + (instance as Integer)
+    debugPort = 8860 + (instance as Integer)
     portPropertiesFileName = "gretty_ports_${instance}.properties"
     debugSuspend = false
     fastReload = true
