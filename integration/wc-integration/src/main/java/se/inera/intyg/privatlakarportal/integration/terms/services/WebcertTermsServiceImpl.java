@@ -34,25 +34,28 @@ import se.riv.infrastructure.directory.privatepractitioner.terms.v1.AvtalType;
 @Service
 public class WebcertTermsServiceImpl implements WebcertTermsService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebcertTermsService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WebcertTermsService.class);
 
-    @Autowired
-    private TermsWebServiceCalls client;
+  @Autowired
+  private TermsWebServiceCalls client;
 
-    @Override
-    public Terms getTerms() {
-        try {
-            AvtalType avtalType = client.getPrivatePractitionerTerms().getAvtal();
+  @Override
+  public Terms getTerms() {
+    try {
+      AvtalType avtalType = client.getPrivatePractitionerTerms().getAvtal();
 
-            if (avtalType == null) {
-                LOG.error("getAvtal is null in getPrivatePractitionerTerms");
-                throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR, "Unable to lookup terms");
-            }
+      if (avtalType == null) {
+        LOG.error("getAvtal is null in getPrivatePractitionerTerms");
+        throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR,
+            "Unable to lookup terms");
+      }
 
-            return new Terms(avtalType.getAvtalText(), avtalType.getAvtalVersion(), avtalType.getAvtalVersionDatum());
-        } catch (WebServiceException e) {
-            LOG.error("WebServiceException '{}' in getPrivatePractitionerTerms", e.getMessage());
-            throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR, "Unable to lookup terms");
-        }
+      return new Terms(avtalType.getAvtalText(), avtalType.getAvtalVersion(),
+          avtalType.getAvtalVersionDatum());
+    } catch (WebServiceException e) {
+      LOG.error("WebServiceException '{}' in getPrivatePractitionerTerms", e.getMessage());
+      throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR,
+          "Unable to lookup terms");
     }
+  }
 }

@@ -46,43 +46,47 @@ import se.inera.intyg.privatlakarportal.web.controller.api.dto.SaveRegistrationR
 @RequestMapping("/api/registration")
 public class RegisterController {
 
-    @Autowired
-    private RegisterService registerService;
+  @Autowired
+  private RegisterService registerService;
 
-    @Autowired
-    private PostnummerService postnummerService;
+  @Autowired
+  private PostnummerService postnummerService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    @PerformanceLogging(eventAction = "get-registration", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public GetRegistrationResponse getRegistration() {
-        RegistrationWithHospInformation registrationWithHospInformation = registerService.getRegistration();
-        return new GetRegistrationResponse(registrationWithHospInformation.getRegistration(),
-            registrationWithHospInformation.getHospInformation(), registrationWithHospInformation.isWebcertUserTermsApproved());
-    }
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  @PerformanceLogging(eventAction = "get-registration", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public GetRegistrationResponse getRegistration() {
+    RegistrationWithHospInformation registrationWithHospInformation = registerService.getRegistration();
+    return new GetRegistrationResponse(registrationWithHospInformation.getRegistration(),
+        registrationWithHospInformation.getHospInformation(),
+        registrationWithHospInformation.isWebcertUserTermsApproved());
+  }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = "application/json")
-    @PerformanceLogging(eventAction = "create-registration", eventType = MdcLogConstants.EVENT_TYPE_CREATION)
-    public CreateRegistrationResponse createRegistration(@RequestBody CreateRegistrationRequest request) {
-        RegistrationStatus status = registerService.createRegistration(request.getRegistration(), request.getGodkantMedgivandeVersion());
-        return new CreateRegistrationResponse(status);
-    }
+  @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = "application/json")
+  @PerformanceLogging(eventAction = "create-registration", eventType = MdcLogConstants.EVENT_TYPE_CREATION)
+  public CreateRegistrationResponse createRegistration(
+      @RequestBody CreateRegistrationRequest request) {
+    RegistrationStatus status = registerService.createRegistration(request.getRegistration(),
+        request.getGodkantMedgivandeVersion());
+    return new CreateRegistrationResponse(status);
+  }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json")
-    @PerformanceLogging(eventAction = "save-registration", eventType = MdcLogConstants.EVENT_TYPE_CHANGE)
-    public SaveRegistrationResponse createRegistration(@RequestBody SaveRegistrationRequest request) {
-        SaveRegistrationResponseStatus status = registerService.saveRegistration(request.getRegistration());
-        return new SaveRegistrationResponse(status);
-    }
+  @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json")
+  @PerformanceLogging(eventAction = "save-registration", eventType = MdcLogConstants.EVENT_TYPE_CHANGE)
+  public SaveRegistrationResponse createRegistration(@RequestBody SaveRegistrationRequest request) {
+    SaveRegistrationResponseStatus status = registerService.saveRegistration(
+        request.getRegistration());
+    return new SaveRegistrationResponse(status);
+  }
 
-    @RequestMapping(value = "/hospInformation", method = RequestMethod.GET)
-    @PerformanceLogging(eventAction = "get-hosp-information-information", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public GetHospInformationResponse getHospInformation() {
-        return new GetHospInformationResponse(registerService.getHospInformation());
-    }
+  @RequestMapping(value = "/hospInformation", method = RequestMethod.GET)
+  @PerformanceLogging(eventAction = "get-hosp-information-information", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public GetHospInformationResponse getHospInformation() {
+    return new GetHospInformationResponse(registerService.getHospInformation());
+  }
 
-    @RequestMapping(value = "/omrade/{postnummer}", method = RequestMethod.GET)
-    @PerformanceLogging(eventAction = "get-omrade", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public GetOmradeResponse getOmrade(@PathVariable("postnummer") String postnummer) {
-        return new GetOmradeResponse(postnummerService.getOmradeByPostnummer(postnummer));
-    }
+  @RequestMapping(value = "/omrade/{postnummer}", method = RequestMethod.GET)
+  @PerformanceLogging(eventAction = "get-omrade", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public GetOmradeResponse getOmrade(@PathVariable("postnummer") String postnummer) {
+    return new GetOmradeResponse(postnummerService.getOmradeByPostnummer(postnummer));
+  }
 }

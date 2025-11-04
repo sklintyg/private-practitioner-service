@@ -21,19 +21,21 @@ package se.inera.intyg.privatlakarportal.service.monitoring;
 import se.inera.intyg.privatlakarportal.common.model.RegistrationStatus;
 
 /**
- * Interface used when logging to monitoring file. Used to ensure that the log entries are uniform and easy to parse.
+ * Interface used when logging to monitoring file. Used to ensure that the log entries are uniform
+ * and easy to parse.
  */
 public interface MonitoringLogService {
 
-    void logUserRegistered(String id, Long consentVersion, String hsaId, RegistrationStatus registrationStatus);
+  void logUserRegistered(String id, Long consentVersion, String hsaId,
+      RegistrationStatus registrationStatus);
 
-    void logUserDeleted(String id, String hsaId);
+  void logUserDeleted(String id, String hsaId);
 
-    void logUserErased(String id, String careProviderId);
+  void logUserErased(String id, String careProviderId);
 
-    void logUserLogin(String id, String authenticationScheme);
+  void logUserLogin(String id, String authenticationScheme);
 
-    void logUserLogout(String id, String authenticationScheme);
+  void logUserLogout(String id, String authenticationScheme);
 
-    void logUserDetailsChanged(String id, String hsaId);
+  void logUserDetailsChanged(String id, String hsaId);
 }

@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ElegUserDetailsService {
 
-    public PrivatlakarUser buildUserPrincipal(String personId, String name, String authScheme) {
-        return new PrivatlakarUser(personId, name, authScheme);
-    }
+  public PrivatlakarUser buildUserPrincipal(String personId, String name, String authScheme) {
+    return new PrivatlakarUser(personId, name, authScheme);
+  }
 }

@@ -36,74 +36,74 @@ import java.util.Set;
 @Table(name = "MEDGIVANDETEXT")
 public class MedgivandeText {
 
-    @Id
-    @Column(name = "VERSION")
-    private Long version;
+  @Id
+  @Column(name = "VERSION")
+  private Long version;
 
-    @Lob
-    @Column(name = "MEDGIVANDE_TEXT")
-    private String medgivandeText;
+  @Lob
+  @Column(name = "MEDGIVANDE_TEXT")
+  private String medgivandeText;
 
-    @Column(name = "DATUM", nullable = true)
+  @Column(name = "DATUM", nullable = true)
 
-    private LocalDateTime datum;
+  private LocalDateTime datum;
 
-    @JsonManagedReference(value = "medgivandeText")
-    @OneToMany(mappedBy = "medgivandeText", cascade = CascadeType.ALL)
-    private Set<Medgivande> medgivande;
+  @JsonManagedReference(value = "medgivandeText")
+  @OneToMany(mappedBy = "medgivandeText", cascade = CascadeType.ALL)
+  private Set<Medgivande> medgivande;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MedgivandeText)) {
-            return false;
-        }
-
-        MedgivandeText that = (MedgivandeText) o;
-
-        if (version == null) {
-            return false;
-        } else {
-            return version.equals(that.version);
-        }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof MedgivandeText)) {
+      return false;
     }
 
-    @Override
-    public int hashCode() {
-        return version != null ? version.hashCode() : 0;
-    }
+    MedgivandeText that = (MedgivandeText) o;
 
-    public Long getVersion() {
-        return version;
+    if (version == null) {
+      return false;
+    } else {
+      return version.equals(that.version);
     }
+  }
 
-    public void setVersion(Long version) {
-        this.version = version;
-    }
+  @Override
+  public int hashCode() {
+    return version != null ? version.hashCode() : 0;
+  }
 
-    public String getMedgivandeText() {
-        return medgivandeText;
-    }
+  public Long getVersion() {
+    return version;
+  }
 
-    public void setMedgivandeText(String medgivandeText) {
-        this.medgivandeText = medgivandeText;
-    }
+  public void setVersion(Long version) {
+    this.version = version;
+  }
 
-    public LocalDateTime getDatum() {
-        return datum;
-    }
+  public String getMedgivandeText() {
+    return medgivandeText;
+  }
 
-    public void setDatum(LocalDateTime datum) {
-        this.datum = datum;
-    }
+  public void setMedgivandeText(String medgivandeText) {
+    this.medgivandeText = medgivandeText;
+  }
 
-    public Set<Medgivande> getMedgivande() {
-        return medgivande;
-    }
+  public LocalDateTime getDatum() {
+    return datum;
+  }
 
-    public void setMedgivande(Set<Medgivande> medgivande) {
-        this.medgivande = medgivande;
-    }
+  public void setDatum(LocalDateTime datum) {
+    this.datum = datum;
+  }
+
+  public Set<Medgivande> getMedgivande() {
+    return medgivande;
+  }
+
+  public void setMedgivande(Set<Medgivande> medgivande) {
+    this.medgivande = medgivande;
+  }
 }

@@ -32,20 +32,20 @@ import se.inera.intyg.privatlakarportal.service.SubscriptionService;
 @RunWith(MockitoJUnitRunner.class)
 public class SubscriptionControllerTest {
 
-    @Mock
-    private SubscriptionService subscriptionService;
+  @Mock
+  private SubscriptionService subscriptionService;
 
-    @InjectMocks
-    private SubscriptionController subscriptionController = new SubscriptionController();
+  @InjectMocks
+  private SubscriptionController subscriptionController = new SubscriptionController();
 
-    @Test
-    public void testGetSubscriptionState() {
-        when(subscriptionService.isSubscriptionInUse()).thenReturn(true);
+  @Test
+  public void testGetSubscriptionState() {
+    when(subscriptionService.isSubscriptionInUse()).thenReturn(true);
 
-        var subscriptionResponse = subscriptionController.getSubscriptionState();
+    var subscriptionResponse = subscriptionController.getSubscriptionState();
 
-        verify(subscriptionService).isSubscriptionInUse();
-        assertTrue(subscriptionResponse.isSubscriptionInUse());
-    }
+    verify(subscriptionService).isSubscriptionInUse();
+    assertTrue(subscriptionResponse.isSubscriptionInUse());
+  }
 
 }

@@ -33,21 +33,22 @@ import se.inera.intyg.privatlakarportal.persistence.config.PersistenceConfigDev;
 import se.inera.intyg.privatlakarportal.persistence.model.HospUppdatering;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {PersistenceConfigDev.class})
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {
+    PersistenceConfigDev.class})
 @ActiveProfiles({"h2"})
 public class HospUppdateringRepositoryTest {
 
-    @Autowired
-    private HospUppdateringRepository hospUppdateringRepository;
+  @Autowired
+  private HospUppdateringRepository hospUppdateringRepository;
 
-    @Test
-    public void testFind() {
-        HospUppdatering hospUppdatering = new HospUppdatering();
-        hospUppdatering.setSenasteHospUppdatering(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS));
+  @Test
+  public void testFind() {
+    HospUppdatering hospUppdatering = new HospUppdatering();
+    hospUppdatering.setSenasteHospUppdatering(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS));
 
-        HospUppdatering saved = hospUppdateringRepository.save(hospUppdatering);
-        HospUppdatering read = hospUppdateringRepository.findSingle();
+    HospUppdatering saved = hospUppdateringRepository.save(hospUppdatering);
+    HospUppdatering read = hospUppdateringRepository.findSingle();
 
-        assertEquals(saved.getSenasteHospUppdatering(), read.getSenasteHospUppdatering());
-    }
+    assertEquals(saved.getSenasteHospUppdatering(), read.getSenasteHospUppdatering());
+  }
 }

@@ -25,6 +25,6 @@ import lombok.Data;
 @Data
 public class FakeLogins {
 
-    private String forvaldEnhet;
-    private String beskrivning;
+  private String forvaldEnhet;
+  private String beskrivning;
 }

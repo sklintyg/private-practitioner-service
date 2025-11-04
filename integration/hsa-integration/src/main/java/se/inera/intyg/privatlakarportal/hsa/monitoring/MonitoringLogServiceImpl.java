@@ -36,94 +36,94 @@ import se.inera.intyg.privatlakarportal.logging.MdcCloseableMap;
 @RequiredArgsConstructor
 public class MonitoringLogServiceImpl implements MonitoringLogService {
 
-    private final HashUtility hashUtility;
+  private final HashUtility hashUtility;
 
-    private static final Object SPACE = " ";
+  private static final Object SPACE = " ";
 
-    @Override
-    public void logHospWaiting(String id, String hsaId) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_WAITING))
-                .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.HOSP_WAITING, hashedPersonId);
-        }
+  @Override
+  public void logHospWaiting(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_WAITING))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.HOSP_WAITING, hashedPersonId);
+    }
+  }
+
+  @Override
+  public void logUserAuthorizedInHosp(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_AUTHORIZED))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.HOSP_AUTHORIZED, hashedPersonId);
+    }
+  }
+
+  @Override
+  public void logUserNotAuthorizedInHosp(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_NOT_AUTHORIZED))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.HOSP_NOT_AUTHORIZED, hashedPersonId);
+    }
+  }
+
+  @Override
+  public void logRegistrationRemoved(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.REGISTRATION_REMOVED))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.REGISTRATION_REMOVED, hashedPersonId);
+    }
+  }
+
+  private void logEvent(MonitoringEvent logEvent, Object... logMsgArgs) {
+    log.info(LogMarkers.MONITORING, buildMessage(logEvent), logMsgArgs);
+  }
+
+  private String buildMessage(MonitoringEvent logEvent) {
+    StringBuilder logMsg = new StringBuilder();
+    logMsg.append(logEvent.name()).append(SPACE).append(logEvent.getMessage());
+    return logMsg.toString();
+  }
+
+  private enum MonitoringEvent {
+    HOSP_WAITING("User '{}' is waiting for HOSP"),
+    HOSP_AUTHORIZED("User '{}' is authorized doctor in HOSP"),
+    HOSP_NOT_AUTHORIZED("User '{}' is not authorized doctor in HOSP"),
+    REGISTRATION_REMOVED("User '{}' exceeded number of registration attempts, removing user");
+
+    private String message;
+
+    MonitoringEvent(String msg) {
+      this.message = msg;
     }
 
-    @Override
-    public void logUserAuthorizedInHosp(String id, String hsaId) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_AUTHORIZED))
-                .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.HOSP_AUTHORIZED, hashedPersonId);
-        }
+    public String getMessage() {
+      return message;
     }
+  }
 
-    @Override
-    public void logUserNotAuthorizedInHosp(String id, String hsaId) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_NOT_AUTHORIZED))
-                .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.HOSP_NOT_AUTHORIZED, hashedPersonId);
-        }
-    }
-
-    @Override
-    public void logRegistrationRemoved(String id, String hsaId) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.REGISTRATION_REMOVED))
-                .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.REGISTRATION_REMOVED, hashedPersonId);
-        }
-    }
-
-    private void logEvent(MonitoringEvent logEvent, Object... logMsgArgs) {
-        log.info(LogMarkers.MONITORING, buildMessage(logEvent), logMsgArgs);
-    }
-
-    private String buildMessage(MonitoringEvent logEvent) {
-        StringBuilder logMsg = new StringBuilder();
-        logMsg.append(logEvent.name()).append(SPACE).append(logEvent.getMessage());
-        return logMsg.toString();
-    }
-
-    private enum MonitoringEvent {
-        HOSP_WAITING("User '{}' is waiting for HOSP"),
-        HOSP_AUTHORIZED("User '{}' is authorized doctor in HOSP"),
-        HOSP_NOT_AUTHORIZED("User '{}' is not authorized doctor in HOSP"),
-        REGISTRATION_REMOVED("User '{}' exceeded number of registration attempts, removing user");
-
-        private String message;
-
-        MonitoringEvent(String msg) {
-            this.message = msg;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-    }
-
-    private String toEventType(MonitoringEvent monitoringEvent) {
-        return monitoringEvent.name().toLowerCase().replace("_", "-");
-    }
+  private String toEventType(MonitoringEvent monitoringEvent) {
+    return monitoringEvent.name().toLowerCase().replace("_", "-");
+  }
 }

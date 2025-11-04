@@ -29,54 +29,56 @@ import se.inera.intyg.privatlakarportal.service.model.PrivatePractitioner;
 @Service
 public class PrivatePractitionerServiceImpl implements PrivatePractitionerService {
 
-    private static final String PNR_PATTERN = "\\d{12}";
+  private static final String PNR_PATTERN = "\\d{12}";
 
-    private final PrivatlakareRepository privatlakareRepository;
+  private final PrivatlakareRepository privatlakareRepository;
 
-    @Autowired
-    public PrivatePractitionerServiceImpl(PrivatlakareRepository privatlakareRepository) {
-        this.privatlakareRepository = privatlakareRepository;
+  @Autowired
+  public PrivatePractitionerServiceImpl(PrivatlakareRepository privatlakareRepository) {
+    this.privatlakareRepository = privatlakareRepository;
+  }
+
+  @Override
+  public PrivatePractitioner getPrivatePractitioner(String personOrHsaId) {
+    if (personOrHsaId == null) {
+      return null;
     }
 
-    @Override
-    public PrivatePractitioner getPrivatePractitioner(String personOrHsaId) {
-        if (personOrHsaId == null) {
-            return null;
-        }
+    Privatlakare privatlakare = null;
 
-        Privatlakare privatlakare = null;
-
-        if (personOrHsaId.matches(PNR_PATTERN)) {
-            // try to find with PNR first
-            privatlakare = privatlakareRepository.findByPersonId(personOrHsaId);
-        }
-
-        if (privatlakare == null) {
-            privatlakare = privatlakareRepository.findByHsaId(personOrHsaId);
-        }
-        return convert(privatlakare);
+    if (personOrHsaId.matches(PNR_PATTERN)) {
+      // try to find with PNR first
+      privatlakare = privatlakareRepository.findByPersonId(personOrHsaId);
     }
 
-    @Override
-    public List<PrivatePractitioner> getPrivatePractitioners() {
-        final var allPrivatlakare = privatlakareRepository.findAll();
+    if (privatlakare == null) {
+      privatlakare = privatlakareRepository.findByHsaId(personOrHsaId);
+    }
+    return convert(privatlakare);
+  }
 
-        if (allPrivatlakare.isEmpty()) {
-            return List.of();
-        }
+  @Override
+  public List<PrivatePractitioner> getPrivatePractitioners() {
+    final var allPrivatlakare = privatlakareRepository.findAll();
 
-        return allPrivatlakare.stream()
-            .map(this::convert)
-            .collect(Collectors.toList());
+    if (allPrivatlakare.isEmpty()) {
+      return List.of();
     }
 
-    private PrivatePractitioner convert(Privatlakare privatlakare) {
+    return allPrivatlakare.stream()
+        .map(this::convert)
+        .collect(Collectors.toList());
+  }
 
-        if (privatlakare == null) {
-            return null;
-        }
+  private PrivatePractitioner convert(Privatlakare privatlakare) {
 
-        return new PrivatePractitioner(privatlakare.getHsaId(), privatlakare.getPersonId(), privatlakare.getFullstandigtNamn(),
-            privatlakare.getVardgivareNamn(), privatlakare.getEpost(), privatlakare.getRegistreringsdatum());
+    if (privatlakare == null) {
+      return null;
     }
+
+    return new PrivatePractitioner(privatlakare.getHsaId(), privatlakare.getPersonId(),
+        privatlakare.getFullstandigtNamn(),
+        privatlakare.getVardgivareNamn(), privatlakare.getEpost(),
+        privatlakare.getRegistreringsdatum());
+  }
 }

@@ -47,109 +47,113 @@ import se.inera.intyg.privatlakarportal.service.model.PrivatePractitioner;
 @RunWith(MockitoJUnitRunner.class)
 public class PrivatePractitionerServiceImplTest {
 
-    @Mock
-    private PrivatlakareRepository privatlakareRepository;
+  @Mock
+  private PrivatlakareRepository privatlakareRepository;
 
-    @InjectMocks
-    private PrivatePractitionerServiceImpl privatePractitionerService;
+  @InjectMocks
+  private PrivatePractitionerServiceImpl privatePractitionerService;
 
-    @Test
-    public void getPrivatePractitioners_ok() throws IOException {
-        Privatlakare p1 = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
-        Privatlakare p2 = readPrivatlakare("RegisterServiceImplTest/test.json");
+  @Test
+  public void getPrivatePractitioners_ok() throws IOException {
+    Privatlakare p1 = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
+    Privatlakare p2 = readPrivatlakare("RegisterServiceImplTest/test.json");
 
-        when(privatlakareRepository.findAll()).thenReturn(List.of(p1, p2));
+    when(privatlakareRepository.findAll()).thenReturn(List.of(p1, p2));
 
-        List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
+    List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
 
-        assertNotNull(privatePractitioners);
-        assertTrue(privatePractitioners.size() == 2);
+    assertNotNull(privatePractitioners);
+    assertTrue(privatePractitioners.size() == 2);
 
 
+  }
+
+  @Test
+  public void getPrivatePractitioners_empty_ok() {
+    List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
+
+    assertNotNull(privatePractitioners);
+    assertTrue(privatePractitioners.isEmpty());
+  }
+
+  @Test
+  public void getPrivatePractitioner_hsaId_ok() throws IOException {
+    Privatlakare privatlakare = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
+    String hsaId = privatlakare.getHsaId();
+
+    when(privatlakareRepository.findByHsaId(hsaId)).thenReturn(privatlakare);
+
+    PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
+        hsaId);
+
+    verify(privatlakareRepository, times(1)).findByHsaId(anyString());
+    verify(privatlakareRepository, times(0)).findByPersonId(anyString());
+
+    assertNotNull(privatePractitioner);
+    assertEquals(privatlakare.getHsaId(), privatePractitioner.getHsaId());
+    assertEquals(privatlakare.getFullstandigtNamn(), privatePractitioner.getName());
+    assertEquals(privatlakare.getVardgivareNamn(), privatePractitioner.getCareproviderName());
+    assertEquals(privatlakare.getEpost(), privatePractitioner.getEmail());
+    assertEquals(privatlakare.getRegistreringsdatum(), privatePractitioner.getRegistrationDate());
+
+  }
+
+  @Test
+  public void getPrivatePractitioner_personId_ok() throws IOException {
+    Privatlakare privatlakare = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
+    String personId = privatlakare.getPersonId();
+
+    when(privatlakareRepository.findByPersonId(personId)).thenReturn(privatlakare);
+
+    PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
+        personId);
+
+    verify(privatlakareRepository, times(0)).findByHsaId(anyString());
+    verify(privatlakareRepository, times(1)).findByPersonId(anyString());
+
+    assertNotNull(privatePractitioner);
+    assertEquals(privatlakare.getHsaId(), privatePractitioner.getHsaId());
+    assertEquals(privatlakare.getFullstandigtNamn(), privatePractitioner.getName());
+    assertEquals(privatlakare.getVardgivareNamn(), privatePractitioner.getCareproviderName());
+    assertEquals(privatlakare.getEpost(), privatePractitioner.getEmail());
+    assertEquals(privatlakare.getRegistreringsdatum(), privatePractitioner.getRegistrationDate());
+
+  }
+
+  @Test
+  public void getPrivatePractitioner_notFound() {
+
+    PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
+        "notFound");
+
+    assertNull(privatePractitioner);
+
+  }
+
+  @Test
+  public void getPrivatePractitioner_missingPersonOrHsaId() {
+
+    PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
+        null);
+
+    assertNull(privatePractitioner);
+  }
+
+  private Privatlakare readPrivatlakare(String path) throws IOException {
+    Privatlakare verifyPrivatlakare = new CustomObjectMapper().readValue(new ClassPathResource(
+        path).getFile(), Privatlakare.class);
+    for (Befattning befattning : verifyPrivatlakare.getBefattningar()) {
+      befattning.setPrivatlakare(verifyPrivatlakare);
     }
-
-    @Test
-    public void getPrivatePractitioners_empty_ok() {
-        List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
-
-        assertNotNull(privatePractitioners);
-        assertTrue(privatePractitioners.isEmpty());
+    for (Verksamhetstyp verksamhetstyp : verifyPrivatlakare.getVerksamhetstyper()) {
+      verksamhetstyp.setPrivatlakare(verifyPrivatlakare);
     }
-
-    @Test
-    public void getPrivatePractitioner_hsaId_ok() throws IOException {
-        Privatlakare privatlakare = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
-        String hsaId = privatlakare.getHsaId();
-
-        when(privatlakareRepository.findByHsaId(hsaId)).thenReturn(privatlakare);
-
-        PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(hsaId);
-
-        verify(privatlakareRepository, times(1)).findByHsaId(anyString());
-        verify(privatlakareRepository, times(0)).findByPersonId(anyString());
-
-        assertNotNull(privatePractitioner);
-        assertEquals(privatlakare.getHsaId(), privatePractitioner.getHsaId());
-        assertEquals(privatlakare.getFullstandigtNamn(), privatePractitioner.getName());
-        assertEquals(privatlakare.getVardgivareNamn(), privatePractitioner.getCareproviderName());
-        assertEquals(privatlakare.getEpost(), privatePractitioner.getEmail());
-        assertEquals(privatlakare.getRegistreringsdatum(), privatePractitioner.getRegistrationDate());
-
+    for (Vardform vardform : verifyPrivatlakare.getVardformer()) {
+      vardform.setPrivatlakare(verifyPrivatlakare);
     }
-
-    @Test
-    public void getPrivatePractitioner_personId_ok() throws IOException {
-        Privatlakare privatlakare = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
-        String personId = privatlakare.getPersonId();
-
-        when(privatlakareRepository.findByPersonId(personId)).thenReturn(privatlakare);
-
-        PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(personId);
-
-        verify(privatlakareRepository, times(0)).findByHsaId(anyString());
-        verify(privatlakareRepository, times(1)).findByPersonId(anyString());
-
-        assertNotNull(privatePractitioner);
-        assertEquals(privatlakare.getHsaId(), privatePractitioner.getHsaId());
-        assertEquals(privatlakare.getFullstandigtNamn(), privatePractitioner.getName());
-        assertEquals(privatlakare.getVardgivareNamn(), privatePractitioner.getCareproviderName());
-        assertEquals(privatlakare.getEpost(), privatePractitioner.getEmail());
-        assertEquals(privatlakare.getRegistreringsdatum(), privatePractitioner.getRegistrationDate());
-
+    for (Medgivande medgivande : verifyPrivatlakare.getMedgivande()) {
+      medgivande.setPrivatlakare(verifyPrivatlakare);
     }
-
-    @Test
-    public void getPrivatePractitioner_notFound() {
-
-        PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner("notFound");
-
-        assertNull(privatePractitioner);
-
-    }
-
-    @Test
-    public void getPrivatePractitioner_missingPersonOrHsaId() {
-
-        PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(null);
-
-        assertNull(privatePractitioner);
-    }
-
-    private Privatlakare readPrivatlakare(String path) throws IOException {
-        Privatlakare verifyPrivatlakare = new CustomObjectMapper().readValue(new ClassPathResource(
-            path).getFile(), Privatlakare.class);
-        for (Befattning befattning : verifyPrivatlakare.getBefattningar()) {
-            befattning.setPrivatlakare(verifyPrivatlakare);
-        }
-        for (Verksamhetstyp verksamhetstyp : verifyPrivatlakare.getVerksamhetstyper()) {
-            verksamhetstyp.setPrivatlakare(verifyPrivatlakare);
-        }
-        for (Vardform vardform : verifyPrivatlakare.getVardformer()) {
-            vardform.setPrivatlakare(verifyPrivatlakare);
-        }
-        for (Medgivande medgivande : verifyPrivatlakare.getMedgivande()) {
-            medgivande.setPrivatlakare(verifyPrivatlakare);
-        }
-        return verifyPrivatlakare;
-    }
+    return verifyPrivatlakare;
+  }
 }

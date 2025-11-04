@@ -38,29 +38,30 @@ import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitione
  */
 @Configuration
 @EnableScheduling
-@ComponentScan({"se.inera.intyg.privatlakarportal.service", "se.inera.intyg.privatlakarportal.common.service"})
+@ComponentScan({"se.inera.intyg.privatlakarportal.service",
+    "se.inera.intyg.privatlakarportal.common.service"})
 public class ServiceConfig {
 
-    @Value("${terms.ws.services.url}")
-    private String termsUrl;
+  @Value("${terms.ws.services.url}")
+  private String termsUrl;
 
-    @Bean
-    public JacksonJsonProvider jacksonJsonProvider() {
-        return new JacksonJsonProvider();
-    }
+  @Bean
+  public JacksonJsonProvider jacksonJsonProvider() {
+    return new JacksonJsonProvider();
+  }
 
-    @Bean
-    public LoggingFeature loggingFeature() {
-        LoggingFeature loggingFeature = new LoggingFeature();
-        loggingFeature.setPrettyLogging(true);
-        return loggingFeature;
-    }
+  @Bean
+  public LoggingFeature loggingFeature() {
+    LoggingFeature loggingFeature = new LoggingFeature();
+    loggingFeature.setPrettyLogging(true);
+    return loggingFeature;
+  }
 
-    @Bean
-    public GetPrivatePractitionerTermsResponderInterface termsWebServiceClient() {
-        JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
-        proxyFactoryBean.setServiceClass(GetPrivatePractitionerTermsResponderInterface.class);
-        proxyFactoryBean.setAddress(termsUrl);
-        return (GetPrivatePractitionerTermsResponderInterface) proxyFactoryBean.create();
-    }
+  @Bean
+  public GetPrivatePractitionerTermsResponderInterface termsWebServiceClient() {
+    JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
+    proxyFactoryBean.setServiceClass(GetPrivatePractitionerTermsResponderInterface.class);
+    proxyFactoryBean.setAddress(termsUrl);
+    return (GetPrivatePractitionerTermsResponderInterface) proxyFactoryBean.create();
+  }
 }

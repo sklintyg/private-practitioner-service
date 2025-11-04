@@ -37,17 +37,18 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = BASE_PACKAGES)
 public class PersistenceConfigDev extends PersistenceConfigBase {
 
-    @Value("${db.httpPort}")
-    private String databaseHttpPort;
+  @Value("${db.httpPort}")
+  private String databaseHttpPort;
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersistenceConfigDev.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PersistenceConfigDev.class);
 
-    @Bean(destroyMethod = "stop")
-    Server h2WebServer() throws SQLException {
-        LOG.info("Starting H2 Web Server Console on http://127.0.0.1:{}", databaseHttpPort);
-        final Server server = Server.createWebServer("-web", "-webAllowOthers", "-webPort", databaseHttpPort);
-        server.start();
-        return server;
-    }
+  @Bean(destroyMethod = "stop")
+  Server h2WebServer() throws SQLException {
+    LOG.info("Starting H2 Web Server Console on http://127.0.0.1:{}", databaseHttpPort);
+    final Server server = Server.createWebServer("-web", "-webAllowOthers", "-webPort",
+        databaseHttpPort);
+    server.start();
+    return server;
+  }
 
 }

@@ -27,6 +27,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SubscriptionResponse {
 
-    private boolean subscriptionInUse;
+  private boolean subscriptionInUse;
 
 }

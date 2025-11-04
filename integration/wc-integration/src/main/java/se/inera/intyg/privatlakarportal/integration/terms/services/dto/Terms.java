@@ -25,40 +25,40 @@ import java.time.LocalDateTime;
  */
 public class Terms {
 
-    private String text;
-    private long version;
-    private LocalDateTime date;
+  private String text;
+  private long version;
+  private LocalDateTime date;
 
-    public Terms() {
-    }
+  public Terms() {
+  }
 
-    public Terms(String text, long version, LocalDateTime date) {
-        this.text = text;
-        this.version = version;
-        this.date = date;
-    }
+  public Terms(String text, long version, LocalDateTime date) {
+    this.text = text;
+    this.version = version;
+    this.date = date;
+  }
 
-    public String getText() {
-        return text;
-    }
+  public String getText() {
+    return text;
+  }
 
-    public void setText(String text) {
-        this.text = text;
-    }
+  public void setText(String text) {
+    this.text = text;
+  }
 
-    public long getVersion() {
-        return version;
-    }
+  public long getVersion() {
+    return version;
+  }
 
-    public void setVersion(long version) {
-        this.version = version;
-    }
+  public void setVersion(long version) {
+    this.version = version;
+  }
 
-    public LocalDateTime getDate() {
-        return date;
-    }
+  public LocalDateTime getDate() {
+    return date;
+  }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
+  public void setDate(LocalDateTime date) {
+    this.date = date;
+  }
 }

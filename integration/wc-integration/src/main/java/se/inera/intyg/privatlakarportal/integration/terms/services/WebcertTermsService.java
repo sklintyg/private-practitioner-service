@@ -25,6 +25,6 @@ import se.inera.intyg.privatlakarportal.integration.terms.services.dto.Terms;
  */
 public interface WebcertTermsService {
 
-    Terms getTerms();
+  Terms getTerms();
 
 }

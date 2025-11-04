@@ -22,30 +22,30 @@ import se.inera.intyg.privatlakarportal.persistence.model.LegitimeradYrkesgrupp;
 
 public class LegitimeradYrkesgruppDto {
 
-    private String kod;
-    private String namn;
+  private String kod;
+  private String namn;
 
-    public LegitimeradYrkesgruppDto() {
-    }
+  public LegitimeradYrkesgruppDto() {
+  }
 
-    public LegitimeradYrkesgruppDto(LegitimeradYrkesgrupp lg) {
-        this.kod = lg.getKod();
-        this.namn = lg.getNamn();
-    }
+  public LegitimeradYrkesgruppDto(LegitimeradYrkesgrupp lg) {
+    this.kod = lg.getKod();
+    this.namn = lg.getNamn();
+  }
 
-    public String getKod() {
-        return kod;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 
-    public String getNamn() {
-        return namn;
-    }
+  public String getNamn() {
+    return namn;
+  }
 
-    public void setNamn(String namn) {
-        this.namn = namn;
-    }
+  public void setNamn(String namn) {
+    this.namn = namn;
+  }
 }

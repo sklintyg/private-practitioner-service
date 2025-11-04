@@ -44,99 +44,100 @@ import se.inera.intyg.privatlakarportal.persistence.repository.MedgivandeTextRep
 @RunWith(MockitoJUnitRunner.class)
 public class TermsServiceImplTest {
 
-    @Mock
-    private MedgivandeTextRepository medgivandeTextRepository;
+  @Mock
+  private MedgivandeTextRepository medgivandeTextRepository;
 
-    @Mock
-    private SubscriptionService subscriptionService;
+  @Mock
+  private SubscriptionService subscriptionService;
 
-    @Mock
-    private RestTemplate restTemplate;
+  @Mock
+  private RestTemplate restTemplate;
 
-    @InjectMocks
-    private TermsServiceImpl termsService;
+  @InjectMocks
+  private TermsServiceImpl termsService;
 
-    @Test
-    public void testGetTerms() {
+  @Test
+  public void testGetTerms() {
 
-        MedgivandeText medgivandeText = new MedgivandeText();
-        medgivandeText.setVersion(1L);
-        medgivandeText.setMedgivandeText("Testtext");
-        medgivandeText.setDatum(LocalDate.parse("2015-09-01").atStartOfDay());
-        when(medgivandeTextRepository.findLatest()).thenReturn(medgivandeText);
+    MedgivandeText medgivandeText = new MedgivandeText();
+    medgivandeText.setVersion(1L);
+    medgivandeText.setMedgivandeText("Testtext");
+    medgivandeText.setDatum(LocalDate.parse("2015-09-01").atStartOfDay());
+    when(medgivandeTextRepository.findLatest()).thenReturn(medgivandeText);
 
-        Terms response = termsService.getTerms();
-        assertEquals(LocalDate.parse("2015-09-01").atStartOfDay(), response.getDate());
-        assertEquals("Testtext", response.getText());
-        assertEquals(1L, response.getVersion());
-    }
+    Terms response = termsService.getTerms();
+    assertEquals(LocalDate.parse("2015-09-01").atStartOfDay(), response.getDate());
+    assertEquals("Testtext", response.getText());
+    assertEquals(1L, response.getVersion());
+  }
 
-    @Test(expected = PrivatlakarportalServiceException.class)
-    public void testGetTermsFail() {
+  @Test(expected = PrivatlakarportalServiceException.class)
+  public void testGetTermsFail() {
 
-        when(medgivandeTextRepository.findLatest()).thenReturn(null);
+    when(medgivandeTextRepository.findLatest()).thenReturn(null);
 
-        termsService.getTerms();
-    }
+    termsService.getTerms();
+  }
 
-    @Test
-    public void shouldReturnFetchedValueIfResponseOk() {
-        final var hsaId = "HSA_ID";
+  @Test
+  public void shouldReturnFetchedValueIfResponseOk() {
+    final var hsaId = "HSA_ID";
 
-        when(subscriptionService.isSubscriptionRequired()).thenReturn(false);
+    when(subscriptionService.isSubscriptionRequired()).thenReturn(false);
 
-        setMockToReturnValue(HttpStatus.OK, true);
-        final var trueResponse = termsService.getWebcertUserTermsApproved(hsaId);
+    setMockToReturnValue(HttpStatus.OK, true);
+    final var trueResponse = termsService.getWebcertUserTermsApproved(hsaId);
 
-        setMockToReturnValue(HttpStatus.OK, false);
-        final var falseResponse = termsService.getWebcertUserTermsApproved(hsaId);
+    setMockToReturnValue(HttpStatus.OK, false);
+    final var falseResponse = termsService.getWebcertUserTermsApproved(hsaId);
 
-        assertTrue(trueResponse);
-        assertFalse(falseResponse);
-    }
+    assertTrue(trueResponse);
+    assertFalse(falseResponse);
+  }
 
-    @Test
-    public void shouldReturnFalseIfSubscriptionIsRequired() {
-        final var hsaId = "HSA_ID";
+  @Test
+  public void shouldReturnFalseIfSubscriptionIsRequired() {
+    final var hsaId = "HSA_ID";
 
-        when(subscriptionService.isSubscriptionRequired()).thenReturn(true);
-        final var falseResponse = termsService.getWebcertUserTermsApproved(hsaId);
+    when(subscriptionService.isSubscriptionRequired()).thenReturn(true);
+    final var falseResponse = termsService.getWebcertUserTermsApproved(hsaId);
 
-        assertFalse(falseResponse);
-    }
+    assertFalse(falseResponse);
+  }
 
-    @Test
-    public void shouldReturnFalseIfFailedRestCall() {
-        final var hsaId = "HSA_ID";
+  @Test
+  public void shouldReturnFalseIfFailedRestCall() {
+    final var hsaId = "HSA_ID";
 
-        when(subscriptionService.isSubscriptionRequired()).thenReturn(false);
+    when(subscriptionService.isSubscriptionRequired()).thenReturn(false);
 
-        setMockToReturnValue(HttpStatus.INTERNAL_SERVER_ERROR, true);
+    setMockToReturnValue(HttpStatus.INTERNAL_SERVER_ERROR, true);
 
-        final var response = termsService.getWebcertUserTermsApproved(hsaId);
+    final var response = termsService.getWebcertUserTermsApproved(hsaId);
 
-        assertFalse(response);
-    }
+    assertFalse(response);
+  }
 
-    @Test
-    public void shouldReturnFalseIfExceptionOnRestCall() {
-        final var hsaId = "HSA_ID";
+  @Test
+  public void shouldReturnFalseIfExceptionOnRestCall() {
+    final var hsaId = "HSA_ID";
 
-        when(subscriptionService.isSubscriptionRequired()).thenReturn(false);
+    when(subscriptionService.isSubscriptionRequired()).thenReturn(false);
 
-        setMockToReturnException();
+    setMockToReturnException();
 
-        final var response = termsService.getWebcertUserTermsApproved(hsaId);
+    final var response = termsService.getWebcertUserTermsApproved(hsaId);
 
-        assertFalse(response);
-    }
+    assertFalse(response);
+  }
 
-    private void setMockToReturnValue(HttpStatus httpStatus, Boolean responseBody) {
-        doReturn(new ResponseEntity<>(responseBody, httpStatus)).when(restTemplate).getForEntity(any(String.class), eq(Boolean.class));
-    }
+  private void setMockToReturnValue(HttpStatus httpStatus, Boolean responseBody) {
+    doReturn(new ResponseEntity<>(responseBody, httpStatus)).when(restTemplate)
+        .getForEntity(any(String.class), eq(Boolean.class));
+  }
 
-    private void setMockToReturnException() {
-        when(restTemplate.getForEntity(any(String.class), eq(Boolean.class))).thenThrow(
-            new RestClientException("Test RestClientException"));
-    }
+  private void setMockToReturnException() {
+    when(restTemplate.getForEntity(any(String.class), eq(Boolean.class))).thenThrow(
+        new RestClientException("Test RestClientException"));
+  }
 }

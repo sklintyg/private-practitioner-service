@@ -33,18 +33,18 @@ import se.inera.intyg.privatlakarportal.common.service.stub.MailStubStore;
 @PropertySource("classpath:application.properties")
 public class MailServiceStubConfig {
 
-    @Bean
-    public MailService mailService() {
-        return new MailServiceStub();
-    }
+  @Bean
+  public MailService mailService() {
+    return new MailServiceStub();
+  }
 
-    @Bean
-    public JavaMailSender mailSender() {
-        return new JavaMailSenderImpl();
-    }
+  @Bean
+  public JavaMailSender mailSender() {
+    return new JavaMailSenderImpl();
+  }
 
-    @Bean
-    MailStubStore mailstore() {
-        return new MailStubStore();
-    }
+  @Bean
+  MailStubStore mailstore() {
+    return new MailStubStore();
+  }
 }

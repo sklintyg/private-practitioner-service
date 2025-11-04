@@ -31,7 +31,8 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Jobs depends on external redis for locking, and the same instance as for caching (see infra) is used.
+ * Jobs depends on external redis for locking, and the same instance as for caching (see infra) is
+ * used.
  */
 @Profile("caching-enabled")
 @Configuration
@@ -39,13 +40,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableSchedulerLock(defaultLockAtMostFor = "PT20M")
 public class JobConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JobConfiguration.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JobConfiguration.class);
 
-    @Autowired
-    private JedisConnectionFactory jedisConnectionFactory;
+  @Autowired
+  private JedisConnectionFactory jedisConnectionFactory;
 
-    @Bean
-    public LockProvider lockProvider() {
-        return new RedisLockProvider(jedisConnectionFactory, "pp");
-    }
+  @Bean
+  public LockProvider lockProvider() {
+    return new RedisLockProvider(jedisConnectionFactory, "pp");
+  }
 }

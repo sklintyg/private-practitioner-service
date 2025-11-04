@@ -36,54 +36,56 @@ import se.inera.intyg.privatlakarportal.persistence.repository.MedgivandeTextRep
 @Service
 public class TermsServiceImpl implements TermsService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TermsServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TermsServiceImpl.class);
 
-    @Autowired
-    private MedgivandeTextRepository medgivandeTextRepository;
+  @Autowired
+  private MedgivandeTextRepository medgivandeTextRepository;
 
-    @Autowired
-    private SubscriptionService subscriptionService;
+  @Autowired
+  private SubscriptionService subscriptionService;
 
-    @Value("${webcert.terms.approved.url}")
-    private String termsApprovedUrl;
+  @Value("${webcert.terms.approved.url}")
+  private String termsApprovedUrl;
 
-    private RestTemplate restTemplate;
+  private RestTemplate restTemplate;
 
-    @PostConstruct
-    public void init() {
-        restTemplate = new RestTemplate();
+  @PostConstruct
+  public void init() {
+    restTemplate = new RestTemplate();
+  }
+
+  @Override
+  public Terms getTerms() {
+    MedgivandeText medgivandeText = medgivandeTextRepository.findLatest();
+    if (medgivandeText == null) {
+      LOG.error("getTerms: Could not find medgivandetext");
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
+          "Could not find medgivandetext");
     }
+    return new Terms(medgivandeText.getMedgivandeText(), medgivandeText.getVersion(),
+        medgivandeText.getDatum());
+  }
 
-    @Override
-    public Terms getTerms() {
-        MedgivandeText medgivandeText = medgivandeTextRepository.findLatest();
-        if (medgivandeText == null) {
-            LOG.error("getTerms: Could not find medgivandetext");
-            throw new PrivatlakarportalServiceException(
-                PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
-                "Could not find medgivandetext");
+  @Override
+  public Boolean getWebcertUserTermsApproved(String hsaId) {
+    if (onlyFetchUserTermsIfSubscriptionIsNotRequired()) {
+      try {
+        final var response = restTemplate.getForEntity(termsApprovedUrl + "/" + hsaId,
+            Boolean.class);
+        if (response.hasBody() && response.getStatusCode() == HttpStatus.OK) {
+          return response.getBody();
         }
-        return new Terms(medgivandeText.getMedgivandeText(), medgivandeText.getVersion(), medgivandeText.getDatum());
-    }
-
-    @Override
-    public Boolean getWebcertUserTermsApproved(String hsaId) {
-        if (onlyFetchUserTermsIfSubscriptionIsNotRequired()) {
-            try {
-                final var response = restTemplate.getForEntity(termsApprovedUrl + "/" + hsaId, Boolean.class);
-                if (response.hasBody() && response.getStatusCode() == HttpStatus.OK) {
-                    return response.getBody();
-                }
-            } catch (RestClientException e) {
-                LOG.error("Failed call to Webcert for approved terms information", e);
-                return false;
-            }
-        }
+      } catch (RestClientException e) {
+        LOG.error("Failed call to Webcert for approved terms information", e);
         return false;
+      }
     }
+    return false;
+  }
 
-    private boolean onlyFetchUserTermsIfSubscriptionIsNotRequired() {
-        return !subscriptionService.isSubscriptionRequired();
-    }
+  private boolean onlyFetchUserTermsIfSubscriptionIsNotRequired() {
+    return !subscriptionService.isSubscriptionRequired();
+  }
 
 }

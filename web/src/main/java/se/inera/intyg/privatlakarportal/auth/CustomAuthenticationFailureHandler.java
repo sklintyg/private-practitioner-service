@@ -30,29 +30,31 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class CustomAuthenticationFailureHandler extends ExceptionMappingAuthenticationFailureHandler {
+public class CustomAuthenticationFailureHandler extends
+    ExceptionMappingAuthenticationFailureHandler {
 
-    private static final String DEFAULT_FAILURE_URL = "/error.jsp?reason=login.failed";
+  private static final String DEFAULT_FAILURE_URL = "/error.jsp?reason=login.failed";
 
-    private final Map<String, String> failureUrls = Map.of(
-        BadCredentialsException.class.getName(), DEFAULT_FAILURE_URL
-    );
+  private final Map<String, String> failureUrls = Map.of(
+      BadCredentialsException.class.getName(), DEFAULT_FAILURE_URL
+  );
 
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
-        throws IOException {
-        final var exceptionName = exception.getClass().getName();
+  @Override
+  public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+      AuthenticationException exception)
+      throws IOException {
+    final var exceptionName = exception.getClass().getName();
 
-        String url;
-        if (failureUrls.containsKey(exceptionName)) {
-            url = failureUrls.get(exceptionName);
-        } else {
-            saveException(request, exception);
-            url = DEFAULT_FAILURE_URL;
-        }
-
-        log.error("Authentication failed!", exception);
-        
-        getRedirectStrategy().sendRedirect(request, response, url);
+    String url;
+    if (failureUrls.containsKey(exceptionName)) {
+      url = failureUrls.get(exceptionName);
+    } else {
+      saveException(request, exception);
+      url = DEFAULT_FAILURE_URL;
     }
+
+    log.error("Authentication failed!", exception);
+
+    getRedirectStrategy().sendRedirect(request, response, url);
+  }
 }

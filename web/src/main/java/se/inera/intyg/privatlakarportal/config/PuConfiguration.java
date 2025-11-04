@@ -32,6 +32,6 @@ import org.springframework.context.annotation.ImportResource;
 @ComponentScan("se.inera.intyg.infra.integration.pu.services")
 public class PuConfiguration {
 
-    public PuConfiguration() { //NOSONAR
-    }
+  public PuConfiguration() { //NOSONAR
+  }
 }

@@ -23,7 +23,7 @@ import se.inera.intyg.privatlakarportal.service.model.User;
 
 public interface UserService {
 
-    PrivatlakarUser getUser();
+  PrivatlakarUser getUser();
 
-    User getUserWithStatus();
+  User getUserWithStatus();
 }

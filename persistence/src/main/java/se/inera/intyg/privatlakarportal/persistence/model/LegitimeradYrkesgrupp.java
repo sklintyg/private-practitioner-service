@@ -36,73 +36,73 @@ import jakarta.persistence.Table;
 @Table(name = "LEGITIMERAD_YRKESGRUPP")
 public class LegitimeradYrkesgrupp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-    @JsonBackReference
-    private Privatlakare privatlakare;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  @JsonBackReference
+  private Privatlakare privatlakare;
 
-    @Column(name = "KOD", nullable = false)
-    private String kod;
+  @Column(name = "KOD", nullable = false)
+  private String kod;
 
-    @Column(name = "NAMN", nullable = false)
-    private String namn;
+  @Column(name = "NAMN", nullable = false)
+  private String namn;
 
-    public LegitimeradYrkesgrupp() {
+  public LegitimeradYrkesgrupp() {
+  }
+
+  public LegitimeradYrkesgrupp(Privatlakare privatlakare, String namn, String kod) {
+    this.privatlakare = privatlakare;
+    this.namn = namn;
+    this.kod = kod;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    } else if (!(o instanceof LegitimeradYrkesgrupp)) {
+      return false;
+    } else {
+      LegitimeradYrkesgrupp other = (LegitimeradYrkesgrupp) o;
+
+      if (id == null) {
+        return false;
+      } else {
+        return id.equals(other.id);
+      }
     }
+  }
 
-    public LegitimeradYrkesgrupp(Privatlakare privatlakare, String namn, String kod) {
-        this.privatlakare = privatlakare;
-        this.namn = namn;
-        this.kod = kod;
-    }
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (!(o instanceof LegitimeradYrkesgrupp)) {
-            return false;
-        } else {
-            LegitimeradYrkesgrupp other = (LegitimeradYrkesgrupp) o;
+  public Privatlakare getPrivatlakare() {
+    return privatlakare;
+  }
 
-            if (id == null) {
-                return false;
-            } else {
-                return id.equals(other.id);
-            }
-        }
-    }
+  public void setPrivatlakare(Privatlakare privatlakare) {
+    this.privatlakare = privatlakare;
+  }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public Privatlakare getPrivatlakare() {
-        return privatlakare;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 
-    public void setPrivatlakare(Privatlakare privatlakare) {
-        this.privatlakare = privatlakare;
-    }
+  public String getNamn() {
+    return namn;
+  }
 
-    public String getKod() {
-        return kod;
-    }
-
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
-
-    public String getNamn() {
-        return namn;
-    }
-
-    public void setNamn(String namn) {
-        this.namn = namn;
-    }
+  public void setNamn(String namn) {
+    this.namn = namn;
+  }
 }

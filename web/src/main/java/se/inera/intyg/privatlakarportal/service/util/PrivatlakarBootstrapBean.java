@@ -44,55 +44,56 @@ import se.inera.intyg.privatlakarportal.persistence.repository.PrivatlakareRepos
 @DependsOn("dbUpdate")
 public class PrivatlakarBootstrapBean {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PrivatlakarBootstrapBean.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PrivatlakarBootstrapBean.class);
 
-    @Autowired
-    private PrivatlakareRepository privatlakareRepository;
+  @Autowired
+  private PrivatlakareRepository privatlakareRepository;
 
-    @PostConstruct
-    public void initData() {
+  @PostConstruct
+  public void initData() {
 
-        List<Resource> files = getResourceListing("classpath:bootstrap-privatlakare/*.json");
-        for (Resource res : files) {
-            LOG.info("Loading privatlakare resource " + res.getFilename());
-            addPrivatlakare(res);
+    List<Resource> files = getResourceListing("classpath:bootstrap-privatlakare/*.json");
+    for (Resource res : files) {
+      LOG.info("Loading privatlakare resource " + res.getFilename());
+      addPrivatlakare(res);
+    }
+  }
+
+  private void addPrivatlakare(Resource res) {
+
+    try {
+      Privatlakare privatlakare = new CustomObjectMapper().readValue(res.getInputStream(),
+          Privatlakare.class);
+      if (privatlakareRepository.findByPersonId(privatlakare.getPersonId()) == null) {
+        for (Befattning befattning : privatlakare.getBefattningar()) {
+          befattning.setPrivatlakare(privatlakare);
         }
+        for (LegitimeradYrkesgrupp legitimeradYrkesgrupp : privatlakare.getLegitimeradeYrkesgrupper()) {
+          legitimeradYrkesgrupp.setPrivatlakare(privatlakare);
+        }
+        for (Specialitet specialitet : privatlakare.getSpecialiteter()) {
+          specialitet.setPrivatlakare(privatlakare);
+        }
+        for (Verksamhetstyp verksamhetstyp : privatlakare.getVerksamhetstyper()) {
+          verksamhetstyp.setPrivatlakare(privatlakare);
+        }
+        for (Vardform vardform : privatlakare.getVardformer()) {
+          vardform.setPrivatlakare(privatlakare);
+        }
+        privatlakareRepository.save(privatlakare);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
 
-    private void addPrivatlakare(Resource res) {
+  }
 
-        try {
-            Privatlakare privatlakare = new CustomObjectMapper().readValue(res.getInputStream(), Privatlakare.class);
-            if (privatlakareRepository.findByPersonId(privatlakare.getPersonId()) == null) {
-                for (Befattning befattning : privatlakare.getBefattningar()) {
-                    befattning.setPrivatlakare(privatlakare);
-                }
-                for (LegitimeradYrkesgrupp legitimeradYrkesgrupp : privatlakare.getLegitimeradeYrkesgrupper()) {
-                    legitimeradYrkesgrupp.setPrivatlakare(privatlakare);
-                }
-                for (Specialitet specialitet : privatlakare.getSpecialiteter()) {
-                    specialitet.setPrivatlakare(privatlakare);
-                }
-                for (Verksamhetstyp verksamhetstyp : privatlakare.getVerksamhetstyper()) {
-                    verksamhetstyp.setPrivatlakare(privatlakare);
-                }
-                for (Vardform vardform : privatlakare.getVardformer()) {
-                    vardform.setPrivatlakare(privatlakare);
-                }
-                privatlakareRepository.save(privatlakare);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+  private List<Resource> getResourceListing(String classpathResourcePath) {
+    try {
+      PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
+      return Arrays.asList(r.getResources(classpathResourcePath));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
-
-    private List<Resource> getResourceListing(String classpathResourcePath) {
-        try {
-            PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
-            return Arrays.asList(r.getResources(classpathResourcePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+  }
 }

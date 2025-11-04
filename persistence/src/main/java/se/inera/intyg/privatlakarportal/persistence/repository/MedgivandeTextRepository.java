@@ -29,6 +29,6 @@ import se.inera.intyg.privatlakarportal.persistence.model.MedgivandeText;
 @Transactional(transactionManager = "transactionManager")
 public interface MedgivandeTextRepository extends JpaRepository<MedgivandeText, Long> {
 
-    @Query("SELECT m from MedgivandeText m WHERE m.version = (SELECT MAX(m2.version) FROM MedgivandeText m2)")
-    MedgivandeText findLatest();
+  @Query("SELECT m from MedgivandeText m WHERE m.version = (SELECT MAX(m2.version) FROM MedgivandeText m2)")
+  MedgivandeText findLatest();
 }

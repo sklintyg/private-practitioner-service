@@ -20,15 +20,16 @@ package se.inera.intyg.privatlakarportal.hsa.monitoring;
 
 
 /**
- * Interface used when logging to monitoring file. Used to ensure that the log entries are uniform and easy to parse.
+ * Interface used when logging to monitoring file. Used to ensure that the log entries are uniform
+ * and easy to parse.
  */
 public interface MonitoringLogService {
 
-    void logHospWaiting(String id, String hsaId);
+  void logHospWaiting(String id, String hsaId);
 
-    void logUserAuthorizedInHosp(String id, String hsaId);
+  void logUserAuthorizedInHosp(String id, String hsaId);
 
-    void logUserNotAuthorizedInHosp(String id, String hsaId);
+  void logUserNotAuthorizedInHosp(String id, String hsaId);
 
-    void logRegistrationRemoved(String id, String hsaId);
+  void logRegistrationRemoved(String id, String hsaId);
 }

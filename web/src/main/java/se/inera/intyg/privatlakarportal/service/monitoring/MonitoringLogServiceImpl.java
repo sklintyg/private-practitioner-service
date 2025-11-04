@@ -38,122 +38,125 @@ import se.inera.intyg.privatlakarportal.logging.MdcCloseableMap;
 @RequiredArgsConstructor
 public class MonitoringLogServiceImpl implements MonitoringLogService {
 
-    private final HashUtility hashUtility;
-    private static final Object SPACE = " ";
+  private final HashUtility hashUtility;
+  private static final Object SPACE = " ";
 
-    @Override
-    public void logUserRegistered(String id, Long consentVersion, String hsaId, RegistrationStatus registrationStatus) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_REGISTERED))
-                .put(USER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.USER_REGISTERED, hashedPersonId, consentVersion, hsaId, registrationStatus);
-        }
+  @Override
+  public void logUserRegistered(String id, Long consentVersion, String hsaId,
+      RegistrationStatus registrationStatus) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_REGISTERED))
+            .put(USER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.USER_REGISTERED, hashedPersonId, consentVersion, hsaId,
+          registrationStatus);
+    }
+  }
+
+  @Override
+  public void logUserDeleted(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_DELETED))
+            .put(USER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.USER_DELETED, hashedPersonId);
+    }
+  }
+
+  @Override
+  public void logUserErased(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_DELETED))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.USER_DELETED, hsaId);
+    }
+  }
+
+  @Override
+  public void logUserLogin(String id, String authenticationScheme) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_LOGIN))
+            .put(USER_ID, hashedPersonId)
+            .put(EVENT_AUTHENTICATION_SCHEME, authenticationScheme)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.USER_LOGIN, hashedPersonId, authenticationScheme);
+    }
+  }
+
+  @Override
+  public void logUserLogout(String id, String authenticationScheme) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_LOGOUT))
+            .put(USER_ID, hashedPersonId)
+            .put(EVENT_AUTHENTICATION_SCHEME, authenticationScheme)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.USER_LOGOUT, hashedPersonId, authenticationScheme);
+    }
+  }
+
+  @Override
+  public void logUserDetailsChanged(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_DETAILS_CHANGED))
+            .put(USER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.USER_DETAILS_CHANGED, hashedPersonId);
+    }
+  }
+
+  private void logEvent(MonitoringEvent logEvent, Object... logMsgArgs) {
+    log.info(LogMarkers.MONITORING, buildMessage(logEvent), logMsgArgs);
+  }
+
+  private String buildMessage(MonitoringEvent logEvent) {
+    StringBuilder logMsg = new StringBuilder();
+    logMsg.append(logEvent.name()).append(SPACE).append(logEvent.getMessage());
+    return logMsg.toString();
+  }
+
+  private enum MonitoringEvent {
+    USER_REGISTERED(
+        "User '{}' registered with consent version '{}' and hsaId '{}', returned status '{}'"),
+    USER_DELETED("User '{}' deleted"),
+    USER_LOGIN("Login user '{}' using scheme '{}'"),
+    USER_LOGOUT("Logout user '{}' using scheme '{}'"),
+    USER_DETAILS_CHANGED("Details for user '{}' changed");
+
+    private final String message;
+
+    MonitoringEvent(String msg) {
+      this.message = msg;
     }
 
-    @Override
-    public void logUserDeleted(String id, String hsaId) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_DELETED))
-                .put(USER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.USER_DELETED, hashedPersonId);
-        }
+    public String getMessage() {
+      return message;
     }
+  }
 
-    @Override
-    public void logUserErased(String id, String hsaId) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_DELETED))
-                .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.USER_DELETED, hsaId);
-        }
-    }
-
-    @Override
-    public void logUserLogin(String id, String authenticationScheme) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_LOGIN))
-                .put(USER_ID, hashedPersonId)
-                .put(EVENT_AUTHENTICATION_SCHEME, authenticationScheme)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.USER_LOGIN, hashedPersonId, authenticationScheme);
-        }
-    }
-
-    @Override
-    public void logUserLogout(String id, String authenticationScheme) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_LOGOUT))
-                .put(USER_ID, hashedPersonId)
-                .put(EVENT_AUTHENTICATION_SCHEME, authenticationScheme)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.USER_LOGOUT, hashedPersonId, authenticationScheme);
-        }
-    }
-
-    @Override
-    public void logUserDetailsChanged(String id, String hsaId) {
-        final var hashedPersonId = hashUtility.hash(id);
-        try (MdcCloseableMap mdc =
-            MdcCloseableMap.builder()
-                .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_DETAILS_CHANGED))
-                .put(USER_ID, hashedPersonId)
-                .put(ORGANIZATION_ID, hsaId)
-                .build()
-        ) {
-            logEvent(MonitoringEvent.USER_DETAILS_CHANGED, hashedPersonId);
-        }
-    }
-
-    private void logEvent(MonitoringEvent logEvent, Object... logMsgArgs) {
-        log.info(LogMarkers.MONITORING, buildMessage(logEvent), logMsgArgs);
-    }
-
-    private String buildMessage(MonitoringEvent logEvent) {
-        StringBuilder logMsg = new StringBuilder();
-        logMsg.append(logEvent.name()).append(SPACE).append(logEvent.getMessage());
-        return logMsg.toString();
-    }
-
-    private enum MonitoringEvent {
-        USER_REGISTERED("User '{}' registered with consent version '{}' and hsaId '{}', returned status '{}'"),
-        USER_DELETED("User '{}' deleted"),
-        USER_LOGIN("Login user '{}' using scheme '{}'"),
-        USER_LOGOUT("Logout user '{}' using scheme '{}'"),
-        USER_DETAILS_CHANGED("Details for user '{}' changed");
-
-        private final String message;
-
-        MonitoringEvent(String msg) {
-            this.message = msg;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-    }
-
-    private String toEventType(MonitoringEvent monitoringEvent) {
-        return monitoringEvent.name().toLowerCase().replace("_", "-");
-    }
+  private String toEventType(MonitoringEvent monitoringEvent) {
+    return monitoringEvent.name().toLowerCase().replace("_", "-");
+  }
 }

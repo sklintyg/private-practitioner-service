@@ -25,16 +25,16 @@ import se.inera.intyg.privatlakarportal.common.model.Registration;
  */
 public class SaveRegistrationRequest {
 
-    Registration registration;
+  Registration registration;
 
-    public SaveRegistrationRequest() {
-    }
+  public SaveRegistrationRequest() {
+  }
 
-    public Registration getRegistration() {
-        return registration;
-    }
+  public Registration getRegistration() {
+    return registration;
+  }
 
-    public void setRegistration(Registration registration) {
-        this.registration = registration;
-    }
+  public void setRegistration(Registration registration) {
+    this.registration = registration;
+  }
 }

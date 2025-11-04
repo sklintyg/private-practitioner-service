@@ -42,81 +42,85 @@ import se.inera.intyg.schemas.contract.Personnummer;
 @Transactional(transactionManager = "transactionManager")
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private PrivatlakareRepository privatlakareRepository;
+  @Autowired
+  private PrivatlakareRepository privatlakareRepository;
 
-    @Autowired
-    private PUService puService;
+  @Autowired
+  private PUService puService;
 
-    @Autowired
-    private HashUtility hashUtility;
+  @Autowired
+  private HashUtility hashUtility;
 
-    @Override
-    public PrivatlakarUser getUser() {
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            return null;
-        }
-        return (PrivatlakarUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+  @Override
+  public PrivatlakarUser getUser() {
+    if (SecurityContextHolder.getContext().getAuthentication() == null) {
+      return null;
+    }
+    return (PrivatlakarUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+  }
+
+  @Override
+  public User getUserWithStatus() {
+    PrivatlakarUser privatlakarUser = getUser();
+
+    if (privatlakarUser == null) {
+      throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.NOT_FOUND,
+          "No logged in user");
     }
 
-    @Override
-    public User getUserWithStatus() {
-        PrivatlakarUser privatlakarUser = getUser();
+    RegistrationStatus status;
+    Privatlakare privatlakare = privatlakareRepository.findByPersonId(
+        privatlakarUser.getPersonalIdentityNumber());
+    if (privatlakare == null) {
+      status = RegistrationStatus.NOT_STARTED;
+    } else if (!privatlakare.isGodkandAnvandare()) {
+      status = RegistrationStatus.NOT_AUTHORIZED;
+    } else if (!PrivatlakareUtils.hasLakareLegitimation(privatlakare)) {
+      status = RegistrationStatus.WAITING_FOR_HOSP;
+    } else {
+      status = RegistrationStatus.AUTHORIZED;
+    }
 
-        if (privatlakarUser == null) {
-            throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.NOT_FOUND, "No logged in user");
-        }
+    boolean nameUpdated = false;
+    PersonSvar.Status personSvarStatus;
+    try {
+      Optional<Personnummer> personnummerOptional = Personnummer
+          .createPersonnummer(privatlakarUser.getPersonalIdentityNumber());
+      final var personalIdHash = hashUtility.hash(privatlakarUser.getPersonalIdentityNumber());
 
-        RegistrationStatus status;
-        Privatlakare privatlakare = privatlakareRepository.findByPersonId(privatlakarUser.getPersonalIdentityNumber());
-        if (privatlakare == null) {
-            status = RegistrationStatus.NOT_STARTED;
-        } else if (!privatlakare.isGodkandAnvandare()) {
-            status = RegistrationStatus.NOT_AUTHORIZED;
-        } else if (!PrivatlakareUtils.hasLakareLegitimation(privatlakare)) {
-            status = RegistrationStatus.WAITING_FOR_HOSP;
+      if (personnummerOptional.isPresent()) {
+        PersonSvar personSvar = puService.getPerson(personnummerOptional.get());
+        personSvarStatus = personSvar.getStatus();
+
+        if (personSvar.getStatus() == PersonSvar.Status.FOUND && personSvar.getPerson() != null) {
+          String name = personSvar.getPerson().fornamn() + " " + personSvar.getPerson().efternamn();
+          privatlakarUser.updateNameFromPuService(name);
+
+          // Check if name has changed and update in database
+          if (privatlakare != null && !name.equals(privatlakare.getFullstandigtNamn())) {
+            log.info("Updated name for user '{}'", personalIdHash);
+            privatlakare.setFullstandigtNamn(name);
+            privatlakareRepository.save(privatlakare);
+            nameUpdated = true;
+          }
+
+        } else if (personSvar.getStatus() == PersonSvar.Status.NOT_FOUND) {
+          log.warn("Person '{}' not found in puService", personalIdHash);
         } else {
-            status = RegistrationStatus.AUTHORIZED;
+          log.error("puService returned error status for personId '{}'", personalIdHash);
         }
-
-        boolean nameUpdated = false;
-        PersonSvar.Status personSvarStatus;
-        try {
-            Optional<Personnummer> personnummerOptional = Personnummer
-                .createPersonnummer(privatlakarUser.getPersonalIdentityNumber());
-            final var personalIdHash = hashUtility.hash(privatlakarUser.getPersonalIdentityNumber());
-
-            if (personnummerOptional.isPresent()) {
-                PersonSvar personSvar = puService.getPerson(personnummerOptional.get());
-                personSvarStatus = personSvar.getStatus();
-
-                if (personSvar.getStatus() == PersonSvar.Status.FOUND && personSvar.getPerson() != null) {
-                    String name = personSvar.getPerson().fornamn() + " " + personSvar.getPerson().efternamn();
-                    privatlakarUser.updateNameFromPuService(name);
-
-                    // Check if name has changed and update in database
-                    if (privatlakare != null && !name.equals(privatlakare.getFullstandigtNamn())) {
-                        log.info("Updated name for user '{}'", personalIdHash);
-                        privatlakare.setFullstandigtNamn(name);
-                        privatlakareRepository.save(privatlakare);
-                        nameUpdated = true;
-                    }
-
-                } else if (personSvar.getStatus() == PersonSvar.Status.NOT_FOUND) {
-                    log.warn("Person '{}' not found in puService", personalIdHash);
-                } else {
-                    log.error("puService returned error status for personId '{}'", personalIdHash);
-                }
-            } else {
-                log.error("puService could not parse personnummer, returning error status for personId '{}'", personalIdHash);
-                personSvarStatus = PersonSvar.Status.ERROR;
-            }
-        } catch (RuntimeException e) {
-            log.error("Failed to contact puService", e);
-            personSvarStatus = PersonSvar.Status.ERROR;
-        }
-
-        return new User(privatlakarUser, personSvarStatus, status, nameUpdated);
+      } else {
+        log.error(
+            "puService could not parse personnummer, returning error status for personId '{}'",
+            personalIdHash);
+        personSvarStatus = PersonSvar.Status.ERROR;
+      }
+    } catch (RuntimeException e) {
+      log.error("Failed to contact puService", e);
+      personSvarStatus = PersonSvar.Status.ERROR;
     }
+
+    return new User(privatlakarUser, personSvarStatus, status, nameUpdated);
+  }
 
 }

@@ -22,21 +22,21 @@ import se.inera.intyg.privatlakarportal.persistence.model.Verksamhetstyp;
 
 public class VerksamhetstypDto {
 
-    private String kod;
+  private String kod;
 
-    public VerksamhetstypDto() {
-    }
+  public VerksamhetstypDto() {
+  }
 
-    public VerksamhetstypDto(Verksamhetstyp v) {
-        this.kod = v.getKod();
-    }
+  public VerksamhetstypDto(Verksamhetstyp v) {
+    this.kod = v.getKod();
+  }
 
-    public String getKod() {
-        return kod;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 
 }

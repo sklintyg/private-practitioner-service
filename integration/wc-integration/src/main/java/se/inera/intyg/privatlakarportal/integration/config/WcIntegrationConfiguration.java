@@ -42,30 +42,30 @@ import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitione
 @ImportResource("classpath:wc-services.xml")
 public class WcIntegrationConfiguration {
 
-    @Value("${terms.ws.services.url}")
-    private String termsWsUrl;
+  @Value("${terms.ws.services.url}")
+  private String termsWsUrl;
 
-    @Autowired
-    private Bus cxfBus;
+  @Autowired
+  private Bus cxfBus;
 
-    @Bean
-    public GetPrivatePractitionerResponderInterface getPrivatePractitionerResponder() {
-        return new GetPrivatePractitionerResponderImpl();
-    }
+  @Bean
+  public GetPrivatePractitionerResponderInterface getPrivatePractitionerResponder() {
+    return new GetPrivatePractitionerResponderImpl();
+  }
 
-    @Bean
-    public EndpointImpl getPrivatePractitionerEndpoint() {
-        Object implementor = getPrivatePractitionerResponder();
-        EndpointImpl endpoint = new EndpointImpl(cxfBus, implementor);
-        endpoint.publish("/get-private-practitioner/v1.0");
-        return endpoint;
-    }
+  @Bean
+  public EndpointImpl getPrivatePractitionerEndpoint() {
+    Object implementor = getPrivatePractitionerResponder();
+    EndpointImpl endpoint = new EndpointImpl(cxfBus, implementor);
+    endpoint.publish("/get-private-practitioner/v1.0");
+    return endpoint;
+  }
 
-    @Bean
-    public GetPrivatePractitionerTermsResponderInterface termsWebServiceClient() {
-        JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
-        proxyFactoryBean.setAddress(termsWsUrl);
-        proxyFactoryBean.setServiceClass(GetPrivatePractitionerTermsResponderInterface.class);
-        return (GetPrivatePractitionerTermsResponderInterface) proxyFactoryBean.create();
-    }
+  @Bean
+  public GetPrivatePractitionerTermsResponderInterface termsWebServiceClient() {
+    JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
+    proxyFactoryBean.setAddress(termsWsUrl);
+    proxyFactoryBean.setServiceClass(GetPrivatePractitionerTermsResponderInterface.class);
+    return (GetPrivatePractitionerTermsResponderInterface) proxyFactoryBean.create();
+  }
 }

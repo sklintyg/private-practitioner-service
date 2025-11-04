@@ -27,50 +27,51 @@ import se.inera.intyg.privatlakarportal.common.model.RegistrationStatus;
  */
 public class User {
 
-    private String personalIdentityNumber;
-    private String name;
-    private boolean nameFromPuService;
-    private boolean nameUpdated;
-    private String authenticationScheme;
-    private PersonSvar.Status personSvarStatus;
-    private RegistrationStatus status;
+  private String personalIdentityNumber;
+  private String name;
+  private boolean nameFromPuService;
+  private boolean nameUpdated;
+  private String authenticationScheme;
+  private PersonSvar.Status personSvarStatus;
+  private RegistrationStatus status;
 
-    public User(PrivatlakarUser privatlakarUser, PersonSvar.Status personSvarStatus, RegistrationStatus status, boolean nameUpdated) {
-        personalIdentityNumber = privatlakarUser.getPersonalIdentityNumber();
-        name = privatlakarUser.getName();
-        nameFromPuService = privatlakarUser.isNameFromPuService();
-        authenticationScheme = privatlakarUser.getAuthenticationScheme();
-        this.personSvarStatus = personSvarStatus;
-        this.status = status;
-        this.nameUpdated = nameUpdated;
-    }
+  public User(PrivatlakarUser privatlakarUser, PersonSvar.Status personSvarStatus,
+      RegistrationStatus status, boolean nameUpdated) {
+    personalIdentityNumber = privatlakarUser.getPersonalIdentityNumber();
+    name = privatlakarUser.getName();
+    nameFromPuService = privatlakarUser.isNameFromPuService();
+    authenticationScheme = privatlakarUser.getAuthenticationScheme();
+    this.personSvarStatus = personSvarStatus;
+    this.status = status;
+    this.nameUpdated = nameUpdated;
+  }
 
-    public String getPersonalIdentityNumber() {
-        return personalIdentityNumber;
-    }
+  public String getPersonalIdentityNumber() {
+    return personalIdentityNumber;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public boolean isNameFromPuService() {
-        return nameFromPuService;
-    }
+  public boolean isNameFromPuService() {
+    return nameFromPuService;
+  }
 
-    public boolean isNameUpdated() {
-        return nameUpdated;
-    }
+  public boolean isNameUpdated() {
+    return nameUpdated;
+  }
 
-    public String getAuthenticationScheme() {
-        return authenticationScheme;
-    }
+  public String getAuthenticationScheme() {
+    return authenticationScheme;
+  }
 
-    public PersonSvar.Status getPersonSvarStatus() {
-        return personSvarStatus;
-    }
+  public PersonSvar.Status getPersonSvarStatus() {
+    return personSvarStatus;
+  }
 
-    public RegistrationStatus getStatus() {
-        return status;
-    }
+  public RegistrationStatus getStatus() {
+    return status;
+  }
 
 }

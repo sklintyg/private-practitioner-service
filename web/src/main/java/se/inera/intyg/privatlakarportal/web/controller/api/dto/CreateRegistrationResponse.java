@@ -22,17 +22,17 @@ import se.inera.intyg.privatlakarportal.common.model.RegistrationStatus;
 
 public class CreateRegistrationResponse {
 
-    private RegistrationStatus status;
+  private RegistrationStatus status;
 
-    public CreateRegistrationResponse(RegistrationStatus status) {
-        this.status = status;
-    }
+  public CreateRegistrationResponse(RegistrationStatus status) {
+    this.status = status;
+  }
 
-    public RegistrationStatus getStatus() {
-        return status;
-    }
+  public RegistrationStatus getStatus() {
+    return status;
+  }
 
-    public void setStatus(RegistrationStatus status) {
-        this.status = status;
-    }
+  public void setStatus(RegistrationStatus status) {
+    this.status = status;
+  }
 }

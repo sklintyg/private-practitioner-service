@@ -26,9 +26,11 @@ import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitione
  */
 public interface IntegrationService {
 
-    GetPrivatePractitionerResponseType getPrivatePractitionerByHsaId(String personHsaId);
+  GetPrivatePractitionerResponseType getPrivatePractitionerByHsaId(String personHsaId);
 
-    GetPrivatePractitionerResponseType getPrivatePractitionerByPersonId(String personalIdentityNumber);
+  GetPrivatePractitionerResponseType getPrivatePractitionerByPersonId(
+      String personalIdentityNumber);
 
-    ValidatePrivatePractitionerResponse validatePrivatePractitionerByPersonId(String personalIdentityNumber);
+  ValidatePrivatePractitionerResponse validatePrivatePractitionerByPersonId(
+      String personalIdentityNumber);
 }

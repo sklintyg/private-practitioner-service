@@ -34,10 +34,10 @@ import org.springframework.context.annotation.Profile;
 @Profile({"dev", "pu-stub", "wc-pu-stub"})
 public class PuStubConfiguration {
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper();
+  }
 
 }
 

@@ -34,24 +34,24 @@ import se.inera.intyg.privatlakarportal.web.controller.api.dto.GetTermsResponse;
 @RequestMapping("/api/terms")
 public class TermsController {
 
-    private final TermsService termsService;
+  private final TermsService termsService;
 
-    private final WebcertTermsService webcertTermsService;
+  private final WebcertTermsService webcertTermsService;
 
-    public TermsController(TermsService termsService, WebcertTermsService webcertTermsService) {
-        this.termsService = termsService;
-        this.webcertTermsService = webcertTermsService;
-    }
+  public TermsController(TermsService termsService, WebcertTermsService webcertTermsService) {
+    this.termsService = termsService;
+    this.webcertTermsService = webcertTermsService;
+  }
 
-    @RequestMapping(value = "/webcert", method = RequestMethod.GET)
-    @PerformanceLogging(eventAction = "get-webcert-terms", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public GetTermsResponse getWebcertTerms() {
-        return new GetTermsResponse(webcertTermsService.getTerms());
-    }
+  @RequestMapping(value = "/webcert", method = RequestMethod.GET)
+  @PerformanceLogging(eventAction = "get-webcert-terms", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public GetTermsResponse getWebcertTerms() {
+    return new GetTermsResponse(webcertTermsService.getTerms());
+  }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    @PerformanceLogging(eventAction = "get-terms", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public GetTermsResponse getTerms() {
-        return new GetTermsResponse(termsService.getTerms());
-    }
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  @PerformanceLogging(eventAction = "get-terms", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public GetTermsResponse getTerms() {
+    return new GetTermsResponse(termsService.getTerms());
+  }
 }

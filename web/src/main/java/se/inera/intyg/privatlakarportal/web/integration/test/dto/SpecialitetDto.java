@@ -22,30 +22,30 @@ import se.inera.intyg.privatlakarportal.persistence.model.Specialitet;
 
 public class SpecialitetDto {
 
-    private String kod;
-    private String namn;
+  private String kod;
+  private String namn;
 
-    public SpecialitetDto() {
-    }
+  public SpecialitetDto() {
+  }
 
-    public SpecialitetDto(Specialitet sp) {
-        this.kod = sp.getKod();
-        this.namn = sp.getNamn();
-    }
+  public SpecialitetDto(Specialitet sp) {
+    this.kod = sp.getKod();
+    this.namn = sp.getNamn();
+  }
 
-    public String getKod() {
-        return kod;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 
-    public String getNamn() {
-        return namn;
-    }
+  public String getNamn() {
+    return namn;
+  }
 
-    public void setNamn(String namn) {
-        this.namn = namn;
-    }
+  public void setNamn(String namn) {
+    this.namn = namn;
+  }
 }

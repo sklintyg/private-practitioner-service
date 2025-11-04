@@ -22,26 +22,26 @@ import se.inera.intyg.privatlakarportal.common.model.Registration;
 
 public class CreateRegistrationRequest {
 
-    Registration registration;
+  Registration registration;
 
-    Long godkantMedgivandeVersion;
+  Long godkantMedgivandeVersion;
 
-    public CreateRegistrationRequest() {
-    }
+  public CreateRegistrationRequest() {
+  }
 
-    public Registration getRegistration() {
-        return registration;
-    }
+  public Registration getRegistration() {
+    return registration;
+  }
 
-    public void setRegistration(Registration registration) {
-        this.registration = registration;
-    }
+  public void setRegistration(Registration registration) {
+    this.registration = registration;
+  }
 
-    public Long getGodkantMedgivandeVersion() {
-        return godkantMedgivandeVersion;
-    }
+  public Long getGodkantMedgivandeVersion() {
+    return godkantMedgivandeVersion;
+  }
 
-    public void setGodkantMedgivandeVersion(Long godkantMedgivandeVersion) {
-        this.godkantMedgivandeVersion = godkantMedgivandeVersion;
-    }
+  public void setGodkantMedgivandeVersion(Long godkantMedgivandeVersion) {
+    this.godkantMedgivandeVersion = godkantMedgivandeVersion;
+  }
 }

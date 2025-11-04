@@ -25,46 +25,46 @@ import lombok.Data;
 @Data
 public class CareProviderStub implements Serializable {
 
-    private static final long serialVersionUID = 4462766290949153158L;
+  private static final long serialVersionUID = 4462766290949153158L;
 
-    private String id;
-    private String name;
+  private String id;
+  private String name;
 
-    private List<CareUnitStub> careUnits;
+  private List<CareUnitStub> careUnits;
 
-    public CareProviderStub() {
-        // Needed for deserialization
+  public CareProviderStub() {
+    // Needed for deserialization
+  }
+
+  public CareProviderStub(String id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    } else if (!(o instanceof CareProviderStub)) {
+      return false;
+    } else {
+      CareProviderStub that = (CareProviderStub) o;
+
+      if (id == null) {
+        return that.id == null;
+      } else {
+        return id.equals(that.id);
+      }
     }
+  }
 
-    public CareProviderStub(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (!(o instanceof CareProviderStub)) {
-            return false;
-        } else {
-            CareProviderStub that = (CareProviderStub) o;
-
-            if (id == null) {
-                return that.id == null;
-            } else {
-                return id.equals(that.id);
-            }
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return new StringBuilder(getName()).append(":").append(getId()).toString();
-    }
+  @Override
+  public String toString() {
+    return new StringBuilder(getName()).append(":").append(getId()).toString();
+  }
 }

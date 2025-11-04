@@ -25,18 +25,18 @@ import se.inera.intyg.privatlakarportal.service.model.HospInformation;
  */
 public class GetHospInformationResponse {
 
-    private HospInformation hospInformation;
+  private HospInformation hospInformation;
 
-    public GetHospInformationResponse(HospInformation hospInformation) {
-        this.hospInformation = hospInformation;
-    }
+  public GetHospInformationResponse(HospInformation hospInformation) {
+    this.hospInformation = hospInformation;
+  }
 
-    public HospInformation getHospInformation() {
-        return hospInformation;
-    }
+  public HospInformation getHospInformation() {
+    return hospInformation;
+  }
 
-    public void setHospInformation(HospInformation hospInformation) {
-        this.hospInformation = hospInformation;
-    }
+  public void setHospInformation(HospInformation hospInformation) {
+    this.hospInformation = hospInformation;
+  }
 
 }

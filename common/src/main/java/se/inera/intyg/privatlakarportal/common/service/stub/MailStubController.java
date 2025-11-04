@@ -31,17 +31,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"dev", "mail-stub"})
 public class MailStubController {
 
-    @Autowired
-    private MailStubStore mailStore;
+  @Autowired
+  private MailStubStore mailStore;
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    public Map<String, String> getMails() {
-        return mailStore.getMails();
-    }
+  @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+  public Map<String, String> getMails() {
+    return mailStore.getMails();
+  }
 
-    @RequestMapping(value = "/clear", method = RequestMethod.DELETE)
-    public Response deleteMailbox() {
-        mailStore.clear();
-        return Response.ok().build();
-    }
+  @RequestMapping(value = "/clear", method = RequestMethod.DELETE)
+  public Response deleteMailbox() {
+    mailStore.clear();
+    return Response.ok().build();
+  }
 }

@@ -20,6 +20,6 @@ package se.inera.intyg.privatlakarportal.service;
 
 public interface EraseService {
 
-    void erasePrivatePractitioner(String careProviderId);
+  void erasePrivatePractitioner(String careProviderId);
 
 }

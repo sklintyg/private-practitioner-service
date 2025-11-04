@@ -40,46 +40,46 @@ import se.inera.intyg.privatlakarportal.integration.terms.stub.TermsWebServiceSt
 @Profile({"dev", "wc-stub"})
 public class TermsStubConfiguration {
 
-    @Bean
-    TermsWebServiceStub termsWebServiceStub() {
-        return new TermsWebServiceStub();
-    }
+  @Bean
+  TermsWebServiceStub termsWebServiceStub() {
+    return new TermsWebServiceStub();
+  }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper();
+  }
 
-    @Bean
-    public EndpointImpl termsWsResponder() {
-        Object implementor = termsWebServiceStub();
-        EndpointImpl endpoint = new EndpointImpl(springBus(), implementor);
-        endpoint.publish("/stubs/get-private-practitioner-terms/v1.0");
-        return endpoint;
-    }
+  @Bean
+  public EndpointImpl termsWsResponder() {
+    Object implementor = termsWebServiceStub();
+    EndpointImpl endpoint = new EndpointImpl(springBus(), implementor);
+    endpoint.publish("/stubs/get-private-practitioner-terms/v1.0");
+    return endpoint;
+  }
 
-    @Bean
-    public Server server(TermsRestStub termsRestStub) {
-        List<JacksonJsonProvider> providers = new ArrayList<>();
-        providers.add(getJsonProvider());
+  @Bean
+  public Server server(TermsRestStub termsRestStub) {
+    List<JacksonJsonProvider> providers = new ArrayList<>();
+    providers.add(getJsonProvider());
 
-        JAXRSServerFactoryBean endpoint = new JAXRSServerFactoryBean();
-        endpoint.setProviders(providers);
-        endpoint.setBus(springBus());
-        endpoint.setAddress("/stubs");
-        endpoint.setServiceBeans(Arrays.asList(termsRestStub));
+    JAXRSServerFactoryBean endpoint = new JAXRSServerFactoryBean();
+    endpoint.setProviders(providers);
+    endpoint.setBus(springBus());
+    endpoint.setAddress("/stubs");
+    endpoint.setServiceBeans(Arrays.asList(termsRestStub));
 
-        return endpoint.create();
-    }
+    return endpoint.create();
+  }
 
-    @Bean
-    public JacksonJsonProvider getJsonProvider() {
-        return new JacksonJsonProvider();
-    }
+  @Bean
+  public JacksonJsonProvider getJsonProvider() {
+    return new JacksonJsonProvider();
+  }
 
-    @Bean(name = Bus.DEFAULT_BUS_ID)
-    public SpringBus springBus() {
-        return new SpringBus();
-    }
+  @Bean(name = Bus.DEFAULT_BUS_ID)
+  public SpringBus springBus() {
+    return new SpringBus();
+  }
 
 }

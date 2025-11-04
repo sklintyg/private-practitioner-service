@@ -26,17 +26,17 @@ import se.inera.intyg.privatlakarportal.persistence.model.Privatlakare;
  */
 public final class PrivatlakareUtils {
 
-    private static final String LAKARE = "Läkare";
+  private static final String LAKARE = "Läkare";
 
-    private PrivatlakareUtils() {
-    }
+  private PrivatlakareUtils() {
+  }
 
-    public static boolean hasLakareLegitimation(Privatlakare privatlakare) {
-        for (LegitimeradYrkesgrupp legitimeradYrkesgrupp : privatlakare.getLegitimeradeYrkesgrupper()) {
-            if (legitimeradYrkesgrupp.getNamn().equals(LAKARE)) {
-                return true;
-            }
-        }
-        return false;
+  public static boolean hasLakareLegitimation(Privatlakare privatlakare) {
+    for (LegitimeradYrkesgrupp legitimeradYrkesgrupp : privatlakare.getLegitimeradeYrkesgrupper()) {
+      if (legitimeradYrkesgrupp.getNamn().equals(LAKARE)) {
+        return true;
+      }
     }
+    return false;
+  }
 }

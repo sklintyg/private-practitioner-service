@@ -30,17 +30,17 @@ import se.inera.intyg.privatlakarportal.web.integration.test.dto.PrivatlakareDto
  */
 public interface RegisterService {
 
-    RegistrationStatus createRegistration(Registration registration, Long godkantMedgivandeVersion);
+  RegistrationStatus createRegistration(Registration registration, Long godkantMedgivandeVersion);
 
-    SaveRegistrationResponseStatus saveRegistration(Registration registration);
+  SaveRegistrationResponseStatus saveRegistration(Registration registration);
 
-    HospInformation getHospInformation();
+  HospInformation getHospInformation();
 
-    RegistrationWithHospInformation getRegistration();
+  RegistrationWithHospInformation getRegistration();
 
-    boolean removePrivatlakare(String personId);
+  boolean removePrivatlakare(String personId);
 
-    void injectHsaInterval(int hsaIdNotificationInterval);
+  void injectHsaInterval(int hsaIdNotificationInterval);
 
-    PrivatlakareDto getPrivatlakare(String personId);
+  PrivatlakareDto getPrivatlakare(String personId);
 }

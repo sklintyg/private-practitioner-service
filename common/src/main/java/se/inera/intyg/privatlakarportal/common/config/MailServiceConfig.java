@@ -42,86 +42,87 @@ import se.inera.intyg.privatlakarportal.common.service.MailServiceImpl;
 @EnableAsync
 public class MailServiceConfig implements AsyncConfigurer {
 
-    @Value("${mail.host}")
-    private String mailHost;
+  @Value("${mail.host}")
+  private String mailHost;
 
-    @Value("${mail.protocol}")
-    private String protocol;
+  @Value("${mail.protocol}")
+  private String protocol;
 
-    @Value("${mail.username}")
-    private String username;
+  @Value("${mail.username}")
+  private String username;
 
-    @Value("${mail.password}")
-    private String password;
+  @Value("${mail.password}")
+  private String password;
 
-    @Value("${mail.defaultEncoding}")
-    private String defaultEncoding;
+  @Value("${mail.defaultEncoding}")
+  private String defaultEncoding;
 
-    @Value("${mail.port}")
-    private String port;
+  @Value("${mail.port}")
+  private String port;
 
-    @Value("${mail.smtps.auth}")
-    private boolean smtpsAuth;
+  @Value("${mail.smtps.auth}")
+  private boolean smtpsAuth;
 
-    @Value("${mail.smtps.starttls.enable}")
-    private boolean smtpsStarttlsEnable;
+  @Value("${mail.smtps.starttls.enable}")
+  private boolean smtpsStarttlsEnable;
 
-    @Value("${mail.smtps.debug}")
-    private boolean smtpsDebug;
+  @Value("${mail.smtps.debug}")
+  private boolean smtpsDebug;
 
-    private static final Logger LOG = LoggerFactory.getLogger(MailServiceConfig.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MailServiceConfig.class);
 
-    @Bean
-    public JavaMailSender mailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailHost);
-        mailSender.setDefaultEncoding(defaultEncoding);
-        mailSender.setProtocol(protocol);
-        mailSender.setPort(Integer.parseInt(port));
-        if (username != null && !username.isEmpty()) {
-            mailSender.setUsername(username);
-        }
-        if (password != null && !password.isEmpty()) {
-            mailSender.setPassword(password);
-        }
-
-        Properties javaMailProperties = new Properties();
-        javaMailProperties.put("mail." + protocol + ".auth", smtpsAuth);
-        javaMailProperties.put("mail." + protocol + ".port", Integer.parseInt(port));
-        javaMailProperties.put("mail." + protocol + ".starttls.enable", smtpsStarttlsEnable);
-        javaMailProperties.put("mail." + protocol + ".debug", smtpsDebug);
-        javaMailProperties.put("mail." + protocol + ".socketFactory.fallback", true);
-
-        mailSender.setJavaMailProperties(javaMailProperties);
-        LOG.info("Mailsender initialized with: [port: {}, protocol: {}, host: {}]", port, protocol, mailHost);
-        return mailSender;
+  @Bean
+  public JavaMailSender mailSender() {
+    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    mailSender.setHost(mailHost);
+    mailSender.setDefaultEncoding(defaultEncoding);
+    mailSender.setProtocol(protocol);
+    mailSender.setPort(Integer.parseInt(port));
+    if (username != null && !username.isEmpty()) {
+      mailSender.setUsername(username);
+    }
+    if (password != null && !password.isEmpty()) {
+      mailSender.setPassword(password);
     }
 
-    @Bean
-    public MailService mailService() {
-        return new MailServiceImpl();
-    }
+    Properties javaMailProperties = new Properties();
+    javaMailProperties.put("mail." + protocol + ".auth", smtpsAuth);
+    javaMailProperties.put("mail." + protocol + ".port", Integer.parseInt(port));
+    javaMailProperties.put("mail." + protocol + ".starttls.enable", smtpsStarttlsEnable);
+    javaMailProperties.put("mail." + protocol + ".debug", smtpsDebug);
+    javaMailProperties.put("mail." + protocol + ".socketFactory.fallback", true);
 
-    @Override
-    public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        // CHECKSTYLE:OFF MagicNumber
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(42);
-        executor.setQueueCapacity(100);
-        // CHECKSTYLE:ON MagicNumber
-        executor.setThreadNamePrefix("MyExecutor-");
-        executor.initialize();
-        return executor;
-    }
+    mailSender.setJavaMailProperties(javaMailProperties);
+    LOG.info("Mailsender initialized with: [port: {}, protocol: {}, host: {}]", port, protocol,
+        mailHost);
+    return mailSender;
+  }
 
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new SimpleAsyncUncaughtExceptionHandler();
-    }
+  @Bean
+  public MailService mailService() {
+    return new MailServiceImpl();
+  }
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+  @Override
+  public Executor getAsyncExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    // CHECKSTYLE:OFF MagicNumber
+    executor.setCorePoolSize(10);
+    executor.setMaxPoolSize(42);
+    executor.setQueueCapacity(100);
+    // CHECKSTYLE:ON MagicNumber
+    executor.setThreadNamePrefix("MyExecutor-");
+    executor.initialize();
+    return executor;
+  }
+
+  @Override
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return new SimpleAsyncUncaughtExceptionHandler();
+  }
+
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+    return new PropertySourcesPlaceholderConfigurer();
+  }
 }

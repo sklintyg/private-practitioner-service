@@ -29,7 +29,7 @@ import se.inera.intyg.privatlakarportal.persistence.model.HospUppdatering;
 @Transactional(transactionManager = "transactionManager")
 public interface HospUppdateringRepository extends JpaRepository<HospUppdatering, Integer> {
 
-    @Query("SELECT h from HospUppdatering h WHERE h.id = 1")
-    HospUppdatering findSingle();
+  @Query("SELECT h from HospUppdatering h WHERE h.id = 1")
+  HospUppdatering findSingle();
 
 }

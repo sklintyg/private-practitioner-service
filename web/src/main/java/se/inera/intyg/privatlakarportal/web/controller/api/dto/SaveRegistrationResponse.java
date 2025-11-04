@@ -25,17 +25,17 @@ import se.inera.intyg.privatlakarportal.service.model.SaveRegistrationResponseSt
  */
 public class SaveRegistrationResponse {
 
-    private SaveRegistrationResponseStatus status;
+  private SaveRegistrationResponseStatus status;
 
-    public SaveRegistrationResponse(SaveRegistrationResponseStatus status) {
-        this.status = status;
-    }
+  public SaveRegistrationResponse(SaveRegistrationResponseStatus status) {
+    this.status = status;
+  }
 
-    public SaveRegistrationResponseStatus getStatus() {
-        return status;
-    }
+  public SaveRegistrationResponseStatus getStatus() {
+    return status;
+  }
 
-    public void setStatus(SaveRegistrationResponseStatus status) {
-        this.status = status;
-    }
+  public void setStatus(SaveRegistrationResponseStatus status) {
+    this.status = status;
+  }
 }

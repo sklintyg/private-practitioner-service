@@ -23,11 +23,11 @@ import se.inera.intyg.privatlakarportal.hsa.model.HospPerson;
 
 public interface HospPersonService {
 
-    boolean addToCertifier(String personId, String certifierId);
+  boolean addToCertifier(String personId, String certifierId);
 
-    boolean removeFromCertifier(String personId, String certifierId, String reason);
+  boolean removeFromCertifier(String personId, String certifierId, String reason);
 
-    HospPerson getHospPerson(String personId);
+  HospPerson getHospPerson(String personId);
 
-    LocalDateTime getHospLastUpdate();
+  LocalDateTime getHospLastUpdate();
 }

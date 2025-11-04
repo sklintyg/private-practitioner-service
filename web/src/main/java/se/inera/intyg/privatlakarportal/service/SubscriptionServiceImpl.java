@@ -24,24 +24,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
 
-    @Value("${subscription.adaptation.period}")
-    private boolean subscriptionAdaptation;
+  @Value("${subscription.adaptation.period}")
+  private boolean subscriptionAdaptation;
 
-    @Value("${subscription.required}")
-    private boolean subscriptionRequired;
+  @Value("${subscription.required}")
+  private boolean subscriptionRequired;
 
-    @Override
-    public boolean isSubscriptionInUse() {
-        return subscriptionAdaptation || subscriptionRequired;
-    }
+  @Override
+  public boolean isSubscriptionInUse() {
+    return subscriptionAdaptation || subscriptionRequired;
+  }
 
-    @Override
-    public boolean isSubscriptionAdaptationAndNotRequired() {
-        return subscriptionAdaptation && !subscriptionRequired;
-    }
+  @Override
+  public boolean isSubscriptionAdaptationAndNotRequired() {
+    return subscriptionAdaptation && !subscriptionRequired;
+  }
 
-    @Override
-    public boolean isSubscriptionRequired() {
-        return subscriptionRequired;
-    }
+  @Override
+  public boolean isSubscriptionRequired() {
+    return subscriptionRequired;
+  }
 }

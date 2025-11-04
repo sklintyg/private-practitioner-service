@@ -25,28 +25,28 @@ import java.util.Map;
  */
 public final class Befattningar {
 
-    public static final String BEFATTNING_NAME = "Befattning HSA";
-    public static final String BEFATTNING_OID = "1.2.752.129.2.2.1.4";
-    public static final String BEFATTNING_VERSION = "3.1";
+  public static final String BEFATTNING_NAME = "Befattning HSA";
+  public static final String BEFATTNING_OID = "1.2.752.129.2.2.1.4";
+  public static final String BEFATTNING_VERSION = "3.1";
 
-    private static final Map<String, String> BEFATTNINGS_MAP = Map.of(
-        "201010", "Överläkare",
-        "201011", "Distriktsläkare/Specialist allmänmedicin",
-        "201012", "Skolläkare",
-        "201013", "Företagsläkare",
-        "202010", "Specialistläkare",
-        "203010", "Läkare legitimerad, specialiseringstjänstgöring",
-        "203090", "Läkare legitimerad, annan"
-    );
+  private static final Map<String, String> BEFATTNINGS_MAP = Map.of(
+      "201010", "Överläkare",
+      "201011", "Distriktsläkare/Specialist allmänmedicin",
+      "201012", "Skolläkare",
+      "201013", "Företagsläkare",
+      "202010", "Specialistläkare",
+      "203010", "Läkare legitimerad, specialiseringstjänstgöring",
+      "203090", "Läkare legitimerad, annan"
+  );
 
-    private Befattningar() {
-    }
+  private Befattningar() {
+  }
 
-    public static String getDisplayName(String code) {
-        return BEFATTNINGS_MAP.get(code);
-    }
+  public static String getDisplayName(String code) {
+    return BEFATTNINGS_MAP.get(code);
+  }
 
-    public static Map<String, String> getBefattningar() {
-        return Map.copyOf(BEFATTNINGS_MAP);
-    }
+  public static Map<String, String> getBefattningar() {
+    return Map.copyOf(BEFATTNINGS_MAP);
+  }
 }

@@ -27,8 +27,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @PropertySource("classpath:config/test.properties")
 public class PersistenceConfigTest {
 
-    @Bean
-    public PropertySourcesPlaceholderConfigurer propertyConfigInTest() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+  @Bean
+  public PropertySourcesPlaceholderConfigurer propertyConfigInTest() {
+    return new PropertySourcesPlaceholderConfigurer();
+  }
 }

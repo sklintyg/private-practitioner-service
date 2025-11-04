@@ -39,56 +39,57 @@ import se.inera.intyg.privatlakarportal.service.monitoring.MonitoringLogService;
 @RequiredArgsConstructor
 public class AuthenticationEventListener {
 
-    private final MonitoringLogService monitoringLogService;
+  private final MonitoringLogService monitoringLogService;
 
-    @EventListener
-    public void onLoginSuccess(InteractiveAuthenticationSuccessEvent success) {
-        updateMDCWithNewSessionId();
+  @EventListener
+  public void onLoginSuccess(InteractiveAuthenticationSuccessEvent success) {
+    updateMDCWithNewSessionId();
 
-        final var privatlakarUser = getUser(success.getAuthentication().getPrincipal());
-        privatlakarUser.ifPresent(user ->
-            monitoringLogService.logUserLogin(
-                user.getPersonalIdentityNumber(),
-                user.getAuthenticationScheme()
-            )
-        );
+    final var privatlakarUser = getUser(success.getAuthentication().getPrincipal());
+    privatlakarUser.ifPresent(user ->
+        monitoringLogService.logUserLogin(
+            user.getPersonalIdentityNumber(),
+            user.getAuthenticationScheme()
+        )
+    );
+  }
+
+  /**
+   * Spring Security will by default invalidate the old session and create a new one after
+   * authentication. It’s a security feature to protect against session fixation attacks. Update the
+   * MDC with the new session id.
+   */
+  private static void updateMDCWithNewSessionId() {
+    final var attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    if (attrs != null) {
+      final var request = attrs.getRequest();
+      final var session = request.getSession(false);
+
+      if (session != null && session.getId() != null) {
+        final var sessionId = session.getId();
+        final var encodedSessionId = Base64.getEncoder()
+            .encodeToString(sessionId.getBytes(StandardCharsets.UTF_8));
+        MDC.put(MdcLogConstants.SESSION_ID_KEY, encodedSessionId);
+      }
     }
+  }
 
-    /**
-     * Spring Security will by default invalidate the old session and create a new one after authentication.
-     * It’s a security feature to protect against session fixation attacks.
-     * Update the MDC with the new session id.
-     */
-    private static void updateMDCWithNewSessionId() {
-        final var attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attrs != null) {
-            final var request = attrs.getRequest();
-            final var session = request.getSession(false);
+  @EventListener
+  public void onLogoutSuccess(LogoutSuccessEvent success) {
+    final var privatlakarUser = getUser(success.getAuthentication().getPrincipal());
+    privatlakarUser.ifPresent(user ->
+        monitoringLogService.logUserLogout(
+            user.getPersonalIdentityNumber(),
+            user.getAuthenticationScheme()
+        )
+    );
+  }
 
-            if (session != null && session.getId() != null) {
-                final var sessionId = session.getId();
-                final var encodedSessionId = Base64.getEncoder().encodeToString(sessionId.getBytes(StandardCharsets.UTF_8));
-                MDC.put(MdcLogConstants.SESSION_ID_KEY, encodedSessionId);
-            }
-        }
+  private static Optional<PrivatlakarUser> getUser(Object principal) {
+    if (principal instanceof PrivatlakarUser user) {
+      return Optional.of(user);
     }
-
-    @EventListener
-    public void onLogoutSuccess(LogoutSuccessEvent success) {
-        final var privatlakarUser = getUser(success.getAuthentication().getPrincipal());
-        privatlakarUser.ifPresent(user ->
-            monitoringLogService.logUserLogout(
-                user.getPersonalIdentityNumber(),
-                user.getAuthenticationScheme()
-            )
-        );
-    }
-
-    private static Optional<PrivatlakarUser> getUser(Object principal) {
-        if (principal instanceof PrivatlakarUser user) {
-            return Optional.of(user);
-        }
-        log.warn("Invalid principal [{}]", principal.getClass().getSimpleName());
-        return Optional.empty();
-    }
+    log.warn("Invalid principal [{}]", principal.getClass().getSimpleName());
+    return Optional.empty();
+  }
 }

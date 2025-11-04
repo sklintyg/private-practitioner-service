@@ -37,77 +37,77 @@ import java.time.LocalDateTime;
 @Table(name = "MEDGIVANDE")
 public class Medgivande {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "ID")
+  private Long id;
 
-    @Column(name = "GODKAND_DATUM")
+  @Column(name = "GODKAND_DATUM")
 
-    private LocalDateTime godkandDatum;
+  private LocalDateTime godkandDatum;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEDGIVANDE_VERSION", nullable = false)
-    @JsonBackReference(value = "medgivandeText")
-    private MedgivandeText medgivandeText;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "MEDGIVANDE_VERSION", nullable = false)
+  @JsonBackReference(value = "medgivandeText")
+  private MedgivandeText medgivandeText;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-    @JsonBackReference
-    private Privatlakare privatlakare;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  @JsonBackReference
+  private Privatlakare privatlakare;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Medgivande)) {
-            return false;
-        }
-
-        Medgivande that = (Medgivande) o;
-
-        if (id == null) {
-            return false;
-        } else {
-            return id.equals(that.id);
-        }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Medgivande)) {
+      return false;
     }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
+    Medgivande that = (Medgivande) o;
 
-    public Long getId() {
-        return id;
+    if (id == null) {
+      return false;
+    } else {
+      return id.equals(that.id);
     }
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
+  }
 
-    public LocalDateTime getGodkandDatum() {
-        return godkandDatum;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setGodkandDatum(LocalDateTime godkandDatum) {
-        this.godkandDatum = godkandDatum;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public MedgivandeText getMedgivandeText() {
-        return medgivandeText;
-    }
+  public LocalDateTime getGodkandDatum() {
+    return godkandDatum;
+  }
 
-    public void setMedgivandeText(MedgivandeText medgivandeText) {
-        this.medgivandeText = medgivandeText;
-    }
+  public void setGodkandDatum(LocalDateTime godkandDatum) {
+    this.godkandDatum = godkandDatum;
+  }
 
-    public Privatlakare getPrivatlakare() {
-        return privatlakare;
-    }
+  public MedgivandeText getMedgivandeText() {
+    return medgivandeText;
+  }
 
-    public void setPrivatlakare(Privatlakare privatlakare) {
-        this.privatlakare = privatlakare;
-    }
+  public void setMedgivandeText(MedgivandeText medgivandeText) {
+    this.medgivandeText = medgivandeText;
+  }
+
+  public Privatlakare getPrivatlakare() {
+    return privatlakare;
+  }
+
+  public void setPrivatlakare(Privatlakare privatlakare) {
+    this.privatlakare = privatlakare;
+  }
 }

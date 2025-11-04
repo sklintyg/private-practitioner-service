@@ -30,22 +30,24 @@ import org.junit.Before;
  */
 public abstract class BaseIntegrationTest {
 
-    /**
-     * Common setup for all tests.
-     */
-    @Before
-    public void setupBase() {
-        RestAssured.reset();
-        RestAssured.baseURI = System.getProperty("integration.tests.baseUrl", "http://127.0.0.1:8060");
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        RestAssured.requestSpecification = new RequestSpecBuilder().setContentType("application/xml;charset=utf-8").build();
-        RestAssured.config = RestAssured.config().sessionConfig(RestAssured.config().getSessionConfig().sessionIdName("SESSION"));
+  /**
+   * Common setup for all tests.
+   */
+  @Before
+  public void setupBase() {
+    RestAssured.reset();
+    RestAssured.baseURI = System.getProperty("integration.tests.baseUrl", "http://127.0.0.1:8060");
+    RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    RestAssured.requestSpecification = new RequestSpecBuilder().setContentType(
+        "application/xml;charset=utf-8").build();
+    RestAssured.config = RestAssured.config()
+        .sessionConfig(RestAssured.config().getSessionConfig().sessionIdName("SESSION"));
 
-    }
+  }
 
-    @After
-    public void cleanupBase() {
-        RestAssured.reset();
-    }
+  @After
+  public void cleanupBase() {
+    RestAssured.reset();
+  }
 
 }

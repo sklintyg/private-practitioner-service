@@ -27,8 +27,8 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SubUnitStub extends AbstractUnitStub {
 
-    private LocalDateTime start;
-    private LocalDateTime end;
-    private String parentHsaId;
+  private LocalDateTime start;
+  private LocalDateTime end;
+  private String parentHsaId;
 
 }

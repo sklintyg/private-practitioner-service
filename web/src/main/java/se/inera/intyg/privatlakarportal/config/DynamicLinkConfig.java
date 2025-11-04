@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("se.inera.intyg.infra.dynamiclink")
 public class DynamicLinkConfig {
 
-    public DynamicLinkConfig() {
+  public DynamicLinkConfig() {
 
-    }
+  }
 }

@@ -25,18 +25,18 @@ import se.inera.intyg.privatlakarportal.integration.terms.services.dto.Terms;
  */
 public class GetTermsResponse {
 
-    private Terms terms;
+  private Terms terms;
 
-    public GetTermsResponse(Terms terms) {
-        this.terms = terms;
-    }
+  public GetTermsResponse(Terms terms) {
+    this.terms = terms;
+  }
 
-    public Terms getTerms() {
-        return terms;
-    }
+  public Terms getTerms() {
+    return terms;
+  }
 
-    public void setTerms(Terms terms) {
-        this.terms = terms;
-    }
+  public void setTerms(Terms terms) {
+    this.terms = terms;
+  }
 
 }

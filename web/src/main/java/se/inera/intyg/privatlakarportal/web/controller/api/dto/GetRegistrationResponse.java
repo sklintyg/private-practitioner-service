@@ -27,39 +27,40 @@ import se.inera.intyg.privatlakarportal.service.model.HospInformation;
 
 public class GetRegistrationResponse {
 
-    private Registration registration;
+  private Registration registration;
 
-    private HospInformation hospInformation;
+  private HospInformation hospInformation;
 
-    private boolean webcertUserTermsApproved;
+  private boolean webcertUserTermsApproved;
 
-    public GetRegistrationResponse(Registration registration, HospInformation hospInformation, boolean webcertUserTermsApproved) {
-        this.registration = registration;
-        this.hospInformation = hospInformation;
-        this.webcertUserTermsApproved = webcertUserTermsApproved;
-    }
+  public GetRegistrationResponse(Registration registration, HospInformation hospInformation,
+      boolean webcertUserTermsApproved) {
+    this.registration = registration;
+    this.hospInformation = hospInformation;
+    this.webcertUserTermsApproved = webcertUserTermsApproved;
+  }
 
-    public Registration getRegistration() {
-        return registration;
-    }
+  public Registration getRegistration() {
+    return registration;
+  }
 
-    public void setRegistration(Registration registration) {
-        this.registration = registration;
-    }
+  public void setRegistration(Registration registration) {
+    this.registration = registration;
+  }
 
-    public HospInformation getHospInformation() {
-        return hospInformation;
-    }
+  public HospInformation getHospInformation() {
+    return hospInformation;
+  }
 
-    public void setHospInformation(HospInformation hospInformation) {
-        this.hospInformation = hospInformation;
-    }
+  public void setHospInformation(HospInformation hospInformation) {
+    this.hospInformation = hospInformation;
+  }
 
-    public boolean isWebcertUserTermsApproved() {
-        return webcertUserTermsApproved;
-    }
+  public boolean isWebcertUserTermsApproved() {
+    return webcertUserTermsApproved;
+  }
 
-    public void setWebcertUserTermsApproved(boolean webcertUserTermsApproved) {
-        this.webcertUserTermsApproved = webcertUserTermsApproved;
-    }
+  public void setWebcertUserTermsApproved(boolean webcertUserTermsApproved) {
+    this.webcertUserTermsApproved = webcertUserTermsApproved;
+  }
 }

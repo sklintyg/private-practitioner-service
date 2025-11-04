@@ -30,12 +30,12 @@ import org.springframework.stereotype.Controller;
 @Path("/terms")
 public class TermsRestStub {
 
-    @GET
-    @Path("/approved/{hsaId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public boolean getTermsApproved(@PathParam("hsaId") String hsaId) {
-        return true;
-    }
+  @GET
+  @Path("/approved/{hsaId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public boolean getTermsApproved(@PathParam("hsaId") String hsaId) {
+    return true;
+  }
 
 }

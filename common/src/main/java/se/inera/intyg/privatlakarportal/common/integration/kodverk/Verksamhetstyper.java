@@ -25,32 +25,32 @@ import java.util.Map;
  */
 public final class Verksamhetstyper {
 
-    public static final String VERKSAMHETSTYP_NAME = "Verksamhetskod";
-    public static final String VERKSAMHETSTYP_OID = "1.2.752.129.2.2.1.3";
-    public static final String VERKSAMHETSTYP_VERSION = "4.1";
+  public static final String VERKSAMHETSTYP_NAME = "Verksamhetskod";
+  public static final String VERKSAMHETSTYP_OID = "1.2.752.129.2.2.1.3";
+  public static final String VERKSAMHETSTYP_VERSION = "4.1";
 
-    private static final Map<String, String> VERKSAMHETSTYP_MAP = Map.ofEntries(
-        Map.entry("10", "Barn- och ungdomsverksamhet"),
-        Map.entry("11", "Medicinsk verksamhet"),
-        Map.entry("12", "Laboratorieverksamhet"),
-        Map.entry("13", "Opererande verksamhet"),
-        Map.entry("14", "Övrig medicinsk verksamhet"),
-        Map.entry("15", "Primärvårdsverksamhet"),
-        Map.entry("16", "Psykiatrisk verksamhet"),
-        Map.entry("17", "Radiologisk verksamhet"),
-        Map.entry("18", "Tandvårdsverksamhet"),
-        Map.entry("20", "Övrig medicinsk serviceverksamhet"),
-        Map.entry("21", "Vård-, Omsorg- och Omvårdnadsverksamhet")
-    );
+  private static final Map<String, String> VERKSAMHETSTYP_MAP = Map.ofEntries(
+      Map.entry("10", "Barn- och ungdomsverksamhet"),
+      Map.entry("11", "Medicinsk verksamhet"),
+      Map.entry("12", "Laboratorieverksamhet"),
+      Map.entry("13", "Opererande verksamhet"),
+      Map.entry("14", "Övrig medicinsk verksamhet"),
+      Map.entry("15", "Primärvårdsverksamhet"),
+      Map.entry("16", "Psykiatrisk verksamhet"),
+      Map.entry("17", "Radiologisk verksamhet"),
+      Map.entry("18", "Tandvårdsverksamhet"),
+      Map.entry("20", "Övrig medicinsk serviceverksamhet"),
+      Map.entry("21", "Vård-, Omsorg- och Omvårdnadsverksamhet")
+  );
 
-    private Verksamhetstyper() {
-    }
+  private Verksamhetstyper() {
+  }
 
-    public static String getDisplayName(String code) {
-        return VERKSAMHETSTYP_MAP.get(code);
-    }
+  public static String getDisplayName(String code) {
+    return VERKSAMHETSTYP_MAP.get(code);
+  }
 
-    public static Map<String, String> getVerksamhetstyper() {
-        return Map.copyOf(VERKSAMHETSTYP_MAP);
-    }
+  public static Map<String, String> getVerksamhetstyper() {
+    return Map.copyOf(VERKSAMHETSTYP_MAP);
+  }
 }

@@ -32,46 +32,47 @@ import se.inera.intyg.privatlakarportal.integration.privatepractitioner.services
 
 public abstract class BaseRestIntegrationTest {
 
-    @Before
-    public void setupBase() {
-        RestAssured.reset();
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        RestAssured.baseURI = System.getProperty("integration.tests.baseUrl", "http://localhost:8060");
-        RestAssured.requestSpecification = new RequestSpecBuilder().setContentType(ContentType.JSON).build();
-        RestAssured.config = newConfig().sslConfig(sslConfig().allowAllHostnames())
-            .sessionConfig(RestAssured.config().getSessionConfig().sessionIdName("SESSION"));
-    }
+  @Before
+  public void setupBase() {
+    RestAssured.reset();
+    RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    RestAssured.baseURI = System.getProperty("integration.tests.baseUrl", "http://localhost:8060");
+    RestAssured.requestSpecification = new RequestSpecBuilder().setContentType(ContentType.JSON)
+        .build();
+    RestAssured.config = newConfig().sslConfig(sslConfig().allowAllHostnames())
+        .sessionConfig(RestAssured.config().getSessionConfig().sessionIdName("SESSION"));
+  }
 
-    @After
-    public void cleanupBase() {
-        RestAssured.reset();
-    }
+  @After
+  public void cleanupBase() {
+    RestAssured.reset();
+  }
 
-    protected static String createAuthSession(String firstName, String lastName, String personId) {
-        String sessionId = RestUtil.login(firstName, lastName, personId);
-        RestAssured.sessionId = sessionId;
-        return sessionId;
-    }
+  protected static String createAuthSession(String firstName, String lastName, String personId) {
+    String sessionId = RestUtil.login(firstName, lastName, personId);
+    RestAssured.sessionId = sessionId;
+    return sessionId;
+  }
 
 
-    void sleep(long milllis) {
-        try {
-            Thread.sleep(milllis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+  void sleep(long milllis) {
+    try {
+      Thread.sleep(milllis);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
+  }
 
-    RequestSpecification spec() {
-        return given()
-            .contentType(ContentType.JSON)
-            .cookie("ROUTEID", RestUtil.routeId);
-    }
+  RequestSpecification spec() {
+    return given()
+        .contentType(ContentType.JSON)
+        .cookie("ROUTEID", RestUtil.routeId);
+  }
 
-    RequestSpecification spec(long delayInMillis) {
-        sleep(delayInMillis);
-        return spec();
-    }
+  RequestSpecification spec(long delayInMillis) {
+    sleep(delayInMillis);
+    return spec();
+  }
 
 
 }

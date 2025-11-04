@@ -29,9 +29,9 @@ import org.springframework.context.annotation.Profile;
 @Profile({"dev", "hsa-stub"})
 public class HsaStubConfiguration {
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper();
+  }
 
 }

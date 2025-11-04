@@ -40,61 +40,63 @@ import se.inera.intyg.infra.security.filter.PrincipalUpdatedFilter;
 @Configuration
 @EnableTransactionManagement
 @PropertySource(ignoreResourceNotFound = true,
-    value = {"classpath:application.properties", "file:${dev.config.file}", "classpath:version.properties"})
+    value = {"classpath:application.properties", "file:${dev.config.file}",
+        "classpath:version.properties"})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml"})
-@ComponentScan({"se.inera.intyg.infra.integration.intygproxyservice", "se.inera.intyg.privatlakarportal.logging",
+@ComponentScan({"se.inera.intyg.infra.integration.intygproxyservice",
+    "se.inera.intyg.privatlakarportal.logging",
     "se.inera.intyg.infra.pu.integration.intygproxyservice"})
 public class ApplicationConfig {
 
-    @Autowired
-    private Bus cxfBus;
+  @Autowired
+  private Bus cxfBus;
 
-    @Bean
-    public CookieSerializer cookieSerializer() {
+  @Bean
+  public CookieSerializer cookieSerializer() {
         /*
         This is needed to make IdP functionality work.
         This will not satisfy all browsers, but it works for IE, Chrome and Edge.
         Reference: https://auth0.com/blog/browser-behavior-changes-what-developers-need-to-know/
          */
-        return new IneraCookieSerializer();
-    }
+    return new IneraCookieSerializer();
+  }
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+    return new PropertySourcesPlaceholderConfigurer();
+  }
 
-    @Bean
-    public ResourceBundleMessageSource messageSource() {
-        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasename("version");
-        source.setUseCodeAsDefaultMessage(true);
-        return source;
-    }
+  @Bean
+  public ResourceBundleMessageSource messageSource() {
+    ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+    source.setBasename("version");
+    source.setUseCodeAsDefaultMessage(true);
+    return source;
+  }
 
-    @PostConstruct
-    public Bus cxfBus() {
-        cxfBus.setFeatures(
-            new ArrayList<>(Arrays.asList(loggingFeature())));
+  @PostConstruct
+  public Bus cxfBus() {
+    cxfBus.setFeatures(
+        new ArrayList<>(Arrays.asList(loggingFeature())));
 
-        return cxfBus;
-    }
+    return cxfBus;
+  }
 
-    @Bean
-    public LoggingFeature loggingFeature() {
-        LoggingFeature loggingFeature = new LoggingFeature();
-        loggingFeature.setPrettyLogging(true);
-        return loggingFeature;
-    }
+  @Bean
+  public LoggingFeature loggingFeature() {
+    LoggingFeature loggingFeature = new LoggingFeature();
+    loggingFeature.setPrettyLogging(true);
+    return loggingFeature;
+  }
 
-    @Bean
-    public PrincipalUpdatedFilter principalUpdatedFilter() {
-        return new PrincipalUpdatedFilter();
-    }
+  @Bean
+  public PrincipalUpdatedFilter principalUpdatedFilter() {
+    return new PrincipalUpdatedFilter();
+  }
 
-    @Bean
-    public InternalApiFilter internalApiFilter() {
-        return new InternalApiFilter();
-    }
+  @Bean
+  public InternalApiFilter internalApiFilter() {
+    return new InternalApiFilter();
+  }
 
 }

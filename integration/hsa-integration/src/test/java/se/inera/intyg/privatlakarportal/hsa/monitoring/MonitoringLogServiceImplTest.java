@@ -44,62 +44,64 @@ import se.inera.intyg.privatlakarportal.logging.HashUtility;
 @RunWith(MockitoJUnitRunner.class)
 public class MonitoringLogServiceImplTest {
 
-    private static final String USER_ID = "USER_ID";
-    private static final String HSA_ID = "HSA_ID";
+  private static final String USER_ID = "USER_ID";
+  private static final String HSA_ID = "HSA_ID";
 
-    @Mock
-    private Appender<ILoggingEvent> mockAppender;
+  @Mock
+  private Appender<ILoggingEvent> mockAppender;
 
-    @Spy
-    private HashUtility hashUtility;
+  @Spy
+  private HashUtility hashUtility;
 
-    @Captor
-    private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
+  @Captor
+  private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
 
-    @InjectMocks
-    private MonitoringLogServiceImpl logService;
+  @InjectMocks
+  private MonitoringLogServiceImpl logService;
 
-    @Before
-    public void setup() {
-        ReflectionTestUtils.setField(hashUtility, "salt", "salt");
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.addAppender(mockAppender);
-    }
+  @Before
+  public void setup() {
+    ReflectionTestUtils.setField(hashUtility, "salt", "salt");
+    final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.addAppender(mockAppender);
+  }
 
-    @After
-    public void teardown() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.detachAppender(mockAppender);
-    }
+  @After
+  public void teardown() {
+    final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.detachAppender(mockAppender);
+  }
 
-    @Test
-    public void shouldLogHospWaiting() {
-        logService.logHospWaiting(USER_ID, HSA_ID);
-        verifyLog(Level.INFO, "HOSP_WAITING User '" + hashUtility.hash(USER_ID) + "' is waiting for HOSP");
-    }
+  @Test
+  public void shouldLogHospWaiting() {
+    logService.logHospWaiting(USER_ID, HSA_ID);
+    verifyLog(Level.INFO,
+        "HOSP_WAITING User '" + hashUtility.hash(USER_ID) + "' is waiting for HOSP");
+  }
 
-    @Test
-    public void shouldLogUserAuthorizedInHosp() {
-        logService.logUserAuthorizedInHosp(USER_ID, HSA_ID);
-        verifyLog(Level.INFO,
-            "HOSP_AUTHORIZED User '" + hashUtility.hash(USER_ID) + "' is authorized doctor in HOSP");
-    }
+  @Test
+  public void shouldLogUserAuthorizedInHosp() {
+    logService.logUserAuthorizedInHosp(USER_ID, HSA_ID);
+    verifyLog(Level.INFO,
+        "HOSP_AUTHORIZED User '" + hashUtility.hash(USER_ID) + "' is authorized doctor in HOSP");
+  }
 
-    @Test
-    public void shouldLogUserNotAuthorizedInHosp() {
-        logService.logUserNotAuthorizedInHosp(USER_ID, HSA_ID);
-        verifyLog(Level.INFO,
-            "HOSP_NOT_AUTHORIZED User '" + hashUtility.hash(USER_ID) + "' is not authorized doctor in HOSP");
-    }
+  @Test
+  public void shouldLogUserNotAuthorizedInHosp() {
+    logService.logUserNotAuthorizedInHosp(USER_ID, HSA_ID);
+    verifyLog(Level.INFO,
+        "HOSP_NOT_AUTHORIZED User '" + hashUtility.hash(USER_ID)
+            + "' is not authorized doctor in HOSP");
+  }
 
-    private void verifyLog(Level logLevel, String logMessage) {
-        // Verify and capture logging interaction
-        verify(mockAppender).doAppend(captorLoggingEvent.capture());
-        final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+  private void verifyLog(Level logLevel, String logMessage) {
+    // Verify and capture logging interaction
+    verify(mockAppender).doAppend(captorLoggingEvent.capture());
+    final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 
-        // Verify log
-        assertThat(loggingEvent.getLevel(), equalTo(logLevel));
-        assertThat(loggingEvent.getFormattedMessage(),
-            equalTo(logMessage));
-    }
+    // Verify log
+    assertThat(loggingEvent.getLevel(), equalTo(logLevel));
+    assertThat(loggingEvent.getFormattedMessage(),
+        equalTo(logMessage));
+  }
 }

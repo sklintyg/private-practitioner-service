@@ -26,17 +26,17 @@ import se.inera.intyg.infra.integration.postnummer.model.Omrade;
  */
 public class GetOmradeResponse {
 
-    private List<Omrade> omradeList;
+  private List<Omrade> omradeList;
 
-    public GetOmradeResponse(List<Omrade> omradeList) {
-        this.omradeList = omradeList;
-    }
+  public GetOmradeResponse(List<Omrade> omradeList) {
+    this.omradeList = omradeList;
+  }
 
-    public List<Omrade> getOmradeList() {
-        return omradeList;
-    }
+  public List<Omrade> getOmradeList() {
+    return omradeList;
+  }
 
-    public void setOmradeList(List<Omrade> omradeList) {
-        this.omradeList = omradeList;
-    }
+  public void setOmradeList(List<Omrade> omradeList) {
+    this.omradeList = omradeList;
+  }
 }

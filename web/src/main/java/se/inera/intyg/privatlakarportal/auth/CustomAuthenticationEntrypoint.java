@@ -30,9 +30,10 @@ import org.springframework.stereotype.Component;
 public class CustomAuthenticationEntrypoint implements AuthenticationEntryPoint {
 
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
-        throws IOException {
-        response.sendRedirect("/saml2/authenticate/eleg");
-    }
+  @Override
+  public void commence(HttpServletRequest request, HttpServletResponse response,
+      AuthenticationException authException)
+      throws IOException {
+    response.sendRedirect("/saml2/authenticate/eleg");
+  }
 }

@@ -30,27 +30,27 @@ import org.json.simple.JSONObject;
  */
 public final class RestUtil {
 
-    public static String routeId;
+  public static String routeId;
 
-    private RestUtil() {
-    }
+  private RestUtil() {
+  }
 
-    public static String login(String firstName, String lastName, String personId) {
-        JSONObject jsonBody = new JSONObject();
-        jsonBody.put("firstName", firstName);
-        jsonBody.put("lastName", lastName);
-        jsonBody.put("personId", personId);
+  public static String login(String firstName, String lastName, String personId) {
+    JSONObject jsonBody = new JSONObject();
+    jsonBody.put("firstName", firstName);
+    jsonBody.put("lastName", lastName);
+    jsonBody.put("personId", personId);
 
-        Map<String, String> cookies =
-            given()
-                .contentType(ContentType.URLENC)
-                .body("userJsonDisplay=" + jsonBody.toJSONString())
-                .redirects().follow(false)
-                .expect().statusCode(HttpServletResponse.SC_FOUND)
-                .when().post("/fake").getCookies();
+    Map<String, String> cookies =
+        given()
+            .contentType(ContentType.URLENC)
+            .body("userJsonDisplay=" + jsonBody.toJSONString())
+            .redirects().follow(false)
+            .expect().statusCode(HttpServletResponse.SC_FOUND)
+            .when().post("/fake").getCookies();
 
-        routeId = cookies.containsKey("ROUTEID") ? cookies.get("ROUTEID") : "nah";
-        return cookies.get("SESSION");
-    }
+    routeId = cookies.containsKey("ROUTEID") ? cookies.get("ROUTEID") : "nah";
+    return cookies.get("SESSION");
+  }
 
 }

@@ -23,30 +23,30 @@ import se.inera.intyg.privatlakarportal.persistence.model.Medgivande;
 
 public class MedgivandeDto {
 
-    private LocalDateTime godkandDatum;
-    private MedgivandeTextDto medgivandeText;
+  private LocalDateTime godkandDatum;
+  private MedgivandeTextDto medgivandeText;
 
-    public MedgivandeDto() {
-    }
+  public MedgivandeDto() {
+  }
 
-    public MedgivandeDto(Medgivande m) {
-        this.godkandDatum = m.getGodkandDatum();
-        this.medgivandeText = new MedgivandeTextDto(m.getMedgivandeText());
-    }
+  public MedgivandeDto(Medgivande m) {
+    this.godkandDatum = m.getGodkandDatum();
+    this.medgivandeText = new MedgivandeTextDto(m.getMedgivandeText());
+  }
 
-    public LocalDateTime getGodkandDatum() {
-        return godkandDatum;
-    }
+  public LocalDateTime getGodkandDatum() {
+    return godkandDatum;
+  }
 
-    public void setGodkandDatum(LocalDateTime godkandDatum) {
-        this.godkandDatum = godkandDatum;
-    }
+  public void setGodkandDatum(LocalDateTime godkandDatum) {
+    this.godkandDatum = godkandDatum;
+  }
 
-    public MedgivandeTextDto getMedgivandeText() {
-        return medgivandeText;
-    }
+  public MedgivandeTextDto getMedgivandeText() {
+    return medgivandeText;
+  }
 
-    public void setMedgivandeText(MedgivandeTextDto medgivandeText) {
-        this.medgivandeText = medgivandeText;
-    }
+  public void setMedgivandeText(MedgivandeTextDto medgivandeText) {
+    this.medgivandeText = medgivandeText;
+  }
 }

@@ -27,12 +27,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PerformanceLogging {
 
-    String eventType();
+  String eventType();
 
-    String eventAction();
+  String eventAction();
 
-    String eventCategory() default MdcLogConstants.EVENT_CATEGORY_API;
+  String eventCategory() default MdcLogConstants.EVENT_CATEGORY_API;
 
-    boolean isActive() default true;
+  boolean isActive() default true;
 
 }

@@ -22,21 +22,21 @@ import se.inera.intyg.privatlakarportal.persistence.model.Befattning;
 
 public class BefattningDto {
 
-    private String kod;
+  private String kod;
 
-    public BefattningDto() {
-    }
+  public BefattningDto() {
+  }
 
-    public BefattningDto(Befattning lg) {
-        this.kod = lg.getKod();
-    }
+  public BefattningDto(Befattning lg) {
+    this.kod = lg.getKod();
+  }
 
-    public String getKod() {
-        return kod;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 
 }

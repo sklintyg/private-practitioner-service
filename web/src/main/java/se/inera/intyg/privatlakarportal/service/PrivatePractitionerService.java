@@ -23,18 +23,18 @@ import se.inera.intyg.privatlakarportal.service.model.PrivatePractitioner;
 
 public interface PrivatePractitionerService {
 
-    /**
-     * Get the specified private practitioner by pnr or hsaId.
-     *
-     * @param personOrHsaId PNR or HSAid
-     * @return PrivatePractitioner or <code>null</code>
-     */
-    PrivatePractitioner getPrivatePractitioner(String personOrHsaId);
+  /**
+   * Get the specified private practitioner by pnr or hsaId.
+   *
+   * @param personOrHsaId PNR or HSAid
+   * @return PrivatePractitioner or <code>null</code>
+   */
+  PrivatePractitioner getPrivatePractitioner(String personOrHsaId);
 
-    /**
-     * Get a list of all registered Private Practitioners
-     *
-     * @return A list of all PrivatePractitioners or empty list
-     */
-    List<PrivatePractitioner> getPrivatePractitioners();
+  /**
+   * Get a list of all registered Private Practitioners
+   *
+   * @return A list of all PrivatePractitioners or empty list
+   */
+  List<PrivatePractitioner> getPrivatePractitioners();
 }

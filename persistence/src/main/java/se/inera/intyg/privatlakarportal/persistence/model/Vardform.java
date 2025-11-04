@@ -36,62 +36,62 @@ import jakarta.persistence.Table;
 @Table(name = "VARDFORM")
 public class Vardform {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-    @JsonBackReference
-    private Privatlakare privatlakare;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  @JsonBackReference
+  private Privatlakare privatlakare;
 
-    @Column(name = "KOD", nullable = false)
-    private String kod;
+  @Column(name = "KOD", nullable = false)
+  private String kod;
 
-    public Vardform() {
+  public Vardform() {
+  }
+
+  public Vardform(Privatlakare privatlakare, String kod) {
+    this.privatlakare = privatlakare;
+    this.kod = kod;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    } else if (!(o instanceof Vardform)) {
+      return false;
+    } else {
+      Vardform other = (Vardform) o;
+
+      if (id == null) {
+        return false;
+      } else {
+        return id.equals(other.id);
+      }
     }
+  }
 
-    public Vardform(Privatlakare privatlakare, String kod) {
-        this.privatlakare = privatlakare;
-        this.kod = kod;
-    }
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (!(o instanceof Vardform)) {
-            return false;
-        } else {
-            Vardform other = (Vardform) o;
+  public Privatlakare getPrivatlakare() {
+    return privatlakare;
+  }
 
-            if (id == null) {
-                return false;
-            } else {
-                return id.equals(other.id);
-            }
-        }
-    }
+  public void setPrivatlakare(Privatlakare privatlakare) {
+    this.privatlakare = privatlakare;
+  }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public Privatlakare getPrivatlakare() {
-        return privatlakare;
-    }
-
-    public void setPrivatlakare(Privatlakare privatlakare) {
-        this.privatlakare = privatlakare;
-    }
-
-    public String getKod() {
-        return kod;
-    }
-
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 
 }

@@ -31,29 +31,29 @@ import java.time.LocalDateTime;
 @Table(name = "HOSP_UPPDATERING")
 public class HospUppdatering {
 
-    @SuppressWarnings("unused")
-    @Id
-    @Column(name = "ID")
-    private Long id;
+  @SuppressWarnings("unused")
+  @Id
+  @Column(name = "ID")
+  private Long id;
 
-    @Column(name = "SENASTE_HOSP_UPPDATERING", nullable = true)
+  @Column(name = "SENASTE_HOSP_UPPDATERING", nullable = true)
 
-    private LocalDateTime senasteHospUppdatering;
+  private LocalDateTime senasteHospUppdatering;
 
-    public HospUppdatering() {
-        id = 1L;
-    }
+  public HospUppdatering() {
+    id = 1L;
+  }
 
-    public HospUppdatering(LocalDateTime senasteHospUppdatering) {
-        id = 1L;
-        this.senasteHospUppdatering = senasteHospUppdatering;
-    }
+  public HospUppdatering(LocalDateTime senasteHospUppdatering) {
+    id = 1L;
+    this.senasteHospUppdatering = senasteHospUppdatering;
+  }
 
-    public LocalDateTime getSenasteHospUppdatering() {
-        return senasteHospUppdatering;
-    }
+  public LocalDateTime getSenasteHospUppdatering() {
+    return senasteHospUppdatering;
+  }
 
-    public void setSenasteHospUppdatering(LocalDateTime senasteHospUppdatering) {
-        this.senasteHospUppdatering = senasteHospUppdatering;
-    }
+  public void setSenasteHospUppdatering(LocalDateTime senasteHospUppdatering) {
+    this.senasteHospUppdatering = senasteHospUppdatering;
+  }
 }

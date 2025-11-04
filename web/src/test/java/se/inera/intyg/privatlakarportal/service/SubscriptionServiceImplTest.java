@@ -28,78 +28,78 @@ import org.springframework.test.util.ReflectionTestUtils;
 @RunWith(MockitoJUnitRunner.class)
 public class SubscriptionServiceImplTest extends TestCase {
 
-    @InjectMocks
-    private SubscriptionServiceImpl subscriptionService;
+  @InjectMocks
+  private SubscriptionServiceImpl subscriptionService;
 
-    @Test
-    public void subscriptionInUseShouldReturnTrueIfSubscriptionAdaption() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
+  @Test
+  public void subscriptionInUseShouldReturnTrueIfSubscriptionAdaption() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
-        assertTrue(subscriptionService.isSubscriptionInUse());
-    }
+    assertTrue(subscriptionService.isSubscriptionInUse());
+  }
 
-    @Test
-    public void subscriptionInUseShouldReturnTrueIfSubscriptionRequired() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
+  @Test
+  public void subscriptionInUseShouldReturnTrueIfSubscriptionRequired() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
-        assertTrue(subscriptionService.isSubscriptionInUse());
-    }
+    assertTrue(subscriptionService.isSubscriptionInUse());
+  }
 
-    @Test
-    public void subscriptionInUseShouldReturnTrueIfSubscriptionAdaptationAndRequired() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
+  @Test
+  public void subscriptionInUseShouldReturnTrueIfSubscriptionAdaptationAndRequired() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
-        assertTrue(subscriptionService.isSubscriptionInUse());
-    }
+    assertTrue(subscriptionService.isSubscriptionInUse());
+  }
 
-    @Test
-    public void subscriptionInUseShouldReturnFalseIfNone() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
+  @Test
+  public void subscriptionInUseShouldReturnFalseIfNone() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
-        assertFalse(subscriptionService.isSubscriptionInUse());
-    }
+    assertFalse(subscriptionService.isSubscriptionInUse());
+  }
 
-    @Test
-    public void subscriptionAdaptationAndNotRequiredShouldReturnTrueIfSubscriptionAdaptation() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
+  @Test
+  public void subscriptionAdaptationAndNotRequiredShouldReturnTrueIfSubscriptionAdaptation() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
-        assertTrue(subscriptionService.isSubscriptionAdaptationAndNotRequired());
-    }
+    assertTrue(subscriptionService.isSubscriptionAdaptationAndNotRequired());
+  }
 
-    @Test
-    public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionRequired() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
+  @Test
+  public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionRequired() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
-        assertFalse(subscriptionService.isSubscriptionAdaptationAndNotRequired());
-    }
+    assertFalse(subscriptionService.isSubscriptionAdaptationAndNotRequired());
+  }
 
-    @Test
-    public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionAdaptationAndRequired() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
+  @Test
+  public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionAdaptationAndRequired() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
-        assertFalse(subscriptionService.isSubscriptionAdaptationAndNotRequired());
-    }
+    assertFalse(subscriptionService.isSubscriptionAdaptationAndNotRequired());
+  }
 
-    @Test
-    public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfNone() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
+  @Test
+  public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfNone() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
-        assertFalse(subscriptionService.isSubscriptionAdaptationAndNotRequired());
-    }
+    assertFalse(subscriptionService.isSubscriptionAdaptationAndNotRequired());
+  }
 
-    @Test
-    public void subscriptionRequiredReturnTrue() {
-        ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
+  @Test
+  public void subscriptionRequiredReturnTrue() {
+    ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
-        assertTrue(subscriptionService.isSubscriptionRequired());
-    }
+    assertTrue(subscriptionService.isSubscriptionRequired());
+  }
 
 }

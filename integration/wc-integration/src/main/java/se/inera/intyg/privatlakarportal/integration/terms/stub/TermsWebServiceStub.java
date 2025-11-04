@@ -41,43 +41,43 @@ import se.riv.infrastructure.directory.privatepractitioner.terms.v1.AvtalType;
  */
 public class TermsWebServiceStub implements GetPrivatePractitionerTermsResponderInterface {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TermsWebServiceStub.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TermsWebServiceStub.class);
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+  @Autowired
+  private ResourceLoader resourceLoader;
 
-    @Override
-    public GetPrivatePractitionerTermsResponseType getPrivatePractitionerTerms(String s,
-        GetPrivatePractitionerTermsType getPrivatePractitionerTermsType) {
+  @Override
+  public GetPrivatePractitionerTermsResponseType getPrivatePractitionerTerms(String s,
+      GetPrivatePractitionerTermsType getPrivatePractitionerTermsType) {
 
-        AvtalType avtalType = new AvtalType();
-        avtalType.setAvtalVersion(1);
-        avtalType.setAvtalVersionDatum(LocalDate.parse("2015-09-30").atStartOfDay());
+    AvtalType avtalType = new AvtalType();
+    avtalType.setAvtalVersion(1);
+    avtalType.setAvtalVersionDatum(LocalDate.parse("2015-09-30").atStartOfDay());
 
-        String fileEncoding = "UTF-8";
-        String fileUrl = "classpath:bootstrap-webcertvillkor/webcertvillkor.html";
+    String fileEncoding = "UTF-8";
+    String fileUrl = "classpath:bootstrap-webcertvillkor/webcertvillkor.html";
 
-        LOG.debug("Loading terms file '{}' using encoding '{}'", fileUrl, fileEncoding);
+    LOG.debug("Loading terms file '{}' using encoding '{}'", fileUrl, fileEncoding);
 
-        String avtalText;
-        try {
-            Resource resource = resourceLoader.getResource(fileUrl);
+    String avtalText;
+    try {
+      Resource resource = resourceLoader.getResource(fileUrl);
 
-            if (!resource.exists()) {
-                LOG.error("Could not load avtal file since the resource '{}' does not exist", fileUrl);
-            } else {
-                avtalText = FileUtils.readFileToString(resource.getFile(), StandardCharsets.UTF_8);
-                avtalType.setAvtalText(avtalText);
-            }
+      if (!resource.exists()) {
+        LOG.error("Could not load avtal file since the resource '{}' does not exist", fileUrl);
+      } else {
+        avtalText = FileUtils.readFileToString(resource.getFile(), StandardCharsets.UTF_8);
+        avtalType.setAvtalText(avtalText);
+      }
 
-        } catch (IOException ioe) {
-            LOG.error("IOException occured when loading avtal file '{}'", fileUrl);
-            throw new RuntimeException("Error occured when loading avtal file", ioe);
-        }
-
-        GetPrivatePractitionerTermsResponseType response = new GetPrivatePractitionerTermsResponseType();
-        response.setAvtal(avtalType);
-
-        return response;
+    } catch (IOException ioe) {
+      LOG.error("IOException occured when loading avtal file '{}'", fileUrl);
+      throw new RuntimeException("Error occured when loading avtal file", ioe);
     }
+
+    GetPrivatePractitionerTermsResponseType response = new GetPrivatePractitionerTermsResponseType();
+    response.setAvtal(avtalType);
+
+    return response;
+  }
 }

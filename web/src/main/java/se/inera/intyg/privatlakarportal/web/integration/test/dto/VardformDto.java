@@ -22,21 +22,21 @@ import se.inera.intyg.privatlakarportal.persistence.model.Vardform;
 
 public class VardformDto {
 
-    private String kod;
+  private String kod;
 
-    public VardformDto() {
-    }
+  public VardformDto() {
+  }
 
-    public VardformDto(Vardform vf) {
-        this.kod = vf.getKod();
-    }
+  public VardformDto(Vardform vf) {
+    this.kod = vf.getKod();
+  }
 
-    public String getKod() {
-        return kod;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 
 }

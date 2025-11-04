@@ -28,31 +28,31 @@ import org.springframework.data.redis.support.collections.DefaultRedisMap;
 
 public class MailStubStore {
 
-    private static final String MAILSTUBSTORE = "mailstubstore";
-    private Map<String, String> store = new HashMap<>(); // Default hashmap used for unit-tests
+  private static final String MAILSTUBSTORE = "mailstubstore";
+  private Map<String, String> store = new HashMap<>(); // Default hashmap used for unit-tests
 
-    private StringRedisTemplate stringRedisTemplate;
+  private StringRedisTemplate stringRedisTemplate;
 
-    @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+  @Autowired
+  private RedisConnectionFactory redisConnectionFactory;
 
-    @PostConstruct
-    public void init() {
-        stringRedisTemplate = new StringRedisTemplate();
-        stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
-        stringRedisTemplate.afterPropertiesSet();
-        store = new DefaultRedisMap<>(MAILSTUBSTORE, stringRedisTemplate);
-    }
+  @PostConstruct
+  public void init() {
+    stringRedisTemplate = new StringRedisTemplate();
+    stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
+    stringRedisTemplate.afterPropertiesSet();
+    store = new DefaultRedisMap<>(MAILSTUBSTORE, stringRedisTemplate);
+  }
 
-    public void addMail(String id, String mail) {
-        store.put(id, mail);
-    }
+  public void addMail(String id, String mail) {
+    store.put(id, mail);
+  }
 
-    public Map<String, String> getMails() {
-        return store;
-    }
+  public Map<String, String> getMails() {
+    return store;
+  }
 
-    public void clear() {
-        store.clear();
-    }
+  public void clear() {
+    store.clear();
+  }
 }

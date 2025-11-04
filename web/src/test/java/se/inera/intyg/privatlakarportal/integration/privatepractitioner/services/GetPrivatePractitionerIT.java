@@ -34,65 +34,65 @@ import se.riv.infrastructure.directory.privatepractitioner.terms.v1.ResultCodeEn
  */
 public class GetPrivatePractitionerIT extends BaseIntegrationTest {
 
-    private static final String BASE = "Envelope.Body.GetPrivatePractitionerResponse.";
-    private static final String GET_PRIVATE_PRACTITIONER_V1_0 = "services/get-private-practitioner/v1.0";
-    private static final String PNR = "191212121212";
-    public static final String PNR_OKANT = "inte-ett-personnummer-i-varje-fall";
+  private static final String BASE = "Envelope.Body.GetPrivatePractitionerResponse.";
+  private static final String GET_PRIVATE_PRACTITIONER_V1_0 = "services/get-private-practitioner/v1.0";
+  private static final String PNR = "191212121212";
+  public static final String PNR_OKANT = "inte-ett-personnummer-i-varje-fall";
 
-    private ST requestTemplate;
-    private ST brokenRequest;
-    private STGroup templateGroup;
+  private ST requestTemplate;
+  private ST brokenRequest;
+  private STGroup templateGroup;
 
 
-    @Before
-    public void setup() throws IOException {
-        // Setup String template resource
-        templateGroup = new STGroupFile("integrationtestTemplates/getPrivatePractitioner.v1.stg");
-        requestTemplate = templateGroup.getInstanceOf("request");
-        brokenRequest = templateGroup.getInstanceOf("brokenrequest");
+  @Before
+  public void setup() throws IOException {
+    // Setup String template resource
+    templateGroup = new STGroupFile("integrationtestTemplates/getPrivatePractitioner.v1.stg");
+    requestTemplate = templateGroup.getInstanceOf("request");
+    brokenRequest = templateGroup.getInstanceOf("brokenrequest");
+  }
+
+  @Test
+  public void testGetPrivatePractitioner() throws Exception {
+    requestTemplate.add("data", new GetData(PNR));
+    given().body(requestTemplate.render())
+        .when()
+        .post(GET_PRIVATE_PRACTITIONER_V1_0)
+        .then().statusCode(200)
+        .rootPath(BASE)
+        .body("resultCode", is(ResultCodeEnum.OK.value()))
+        .body("hoSPerson.hsaId.@extension", is("SE165565594230-WEBCERTBOOT1"))
+        .body("hoSPerson.personId.@extension", is("191212121212"))
+        .body("hoSPerson.enhet.enhetsnamn", is("TestEnhet"));
+  }
+
+  @Test
+  public void testGetPrivatePractitionerThatDoesNotExist() throws Exception {
+    requestTemplate.add("data", new GetData(PNR_OKANT));
+    given().body(requestTemplate.render())
+        .when()
+        .post(GET_PRIVATE_PRACTITIONER_V1_0)
+        .then().statusCode(200)
+        .rootPath(BASE)
+        .body("resultCode", is(ResultCodeEnum.ERROR.value()));
+  }
+
+  @Test
+  public void testGetPrivatePractitionerWithInvalidRequest() throws Exception {
+    given().body(brokenRequest.render())
+        .when()
+        .post(GET_PRIVATE_PRACTITIONER_V1_0)
+        .then().statusCode(500)
+        .rootPath(BASE);
+  }
+
+  private class GetData {
+
+    public final String personId;
+
+    public GetData(String personId) {
+      this.personId = personId;
     }
-
-    @Test
-    public void testGetPrivatePractitioner() throws Exception {
-        requestTemplate.add("data", new GetData(PNR));
-        given().body(requestTemplate.render())
-            .when()
-            .post(GET_PRIVATE_PRACTITIONER_V1_0)
-            .then().statusCode(200)
-            .rootPath(BASE)
-            .body("resultCode", is(ResultCodeEnum.OK.value()))
-            .body("hoSPerson.hsaId.@extension", is("SE165565594230-WEBCERTBOOT1"))
-            .body("hoSPerson.personId.@extension", is("191212121212"))
-            .body("hoSPerson.enhet.enhetsnamn", is("TestEnhet"));
-    }
-
-    @Test
-    public void testGetPrivatePractitionerThatDoesNotExist() throws Exception {
-        requestTemplate.add("data", new GetData(PNR_OKANT));
-        given().body(requestTemplate.render())
-            .when()
-            .post(GET_PRIVATE_PRACTITIONER_V1_0)
-            .then().statusCode(200)
-            .rootPath(BASE)
-            .body("resultCode", is(ResultCodeEnum.ERROR.value()));
-    }
-
-    @Test
-    public void testGetPrivatePractitionerWithInvalidRequest() throws Exception {
-        given().body(brokenRequest.render())
-            .when()
-            .post(GET_PRIVATE_PRACTITIONER_V1_0)
-            .then().statusCode(500)
-            .rootPath(BASE);
-    }
-
-    private class GetData {
-
-        public final String personId;
-
-        public GetData(String personId) {
-            this.personId = personId;
-        }
-    }
+  }
 
 }

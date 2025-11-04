@@ -25,24 +25,24 @@ import java.util.Map;
  */
 public final class Vardformer {
 
-    public static final String VARDFORM_NAME = "Vårdform";
-    public static final String VARDFORM_OID = "1.2.752.129.2.2.1.13";
-    public static final String VARDFORM_VERSION = "3.0";
+  public static final String VARDFORM_NAME = "Vårdform";
+  public static final String VARDFORM_OID = "1.2.752.129.2.2.1.13";
+  public static final String VARDFORM_VERSION = "3.0";
 
-    private static final Map<String, String> VARDFORMS_MAP = Map.of(
-        "01", "Öppenvård",
-        "02", "Slutenvård",
-        "03", "Hemsjukvård"
-    );
+  private static final Map<String, String> VARDFORMS_MAP = Map.of(
+      "01", "Öppenvård",
+      "02", "Slutenvård",
+      "03", "Hemsjukvård"
+  );
 
-    private Vardformer() {
-    }
+  private Vardformer() {
+  }
 
-    public static String getDisplayName(String code) {
-        return VARDFORMS_MAP.get(code);
-    }
+  public static String getDisplayName(String code) {
+    return VARDFORMS_MAP.get(code);
+  }
 
-    public static Map<String, String> getVardformer() {
-        return Map.copyOf(VARDFORMS_MAP);
-    }
+  public static Map<String, String> getVardformer() {
+    return Map.copyOf(VARDFORMS_MAP);
+  }
 }

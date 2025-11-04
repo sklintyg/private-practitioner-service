@@ -36,61 +36,61 @@ import jakarta.persistence.Table;
 @Table(name = "VERKSAMHETSTYP")
 public class Verksamhetstyp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-    @JsonBackReference
-    private Privatlakare privatlakare;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  @JsonBackReference
+  private Privatlakare privatlakare;
 
-    @Column(name = "KOD", nullable = false)
-    private String kod;
+  @Column(name = "KOD", nullable = false)
+  private String kod;
 
-    public Verksamhetstyp() {
+  public Verksamhetstyp() {
+  }
+
+  public Verksamhetstyp(Privatlakare privatlakare, String kod) {
+    this.privatlakare = privatlakare;
+    this.kod = kod;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    } else if (!(o instanceof Verksamhetstyp)) {
+      return false;
+    } else {
+      Verksamhetstyp other = (Verksamhetstyp) o;
+
+      if (id == null) {
+        return false;
+      } else {
+        return id.equals(other.id);
+      }
     }
+  }
 
-    public Verksamhetstyp(Privatlakare privatlakare, String kod) {
-        this.privatlakare = privatlakare;
-        this.kod = kod;
-    }
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (!(o instanceof Verksamhetstyp)) {
-            return false;
-        } else {
-            Verksamhetstyp other = (Verksamhetstyp) o;
+  public Privatlakare getPrivatlakare() {
+    return privatlakare;
+  }
 
-            if (id == null) {
-                return false;
-            } else {
-                return id.equals(other.id);
-            }
-        }
-    }
+  public void setPrivatlakare(Privatlakare privatlakare) {
+    this.privatlakare = privatlakare;
+  }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
+  public String getKod() {
+    return kod;
+  }
 
-    public Privatlakare getPrivatlakare() {
-        return privatlakare;
-    }
-
-    public void setPrivatlakare(Privatlakare privatlakare) {
-        this.privatlakare = privatlakare;
-    }
-
-    public String getKod() {
-        return kod;
-    }
-
-    public void setKod(String kod) {
-        this.kod = kod;
-    }
+  public void setKod(String kod) {
+    this.kod = kod;
+  }
 }

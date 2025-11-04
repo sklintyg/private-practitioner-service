@@ -37,40 +37,41 @@ import se.inera.intyg.privatlakarportal.persistence.repository.MedgivandeTextRep
 @DependsOn("dbUpdate")
 public class MedgivandeBootstrapBean {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MedgivandeBootstrapBean.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MedgivandeBootstrapBean.class);
 
-    @Autowired
-    private MedgivandeTextRepository medgivandeTextRepository;
+  @Autowired
+  private MedgivandeTextRepository medgivandeTextRepository;
 
-    @PostConstruct
-    public void initData() {
+  @PostConstruct
+  public void initData() {
 
-        List<Resource> files = getResourceListing("classpath:bootstrap-medgivande/*.json");
-        for (Resource res : files) {
-            LOG.info("Loading medgivande resource " + res.getFilename());
-            addMedgivandeText(res);
-        }
+    List<Resource> files = getResourceListing("classpath:bootstrap-medgivande/*.json");
+    for (Resource res : files) {
+      LOG.info("Loading medgivande resource " + res.getFilename());
+      addMedgivandeText(res);
+    }
+  }
+
+  private void addMedgivandeText(Resource res) {
+
+    try {
+      MedgivandeText medgivandeText = new CustomObjectMapper().readValue(res.getInputStream(),
+          MedgivandeText.class);
+      if (!medgivandeTextRepository.existsById(medgivandeText.getVersion())) {
+        medgivandeTextRepository.save(medgivandeText);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
 
-    private void addMedgivandeText(Resource res) {
+  }
 
-        try {
-            MedgivandeText medgivandeText = new CustomObjectMapper().readValue(res.getInputStream(), MedgivandeText.class);
-            if (!medgivandeTextRepository.existsById(medgivandeText.getVersion())) {
-                medgivandeTextRepository.save(medgivandeText);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+  private List<Resource> getResourceListing(String classpathResourcePath) {
+    try {
+      PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
+      return Arrays.asList(r.getResources(classpathResourcePath));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
-
-    private List<Resource> getResourceListing(String classpathResourcePath) {
-        try {
-            PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
-            return Arrays.asList(r.getResources(classpathResourcePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+  }
 }

@@ -36,17 +36,18 @@ import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitione
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = TermsWebServiceTestConfig.class)
 public class TermsWebServiceCallsTest {
 
-    private static final int AVTAL_VERSION = 1;
-    private static final String AVTAL_VERSION_DATUM = "2015-09-30T00:00:00.000";
+  private static final int AVTAL_VERSION = 1;
+  private static final String AVTAL_VERSION_DATUM = "2015-09-30T00:00:00.000";
 
-    @Autowired
-    private TermsWebServiceCalls testTermsWS;
+  @Autowired
+  private TermsWebServiceCalls testTermsWS;
 
-    @Test
-    public void testTerms() {
-        GetPrivatePractitionerTermsResponseType response = testTermsWS.getPrivatePractitionerTerms();
-        assertEquals(LocalDateTime.parse(AVTAL_VERSION_DATUM), response.getAvtal().getAvtalVersionDatum());
-        assertEquals(AVTAL_VERSION, response.getAvtal().getAvtalVersion());
-    }
+  @Test
+  public void testTerms() {
+    GetPrivatePractitionerTermsResponseType response = testTermsWS.getPrivatePractitionerTerms();
+    assertEquals(LocalDateTime.parse(AVTAL_VERSION_DATUM),
+        response.getAvtal().getAvtalVersionDatum());
+    assertEquals(AVTAL_VERSION, response.getAvtal().getAvtalVersion());
+  }
 
 }

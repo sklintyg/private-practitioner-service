@@ -28,11 +28,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CareUnitStub extends AbstractUnitStub {
 
-    private static final long serialVersionUID = 460424685142490104L;
+  private static final long serialVersionUID = 460424685142490104L;
 
-    private LocalDateTime start;
-    private LocalDateTime end;
+  private LocalDateTime start;
+  private LocalDateTime end;
 
-    private List<SubUnitStub> subUnits;
+  private List<SubUnitStub> subUnits;
 
 }

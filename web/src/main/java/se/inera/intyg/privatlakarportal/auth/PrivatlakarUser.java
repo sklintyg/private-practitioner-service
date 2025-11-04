@@ -28,78 +28,78 @@ import org.springframework.security.saml2.provider.service.authentication.Saml2A
  */
 public class PrivatlakarUser implements Serializable, Saml2AuthenticatedPrincipal {
 
-    private static final long serialVersionUID = 8711015219408194075L;
-    private static final int THIRTYONE = 31;
+  private static final long serialVersionUID = 8711015219408194075L;
+  private static final int THIRTYONE = 31;
 
-    private final String personalIdentityNumber;
-    private String name;
-    private final String authenticationScheme;
-    private boolean nameFromPuService;
+  private final String personalIdentityNumber;
+  private String name;
+  private final String authenticationScheme;
+  private boolean nameFromPuService;
 
-    public PrivatlakarUser(String personalIdentityNumber, String name, String authenticationScheme) {
-        this.personalIdentityNumber = personalIdentityNumber;
-        this.authenticationScheme = authenticationScheme;
-        this.name = name;
-        nameFromPuService = false;
+  public PrivatlakarUser(String personalIdentityNumber, String name, String authenticationScheme) {
+    this.personalIdentityNumber = personalIdentityNumber;
+    this.authenticationScheme = authenticationScheme;
+    this.name = name;
+    nameFromPuService = false;
+  }
+
+  public String getPersonalIdentityNumber() {
+    return personalIdentityNumber;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getAuthenticationScheme() {
+    return authenticationScheme;
+  }
+
+  public boolean isNameFromPuService() {
+    return nameFromPuService;
+  }
+
+  public void updateNameFromPuService(String name) {
+    this.name = name;
+    nameFromPuService = true;
+  }
+
+  // CHECKSTYLE:OFF NeedBraces
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof PrivatlakarUser)) {
+      return false;
     }
 
-    public String getPersonalIdentityNumber() {
-        return personalIdentityNumber;
+    PrivatlakarUser that = (PrivatlakarUser) o;
+
+    if (nameFromPuService != that.nameFromPuService) {
+      return false;
     }
-
-    public String getName() {
-        return name;
+    if (!personalIdentityNumber.equals(that.personalIdentityNumber)) {
+      return false;
     }
-
-    public String getAuthenticationScheme() {
-        return authenticationScheme;
+    if (!name.equals(that.name)) {
+      return false;
     }
+    return authenticationScheme.equals(that.authenticationScheme);
+  }
+  // CHECKSTYLE:ON NeedBraces
 
-    public boolean isNameFromPuService() {
-        return nameFromPuService;
-    }
+  @Override
+  public int hashCode() {
+    int result = personalIdentityNumber.hashCode();
+    result = THIRTYONE * result + name.hashCode();
+    result = THIRTYONE * result + authenticationScheme.hashCode();
+    result = THIRTYONE * result + (nameFromPuService ? 1 : 0);
+    return result;
+  }
 
-    public void updateNameFromPuService(String name) {
-        this.name = name;
-        nameFromPuService = true;
-    }
-
-    // CHECKSTYLE:OFF NeedBraces
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PrivatlakarUser)) {
-            return false;
-        }
-
-        PrivatlakarUser that = (PrivatlakarUser) o;
-
-        if (nameFromPuService != that.nameFromPuService) {
-            return false;
-        }
-        if (!personalIdentityNumber.equals(that.personalIdentityNumber)) {
-            return false;
-        }
-        if (!name.equals(that.name)) {
-            return false;
-        }
-        return authenticationScheme.equals(that.authenticationScheme);
-    }
-    // CHECKSTYLE:ON NeedBraces
-
-    @Override
-    public int hashCode() {
-        int result = personalIdentityNumber.hashCode();
-        result = THIRTYONE * result + name.hashCode();
-        result = THIRTYONE * result + authenticationScheme.hashCode();
-        result = THIRTYONE * result + (nameFromPuService ? 1 : 0);
-        return result;
-    }
-
-    @Override
-    public String getRelyingPartyRegistrationId() {
-        return RELYING_PARTY_REGISTRATION_ID;
-    }
+  @Override
+  public String getRelyingPartyRegistrationId() {
+    return RELYING_PARTY_REGISTRATION_ID;
+  }
 }

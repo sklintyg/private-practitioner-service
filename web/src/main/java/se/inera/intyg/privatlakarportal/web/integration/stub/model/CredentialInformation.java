@@ -29,42 +29,42 @@ import lombok.Data;
 @Data
 public class CredentialInformation {
 
-    public static final String VARD_OCH_BEHANDLING = "Vård och behandling";
-    public static final String STATISTIK = "Statistik";
+  public static final String VARD_OCH_BEHANDLING = "Vård och behandling";
+  public static final String STATISTIK = "Statistik";
 
-    private String hsaId;
-    private String givenName;
-    private List<Commission> commissionList = new ArrayList<>();
+  private String hsaId;
+  private String givenName;
+  private List<Commission> commissionList = new ArrayList<>();
 
-    public CredentialInformation() {
-        // Needed for deserialization
+  public CredentialInformation() {
+    // Needed for deserialization
+  }
+
+  public CredentialInformation(String hsaId, List<Commission> commissionList) {
+    this.hsaId = hsaId;
+    this.commissionList = commissionList;
+  }
+
+  @Data
+  public static class Commission {
+
+    private String healthCareProviderHsaId;
+    private String healthCareUnitHsaId;
+    private List<String> commissionPurpose;
+
+    /**
+     * Medarbetaruppdragets namn, motsv. CommissionType#commissionName
+     */
+
+    public Commission() {
+      healthCareUnitHsaId = "";
+      commissionPurpose = asList(VARD_OCH_BEHANDLING);
     }
 
-    public CredentialInformation(String hsaId, List<Commission> commissionList) {
-        this.hsaId = hsaId;
-        this.commissionList = commissionList;
+    public Commission(String healthCareUnitHsaId, String commissionPurpose) {
+      this.healthCareUnitHsaId = healthCareUnitHsaId;
+      this.commissionPurpose = asList(commissionPurpose);
     }
 
-    @Data
-    public static class Commission {
-
-        private String healthCareProviderHsaId;
-        private String healthCareUnitHsaId;
-        private List<String> commissionPurpose;
-
-        /**
-         * Medarbetaruppdragets namn, motsv. CommissionType#commissionName
-         */
-
-        public Commission() {
-            healthCareUnitHsaId = "";
-            commissionPurpose = asList(VARD_OCH_BEHANDLING);
-        }
-
-        public Commission(String healthCareUnitHsaId, String commissionPurpose) {
-            this.healthCareUnitHsaId = healthCareUnitHsaId;
-            this.commissionPurpose = asList(commissionPurpose);
-        }
-
-    }
+  }
 }

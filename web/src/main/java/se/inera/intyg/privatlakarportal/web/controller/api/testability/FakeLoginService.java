@@ -18,54 +18,54 @@ import se.inera.intyg.privatlakarportal.auth.FakeElegCredentials;
 @RequiredArgsConstructor
 public class FakeLoginService {
 
-    private final ElegUserDetailsService userDetailsService;
-    private final ApplicationEventPublisher applicationEventPublisher;
+  private final ElegUserDetailsService userDetailsService;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
-    public void login(FakeElegCredentials fakeCredentials, HttpServletRequest request) {
-        final var oldSession = request.getSession(false);
-        Optional.ofNullable(oldSession).ifPresent(HttpSession::invalidate);
+  public void login(FakeElegCredentials fakeCredentials, HttpServletRequest request) {
+    final var oldSession = request.getSession(false);
+    Optional.ofNullable(oldSession).ifPresent(HttpSession::invalidate);
 
-        final var fakeAuthenticationToken = new FakeAuthenticationToken(
-            userDetailsService.buildUserPrincipal(
-                fakeCredentials.getPersonId(),
-                buildName(fakeCredentials.getFirstName(), fakeCredentials.getLastName()),
-                "urn:inera:privatlakarportal:eleg:fake"
-            )
-        );
+    final var fakeAuthenticationToken = new FakeAuthenticationToken(
+        userDetailsService.buildUserPrincipal(
+            fakeCredentials.getPersonId(),
+            buildName(fakeCredentials.getFirstName(), fakeCredentials.getLastName()),
+            "urn:inera:privatlakarportal:eleg:fake"
+        )
+    );
 
-        final var context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(fakeAuthenticationToken);
-        SecurityContextHolder.setContext(context);
+    final var context = SecurityContextHolder.createEmptyContext();
+    context.setAuthentication(fakeAuthenticationToken);
+    SecurityContextHolder.setContext(context);
 
-        final var newSession = request.getSession(true);
-        newSession.setAttribute(
-            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context
-        );
+    final var newSession = request.getSession(true);
+    newSession.setAttribute(
+        HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context
+    );
 
-        applicationEventPublisher.publishEvent(
-            new InteractiveAuthenticationSuccessEvent(
-                fakeAuthenticationToken, this.getClass()
-            )
-        );
+    applicationEventPublisher.publishEvent(
+        new InteractiveAuthenticationSuccessEvent(
+            fakeAuthenticationToken, this.getClass()
+        )
+    );
+  }
+
+  private String buildName(String firstName, String lastName) {
+    return String.format("%s %s", firstName, lastName);
+  }
+
+  public void logout(HttpSession session) {
+    if (session == null) {
+      return;
     }
 
-    private String buildName(String firstName, String lastName) {
-        return String.format("%s %s", firstName, lastName);
+    session.invalidate();
+
+    final var authentication = SecurityContextHolder.getContext().getAuthentication();
+    SecurityContextHolder.getContext().setAuthentication(null);
+    SecurityContextHolder.clearContext();
+
+    if (authentication != null) {
+      applicationEventPublisher.publishEvent(new LogoutSuccessEvent(authentication));
     }
-
-    public void logout(HttpSession session) {
-        if (session == null) {
-            return;
-        }
-
-        session.invalidate();
-
-        final var authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityContextHolder.getContext().setAuthentication(null);
-        SecurityContextHolder.clearContext();
-
-        if (authentication != null) {
-            applicationEventPublisher.publishEvent(new LogoutSuccessEvent(authentication));
-        }
-    }
+  }
 }

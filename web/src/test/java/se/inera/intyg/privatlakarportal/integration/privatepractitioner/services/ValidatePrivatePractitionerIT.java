@@ -25,29 +25,29 @@ import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResultC
 
 public class ValidatePrivatePractitionerIT extends BaseRestIntegrationTest {
 
-    private static final String VALIDATE_PRIVATE_PRACTITIONER = "api/test/webcert/validatePrivatePractitioner/";
-    private static final String RESULT_CODE = "resultCode";
-    private static final String PERSONAL_IDENTITY_NUMBER = "191212121212";
-    private static final String PERSONAL_IDENTITY_NUMBER_UNKNOWN = "UNKNOWN";
+  private static final String VALIDATE_PRIVATE_PRACTITIONER = "api/test/webcert/validatePrivatePractitioner/";
+  private static final String RESULT_CODE = "resultCode";
+  private static final String PERSONAL_IDENTITY_NUMBER = "191212121212";
+  private static final String PERSONAL_IDENTITY_NUMBER_UNKNOWN = "UNKNOWN";
 
-    @Test
-    public void testValidatePrivatePractitioner() {
-        spec()
-            .expect()
-            .statusCode(200)
-            .body(RESULT_CODE, is(ValidatePrivatePractitionerResultCode.OK.name()))
-            .when()
-            .post(VALIDATE_PRIVATE_PRACTITIONER + PERSONAL_IDENTITY_NUMBER);
-    }
+  @Test
+  public void testValidatePrivatePractitioner() {
+    spec()
+        .expect()
+        .statusCode(200)
+        .body(RESULT_CODE, is(ValidatePrivatePractitionerResultCode.OK.name()))
+        .when()
+        .post(VALIDATE_PRIVATE_PRACTITIONER + PERSONAL_IDENTITY_NUMBER);
+  }
 
-    @Test
-    public void testValidatePrivatePractitionerThatIsNotValid() {
-        spec()
-            .expect()
-            .statusCode(200)
-            .body(RESULT_CODE, is(ValidatePrivatePractitionerResultCode.NO_ACCOUNT.name()))
-            .when()
-            .post(VALIDATE_PRIVATE_PRACTITIONER + PERSONAL_IDENTITY_NUMBER_UNKNOWN);
-    }
+  @Test
+  public void testValidatePrivatePractitionerThatIsNotValid() {
+    spec()
+        .expect()
+        .statusCode(200)
+        .body(RESULT_CODE, is(ValidatePrivatePractitionerResultCode.NO_ACCOUNT.name()))
+        .when()
+        .post(VALIDATE_PRIVATE_PRACTITIONER + PERSONAL_IDENTITY_NUMBER_UNKNOWN);
+  }
 
 }

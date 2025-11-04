@@ -27,13 +27,13 @@ import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitione
 @Configuration
 public class TermsWebServiceTestConfig {
 
-    @Bean
-    public GetPrivatePractitionerTermsResponderInterface termsWebServiceClient() {
-        return new TermsWebServiceStub();
-    }
+  @Bean
+  public GetPrivatePractitionerTermsResponderInterface termsWebServiceClient() {
+    return new TermsWebServiceStub();
+  }
 
-    @Bean
-    public TermsWebServiceCalls testTermsWSCalls() {
-        return new TermsWebServiceCalls();
-    }
+  @Bean
+  public TermsWebServiceCalls testTermsWSCalls() {
+    return new TermsWebServiceCalls();
+  }
 }

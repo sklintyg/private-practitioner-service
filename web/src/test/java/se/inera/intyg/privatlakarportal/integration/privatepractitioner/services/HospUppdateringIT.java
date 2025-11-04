@@ -35,217 +35,217 @@ import static org.hamcrest.CoreMatchers.is;
  */
 public class HospUppdateringIT extends BaseRestIntegrationTest {
 
-    public static final String PERSONNUMMER = "195206172339";
-    public static final String FORNAMN = "Björn Anders Daniel";
-    public static final String EFTERNAMN = "Pärsson";
+  public static final String PERSONNUMMER = "195206172339";
+  public static final String FORNAMN = "Björn Anders Daniel";
+  public static final String EFTERNAMN = "Pärsson";
 
-    @Before
-    public void setup() {
-        // Logga in
-        String session = createAuthSession(FORNAMN, EFTERNAMN, PERSONNUMMER);
-        RestAssured.sessionId = session;
+  @Before
+  public void setup() {
+    // Logga in
+    String session = createAuthSession(FORNAMN, EFTERNAMN, PERSONNUMMER);
+    RestAssured.sessionId = session;
 
-        // Ta bort hosp-info
-        spec().when()
-            .delete("api/test/hosp/remove/" + PERSONNUMMER);
+    // Ta bort hosp-info
+    spec().when()
+        .delete("api/test/hosp/remove/" + PERSONNUMMER);
 
-        // Ta bort registrering
-        spec().delete("api/test/registration/remove/" + PERSONNUMMER);
+    // Ta bort registrering
+    spec().delete("api/test/registration/remove/" + PERSONNUMMER);
 
-        // Rensa mail-stubbe
-        spec().delete("api/stub/mails/clear");
-    }
+    // Rensa mail-stubbe
+    spec().delete("api/stub/mails/clear");
+  }
 
-    @Test
-    public void testTillbakadragenLakarbehorighet() {
-        // Lägg till i hosp
-        spec().body(createHospInformation(PERSONNUMMER))
-            .expect()
-            .statusCode(200)
-            .when()
-            .post("api/test/hosp/add");
+  @Test
+  public void testTillbakadragenLakarbehorighet() {
+    // Lägg till i hosp
+    spec().body(createHospInformation(PERSONNUMMER))
+        .expect()
+        .statusCode(200)
+        .when()
+        .post("api/test/hosp/add");
 
-        // Se till att uppdaterat namn finns
-        spec().get("api/user");
+    // Se till att uppdaterat namn finns
+    spec().get("api/user");
 
-        // Skapa registrering
-        spec().body(createValidRegistration())
-            .expect()
-            .statusCode(200)
-            .when()
-            .post("api/registration/create");
+    // Skapa registrering
+    spec().body(createValidRegistration())
+        .expect()
+        .statusCode(200)
+        .when()
+        .post("api/registration/create");
 
-        // Verifiera läkarbehörighet
-        spec().when()
-            .get("api/registration")
-            .then()
-            .assertThat()
-            .body("hospInformation.hsaTitles", Matchers.contains("Läkare"));
+    // Verifiera läkarbehörighet
+    spec().when()
+        .get("api/registration")
+        .then()
+        .assertThat()
+        .body("hospInformation.hsaTitles", Matchers.contains("Läkare"));
 
-        // Logga in genom webcert
-        spec().when()
-            .post("api/test/webcert/validatePrivatePractitioner/" + PERSONNUMMER)
-            .then()
-            .assertThat()
-            .body("resultCode", Matchers.equalTo("OK"));
+    // Logga in genom webcert
+    spec().when()
+        .post("api/test/webcert/validatePrivatePractitioner/" + PERSONNUMMER)
+        .then()
+        .assertThat()
+        .body("resultCode", Matchers.equalTo("OK"));
 
-        // Ta bort behörighet
-        spec().when()
-            .delete("api/test/hosp/remove/" + PERSONNUMMER);
+    // Ta bort behörighet
+    spec().when()
+        .delete("api/test/hosp/remove/" + PERSONNUMMER);
 
-        // Trigga hosp-uppdatering
-        spec().expect()
-            .statusCode(200)
-            .when()
-            .post("api/test/hosp/update");
+    // Trigga hosp-uppdatering
+    spec().expect()
+        .statusCode(200)
+        .when()
+        .post("api/test/hosp/update");
 
-        // Logga in med ERROR som resultat
-        spec().when()
-            .post("api/test/webcert/validatePrivatePractitioner/" + PERSONNUMMER)
-            .then()
-            .assertThat()
-            .body("resultCode", Matchers.equalTo("NOT_AUTHORIZED_IN_HOSP"));
-    }
+    // Logga in med ERROR som resultat
+    spec().when()
+        .post("api/test/webcert/validatePrivatePractitioner/" + PERSONNUMMER)
+        .then()
+        .assertThat()
+        .body("resultCode", Matchers.equalTo("NOT_AUTHORIZED_IN_HOSP"));
+  }
 
-    @Test
-    public void testUppdateraTillLakare() {
-        // Se till att uppdaterat namn finns
-        spec().get("api/user");
+  @Test
+  public void testUppdateraTillLakare() {
+    // Se till att uppdaterat namn finns
+    spec().get("api/user");
 
-        // Skapa registrering
-        spec().body(createValidRegistration())
-            .expect()
-            .statusCode(200)
-            .when()
-            .post("api/registration/create");
+    // Skapa registrering
+    spec().body(createValidRegistration())
+        .expect()
+        .statusCode(200)
+        .when()
+        .post("api/registration/create");
 
-        // Verifiera läkarbehörighet saknas
-        spec().when()
-            .get("api/registration")
-            .then()
-            .assertThat()
-            .body("hospInformation.hsaTitles", is(Matchers.emptyOrNullString()));
+    // Verifiera läkarbehörighet saknas
+    spec().when()
+        .get("api/registration")
+        .then()
+        .assertThat()
+        .body("hospInformation.hsaTitles", is(Matchers.emptyOrNullString()));
 
-        // Lägg till i hosp
-        spec().body(createHospInformation(PERSONNUMMER))
-            .expect()
-            .statusCode(200)
-            .when()
-            .post("api/test/hosp/add");
+    // Lägg till i hosp
+    spec().body(createHospInformation(PERSONNUMMER))
+        .expect()
+        .statusCode(200)
+        .when()
+        .post("api/test/hosp/add");
 
-        // Trigga hosp-uppdatering
-        spec().expect()
-            .statusCode(200)
-            .when()
-            .post("api/test/hosp/update");
+    // Trigga hosp-uppdatering
+    spec().expect()
+        .statusCode(200)
+        .when()
+        .post("api/test/hosp/update");
 
-        // Verifiera läkarbehörighet
-        spec().when()
-            .get("api/registration")
-            .then()
-            .assertThat()
-            .body("hospInformation.hsaTitles", Matchers.contains("Läkare"));
+    // Verifiera läkarbehörighet
+    spec().when()
+        .get("api/registration")
+        .then()
+        .assertThat()
+        .body("hospInformation.hsaTitles", Matchers.contains("Läkare"));
 
-        // Verifiera att mail mottagits i stubbe
-        spec().when()
-            .get("api/stub/mails")
-            .then()
-            .assertThat()
-            .body(PERSONNUMMER, Matchers.equalTo("Registration klar"));
-    }
+    // Verifiera att mail mottagits i stubbe
+    spec().when()
+        .get("api/stub/mails")
+        .then()
+        .assertThat()
+        .body(PERSONNUMMER, Matchers.equalTo("Registration klar"));
+  }
 
-    @Test
-    public void testRemovalStrategy() {
-        // Se till att uppdaterat namn finns
-        spec().expect()
-            .statusCode(200)
-            .when().get("api/user");
+  @Test
+  public void testRemovalStrategy() {
+    // Se till att uppdaterat namn finns
+    spec().expect()
+        .statusCode(200)
+        .when().get("api/user");
 
-        // Skapa registrering
-        spec().body(createValidRegistration())
-            .expect()
-            .statusCode(200)
-            .when()
-            .post("api/registration/create");
+    // Skapa registrering
+    spec().body(createValidRegistration())
+        .expect()
+        .statusCode(200)
+        .when()
+        .post("api/registration/create");
 
-        // Ändra registreringsdatum så att städningen ska triggas
-        spec().body("2017-01-15")
-            .expect()
-            .statusCode(200)
-            .when()
-            .post("api/test/registration/setregistrationdate/" + PERSONNUMMER);
+    // Ändra registreringsdatum så att städningen ska triggas
+    spec().body("2017-01-15")
+        .expect()
+        .statusCode(200)
+        .when()
+        .post("api/test/registration/setregistrationdate/" + PERSONNUMMER);
 
-        // Trigga hosp-uppdatering
-        spec().expect()
-            .statusCode(200)
-            .when()
-            .post("api/test/hosp/update");
+    // Trigga hosp-uppdatering
+    spec().expect()
+        .statusCode(200)
+        .when()
+        .post("api/test/hosp/update");
 
-        // Verifiera att mail om borttagen registrering gått iväg
-        spec().when()
-            .get("api/stub/mails")
-            .then()
-            .assertThat()
-            .body(PERSONNUMMER, Matchers.equalTo("Registrering borttagen"));
+    // Verifiera att mail om borttagen registrering gått iväg
+    spec().when()
+        .get("api/stub/mails")
+        .then()
+        .assertThat()
+        .body(PERSONNUMMER, Matchers.equalTo("Registrering borttagen"));
 
-        // Försök hämta registreringsinfo, denna ska vara rensad
-        spec().when()
-            .get("api/test/registration/" + PERSONNUMMER)
-            .then()
-            .assertThat()
-            .body(is(Matchers.emptyOrNullString()));
-    }
+    // Försök hämta registreringsinfo, denna ska vara rensad
+    spec().when()
+        .get("api/test/registration/" + PERSONNUMMER)
+        .then()
+        .assertThat()
+        .body(is(Matchers.emptyOrNullString()));
+  }
 
-    private CreateRegistrationRequest createValidRegistration() {
+  private CreateRegistrationRequest createValidRegistration() {
 
-        CreateRegistrationRequest registrationRequest = new CreateRegistrationRequest();
-        Registration registration = new Registration();
+    CreateRegistrationRequest registrationRequest = new CreateRegistrationRequest();
+    Registration registration = new Registration();
 
-        registration.setVerksamhetensNamn("Test verksamhet");
-        registration.setArbetsplatskod("0000000");
-        registration.setAgarForm("Privat");
-        registration.setAdress("Test adress");
-        registration.setPostnummer("12345");
-        registration.setPostort("Test postort");
-        registration.setTelefonnummer("123456789");
-        registration.setEpost("test@example.com");
-        registration.setBefattning("201010");
-        registration.setVerksamhetstyp("10");
-        registration.setVardform("01");
-        registration.setLan("Test län");
-        registration.setKommun("Test kommun");
+    registration.setVerksamhetensNamn("Test verksamhet");
+    registration.setArbetsplatskod("0000000");
+    registration.setAgarForm("Privat");
+    registration.setAdress("Test adress");
+    registration.setPostnummer("12345");
+    registration.setPostort("Test postort");
+    registration.setTelefonnummer("123456789");
+    registration.setEpost("test@example.com");
+    registration.setBefattning("201010");
+    registration.setVerksamhetstyp("10");
+    registration.setVardform("01");
+    registration.setLan("Test län");
+    registration.setKommun("Test kommun");
 
-        registrationRequest.setRegistration(registration);
-        registrationRequest.setGodkantMedgivandeVersion(1L);
-        return registrationRequest;
-    }
+    registrationRequest.setRegistration(registration);
+    registrationRequest.setGodkantMedgivandeVersion(1L);
+    return registrationRequest;
+  }
 
-    private String createHospInformation(String personNummer) {
+  private String createHospInformation(String personNummer) {
 
-        JSONArray specialities = new JSONArray();
-        JSONObject speciality = new JSONObject();
-        speciality.put("specialityCode", "32");
-        speciality.put("specialityName", "Klinisk fysiologi");
-        specialities.add(speciality);
-        speciality = new JSONObject();
-        speciality.put("specialityCode", "74");
-        speciality.put("specialityName", "Nukleärmedicin");
-        specialities.add(speciality);
+    JSONArray specialities = new JSONArray();
+    JSONObject speciality = new JSONObject();
+    speciality.put("specialityCode", "32");
+    speciality.put("specialityName", "Klinisk fysiologi");
+    specialities.add(speciality);
+    speciality = new JSONObject();
+    speciality.put("specialityCode", "74");
+    speciality.put("specialityName", "Nukleärmedicin");
+    specialities.add(speciality);
 
-        JSONArray licences = new JSONArray();
-        JSONObject licence = new JSONObject();
-        licence.put("healthCareProfessionalLicenceCode", "LK");
-        licence.put("healthCareProfessionalLicenceName", "Läkare");
-        licences.add(licence);
+    JSONArray licences = new JSONArray();
+    JSONObject licence = new JSONObject();
+    licence.put("healthCareProfessionalLicenceCode", "LK");
+    licence.put("healthCareProfessionalLicenceName", "Läkare");
+    licences.add(licence);
 
-        JSONObject body = new JSONObject();
-        body.put("personalIdentityNumber", personNummer);
-        body.put("personalPrescriptionCode", "1234567");
-        body.put("educationCodes", Lists.newArrayList());
-        body.put("restrictions", Lists.newArrayList());
-        body.put("specialities", specialities);
-        body.put("healthCareProfessionalLicenceType", licences);
-        return body.toJSONString();
-    }
+    JSONObject body = new JSONObject();
+    body.put("personalIdentityNumber", personNummer);
+    body.put("personalPrescriptionCode", "1234567");
+    body.put("educationCodes", Lists.newArrayList());
+    body.put("restrictions", Lists.newArrayList());
+    body.put("specialities", specialities);
+    body.put("healthCareProfessionalLicenceType", licences);
+    return body.toJSONString();
+  }
 }
 

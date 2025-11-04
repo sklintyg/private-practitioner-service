@@ -28,28 +28,28 @@ import lombok.Setter;
 @Setter
 public abstract class AbstractUnitStub implements Serializable {
 
-    private String id;
+  private String id;
 
-    private String name;
+  private String name;
 
-    private String mail;
+  private String mail;
 
-    private String postalAddress;
+  private String postalAddress;
 
-    private String postalCode;
+  private String postalCode;
 
-    private String postalTown;
+  private String postalTown;
 
-    private String telephoneNumber;
+  private String telephoneNumber;
 
-    private String prescriptionCode;
+  private String prescriptionCode;
 
-    private String healthCareProviderOrgno;
+  private String healthCareProviderOrgno;
 
-    private String careProviderHsaId;
+  private String careProviderHsaId;
 
-    private String countyCode;
+  private String countyCode;
 
-    private String municipalityCode;
+  private String municipalityCode;
 
 }

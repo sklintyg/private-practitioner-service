@@ -27,17 +27,18 @@ import se.inera.intyg.privatlakarportal.persistence.model.Privatlakare;
  */
 public interface HospUpdateService {
 
-    void scheduledUpdateHospInformation();
+  void scheduledUpdateHospInformation();
 
-    void updateHospInformation();
+  void updateHospInformation();
 
-    RegistrationStatus updateHospInformation(Privatlakare privatlakare, boolean shouldRegisterInCertifier)
-        throws HospUpdateFailedToContactHsaException;
+  RegistrationStatus updateHospInformation(Privatlakare privatlakare,
+      boolean shouldRegisterInCertifier)
+      throws HospUpdateFailedToContactHsaException;
 
-    void checkForUpdatedHospInformation(Privatlakare privatlakare);
+  void checkForUpdatedHospInformation(Privatlakare privatlakare);
 
-    /**
-     * Only used for testing purposes. Do *NOT* use outside TestController.
-     */
-    void resetTimer();
+  /**
+   * Only used for testing purposes. Do *NOT* use outside TestController.
+   */
+  void resetTimer();
 }

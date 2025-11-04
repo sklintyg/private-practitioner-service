@@ -22,44 +22,45 @@ import java.time.LocalDateTime;
 
 public class PrivatePractitioner {
 
-    private final String hsaId;
-    private final String personId;
-    private final String name;
-    private final String careproviderName;
-    private final String email;
-    private final LocalDateTime registrationDate;
+  private final String hsaId;
+  private final String personId;
+  private final String name;
+  private final String careproviderName;
+  private final String email;
+  private final LocalDateTime registrationDate;
 
-    public PrivatePractitioner(String hsaId, String personId, String name, String careproviderName, String email,
-        LocalDateTime registrationDate) {
-        this.hsaId = hsaId;
-        this.personId = personId;
-        this.name = name;
-        this.careproviderName = careproviderName;
-        this.email = email;
-        this.registrationDate = registrationDate;
-    }
+  public PrivatePractitioner(String hsaId, String personId, String name, String careproviderName,
+      String email,
+      LocalDateTime registrationDate) {
+    this.hsaId = hsaId;
+    this.personId = personId;
+    this.name = name;
+    this.careproviderName = careproviderName;
+    this.email = email;
+    this.registrationDate = registrationDate;
+  }
 
-    public String getHsaId() {
-        return hsaId;
-    }
+  public String getHsaId() {
+    return hsaId;
+  }
 
-    public String getPersonId() {
-        return personId;
-    }
+  public String getPersonId() {
+    return personId;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getCareproviderName() {
-        return careproviderName;
-    }
+  public String getCareproviderName() {
+    return careproviderName;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public LocalDateTime getRegistrationDate() {
-        return registrationDate;
-    }
+  public LocalDateTime getRegistrationDate() {
+    return registrationDate;
+  }
 }

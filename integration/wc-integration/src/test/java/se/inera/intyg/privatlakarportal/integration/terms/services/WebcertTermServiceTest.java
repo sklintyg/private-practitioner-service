@@ -37,33 +37,33 @@ import se.riv.infrastructure.directory.privatepractitioner.terms.v1.AvtalType;
 @RunWith(MockitoJUnitRunner.class)
 public class WebcertTermServiceTest {
 
-    @Mock
-    private TermsWebServiceCalls client;
+  @Mock
+  private TermsWebServiceCalls client;
 
-    @InjectMocks
-    private WebcertTermsServiceImpl webcertTermsService;
+  @InjectMocks
+  private WebcertTermsServiceImpl webcertTermsService;
 
-    @Test
-    public void getTerms() {
-        AvtalType avtalType = new AvtalType();
-        avtalType.setAvtalText("TestText");
-        avtalType.setAvtalVersion(42);
-        GetPrivatePractitionerTermsResponseType getPrivatePractitionerTermsResponseType = new GetPrivatePractitionerTermsResponseType();
-        getPrivatePractitionerTermsResponseType.setAvtal(avtalType);
-        when(client.getPrivatePractitionerTerms()).thenReturn(getPrivatePractitionerTermsResponseType);
+  @Test
+  public void getTerms() {
+    AvtalType avtalType = new AvtalType();
+    avtalType.setAvtalText("TestText");
+    avtalType.setAvtalVersion(42);
+    GetPrivatePractitionerTermsResponseType getPrivatePractitionerTermsResponseType = new GetPrivatePractitionerTermsResponseType();
+    getPrivatePractitionerTermsResponseType.setAvtal(avtalType);
+    when(client.getPrivatePractitionerTerms()).thenReturn(getPrivatePractitionerTermsResponseType);
 
-        Terms terms = webcertTermsService.getTerms();
-        assertEquals("TestText", terms.getText());
-        assertEquals(42, terms.getVersion());
-    }
+    Terms terms = webcertTermsService.getTerms();
+    assertEquals("TestText", terms.getText());
+    assertEquals(42, terms.getVersion());
+  }
 
-    @Test(expected = PrivatlakarportalServiceException.class)
-    public void getTermsNull() {
-        GetPrivatePractitionerTermsResponseType getPrivatePractitionerTermsResponseType = new GetPrivatePractitionerTermsResponseType();
-        when(client.getPrivatePractitionerTerms()).thenReturn(getPrivatePractitionerTermsResponseType);
+  @Test(expected = PrivatlakarportalServiceException.class)
+  public void getTermsNull() {
+    GetPrivatePractitionerTermsResponseType getPrivatePractitionerTermsResponseType = new GetPrivatePractitionerTermsResponseType();
+    when(client.getPrivatePractitionerTerms()).thenReturn(getPrivatePractitionerTermsResponseType);
 
-        Terms terms = webcertTermsService.getTerms();
-        assertEquals("TestText", terms.getText());
-        assertEquals(42, terms.getVersion());
-    }
+    Terms terms = webcertTermsService.getTerms();
+    assertEquals("TestText", terms.getText());
+    assertEquals(42, terms.getVersion());
+  }
 }

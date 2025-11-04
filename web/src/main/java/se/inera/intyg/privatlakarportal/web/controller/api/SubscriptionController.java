@@ -31,12 +31,12 @@ import se.inera.intyg.privatlakarportal.web.controller.api.dto.SubscriptionRespo
 @RequestMapping("/api/subscription")
 public class SubscriptionController {
 
-    @Autowired
-    private SubscriptionService subscriptionService;
+  @Autowired
+  private SubscriptionService subscriptionService;
 
-    @GetMapping("/state")
-    @PerformanceLogging(eventAction = "get-subscription-state", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public SubscriptionResponse getSubscriptionState() {
-        return new SubscriptionResponse(subscriptionService.isSubscriptionInUse());
-    }
+  @GetMapping("/state")
+  @PerformanceLogging(eventAction = "get-subscription-state", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public SubscriptionResponse getSubscriptionState() {
+    return new SubscriptionResponse(subscriptionService.isSubscriptionInUse());
+  }
 }

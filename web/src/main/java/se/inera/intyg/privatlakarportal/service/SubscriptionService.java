@@ -20,10 +20,10 @@ package se.inera.intyg.privatlakarportal.service;
 
 public interface SubscriptionService {
 
-    boolean isSubscriptionInUse();
+  boolean isSubscriptionInUse();
 
-    boolean isSubscriptionAdaptationAndNotRequired();
+  boolean isSubscriptionAdaptationAndNotRequired();
 
-    boolean isSubscriptionRequired();
+  boolean isSubscriptionRequired();
 
 }

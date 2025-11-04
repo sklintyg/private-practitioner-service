@@ -32,46 +32,51 @@ import se.inera.intyg.privatlakarportal.service.monitoring.MonitoringLogService;
 @Service
 public class EraseServiceImpl implements EraseService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EraseServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EraseServiceImpl.class);
 
-    @Value("${erase.private.practitioner:true}")
-    private boolean erasePrivatePractitioner;
+  @Value("${erase.private.practitioner:true}")
+  private boolean erasePrivatePractitioner;
 
-    private final PrivatlakareRepository privatlakareRepository;
-    private final HospPersonService hospPersonService;
-    private final MonitoringLogService monitoringLogService;
+  private final PrivatlakareRepository privatlakareRepository;
+  private final HospPersonService hospPersonService;
+  private final MonitoringLogService monitoringLogService;
 
-    public EraseServiceImpl(PrivatlakareRepository privatlakareRepository, HospPersonService hospPersonService,
-        MonitoringLogService monitoringLogService) {
-        this.privatlakareRepository = privatlakareRepository;
-        this.hospPersonService = hospPersonService;
-        this.monitoringLogService = monitoringLogService;
+  public EraseServiceImpl(PrivatlakareRepository privatlakareRepository,
+      HospPersonService hospPersonService,
+      MonitoringLogService monitoringLogService) {
+    this.privatlakareRepository = privatlakareRepository;
+    this.hospPersonService = hospPersonService;
+    this.monitoringLogService = monitoringLogService;
+  }
+
+  @Override
+  @Transactional
+  public void erasePrivatePractitioner(String careProviderId) {
+    final var privatePractitioner = privatlakareRepository.findByHsaId(careProviderId);
+
+    if (privatePractitioner == null) {
+      LOG.warn("Could not find private practitioner with hsa-id {}. Nothing was erased.",
+          careProviderId);
+      return;
     }
 
-    @Override
-    @Transactional
-    public void erasePrivatePractitioner(String careProviderId) {
-        final var privatePractitioner = privatlakareRepository.findByHsaId(careProviderId);
-
-        if (privatePractitioner == null) {
-            LOG.warn("Could not find private practitioner with hsa-id {}. Nothing was erased.", careProviderId);
-            return;
-        }
-
-        if (!erasePrivatePractitioner) {
-            LOG.warn("Erase private practitioner is inactivated via configuration. Private practitioner with hsa-id {} was not erased.",
-                careProviderId);
-            return;
-        }
-
-        if (hospPersonService.removeFromCertifier(privatePractitioner.getPersonId(), null, "Avslutat konto i Webcert.")) {
-            privatlakareRepository.delete(privatePractitioner);
-            monitoringLogService.logUserErased(privatePractitioner.getPersonId(), careProviderId);
-            LOG.info("Erased private practitioner with hsa-id {}.", careProviderId);
-        } else {
-            LOG.error("Failure unregistering private practitioner {} in certifier branch.", privatePractitioner.getHsaId());
-            throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR,
-                "Failure unregistering private practitioner in certifier branch.");
-        }
+    if (!erasePrivatePractitioner) {
+      LOG.warn(
+          "Erase private practitioner is inactivated via configuration. Private practitioner with hsa-id {} was not erased.",
+          careProviderId);
+      return;
     }
+
+    if (hospPersonService.removeFromCertifier(privatePractitioner.getPersonId(), null,
+        "Avslutat konto i Webcert.")) {
+      privatlakareRepository.delete(privatePractitioner);
+      monitoringLogService.logUserErased(privatePractitioner.getPersonId(), careProviderId);
+      LOG.info("Erased private practitioner with hsa-id {}.", careProviderId);
+    } else {
+      LOG.error("Failure unregistering private practitioner {} in certifier branch.",
+          privatePractitioner.getHsaId());
+      throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR,
+          "Failure unregistering private practitioner in certifier branch.");
+    }
+  }
 }

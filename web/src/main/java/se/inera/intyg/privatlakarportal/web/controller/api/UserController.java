@@ -34,13 +34,13 @@ import se.inera.intyg.privatlakarportal.web.controller.api.dto.GetUserResponse;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    @PerformanceLogging(eventAction = "get-user", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public GetUserResponse getUser() {
-        return new GetUserResponse(userService.getUserWithStatus());
-    }
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  @PerformanceLogging(eventAction = "get-user", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public GetUserResponse getUser() {
+    return new GetUserResponse(userService.getUserWithStatus());
+  }
 
 }

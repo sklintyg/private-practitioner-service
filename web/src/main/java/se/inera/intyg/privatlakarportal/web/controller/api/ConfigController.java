@@ -40,26 +40,26 @@ import se.inera.intyg.privatlakarportal.web.controller.api.dto.GetConfigResponse
 @RequestMapping("/api/config")
 public class ConfigController {
 
-    @Autowired
-    private Environment env;
+  @Autowired
+  private Environment env;
 
-    @Autowired
-    private DynamicLinkService dynamicLinkService;
+  @Autowired
+  private DynamicLinkService dynamicLinkService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    @PerformanceLogging(eventAction = "get-config", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public GetConfigResponse getConfig() {
-        return new GetConfigResponse(
-            env.getProperty("webcert.host.url"),
-            env.getProperty("webcert.start.url"),
-            Befattningar.getBefattningar(),
-            Vardformer.getVardformer(),
-            Verksamhetstyper.getVerksamhetstyper());
-    }
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  @PerformanceLogging(eventAction = "get-config", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public GetConfigResponse getConfig() {
+    return new GetConfigResponse(
+        env.getProperty("webcert.host.url"),
+        env.getProperty("webcert.start.url"),
+        Befattningar.getBefattningar(),
+        Vardformer.getVardformer(),
+        Verksamhetstyper.getVerksamhetstyper());
+  }
 
-    @RequestMapping(value = "/links", method = RequestMethod.GET, produces = "application/json")
-    @PerformanceLogging(eventAction = "get-links", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public Map<String, DynamicLink> getLinks() {
-        return dynamicLinkService.getAllAsMap();
-    }
+  @RequestMapping(value = "/links", method = RequestMethod.GET, produces = "application/json")
+  @PerformanceLogging(eventAction = "get-links", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public Map<String, DynamicLink> getLinks() {
+    return dynamicLinkService.getAllAsMap();
+  }
 }

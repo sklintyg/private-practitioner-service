@@ -45,67 +45,69 @@ import se.inera.intyg.privatlakarportal.web.controller.api.dto.SaveRegistrationR
 @RunWith(MockitoJUnitRunner.class)
 public class RegisterControllerTest {
 
-    @Mock
-    private RegisterService registerService;
+  @Mock
+  private RegisterService registerService;
 
-    @Mock
-    private PostnummerService postnummerService;
+  @Mock
+  private PostnummerService postnummerService;
 
-    @InjectMocks
-    private RegisterController registerController = new RegisterController();
+  @InjectMocks
+  private RegisterController registerController = new RegisterController();
 
-    @Test
-    public void testGetRegistration() {
-        var registrationWithHospInformation = new RegistrationWithHospInformation(new Registration(), new HospInformation(), true);
-        when(registerService.getRegistration()).thenReturn(registrationWithHospInformation);
+  @Test
+  public void testGetRegistration() {
+    var registrationWithHospInformation = new RegistrationWithHospInformation(new Registration(),
+        new HospInformation(), true);
+    when(registerService.getRegistration()).thenReturn(registrationWithHospInformation);
 
-        var getRegistrationResponse = registerController.getRegistration();
+    var getRegistrationResponse = registerController.getRegistration();
 
-        verify(registerService).getRegistration();
-        assertTrue(getRegistrationResponse.isWebcertUserTermsApproved());
-    }
+    verify(registerService).getRegistration();
+    assertTrue(getRegistrationResponse.isWebcertUserTermsApproved());
+  }
 
-    @Test
-    public void testCreateRegistration() {
-        CreateRegistrationRequest request = new CreateRegistrationRequest();
-        request.setGodkantMedgivandeVersion(1L);
-        registerController.createRegistration(request);
+  @Test
+  public void testCreateRegistration() {
+    CreateRegistrationRequest request = new CreateRegistrationRequest();
+    request.setGodkantMedgivandeVersion(1L);
+    registerController.createRegistration(request);
 
-        verify(registerService).createRegistration(request.getRegistration(), 1L);
-    }
+    verify(registerService).createRegistration(request.getRegistration(), 1L);
+  }
 
-    @Test
-    public void testCreateRegistrationSave() {
-        when(registerService.saveRegistration(any())).thenReturn(SaveRegistrationResponseStatus.OK);
+  @Test
+  public void testCreateRegistrationSave() {
+    when(registerService.saveRegistration(any())).thenReturn(SaveRegistrationResponseStatus.OK);
 
-        SaveRegistrationRequest request = new SaveRegistrationRequest();
-        request.setRegistration(new Registration());
-        var saveRegistrationResponse = registerController.createRegistration(request);
+    SaveRegistrationRequest request = new SaveRegistrationRequest();
+    request.setRegistration(new Registration());
+    var saveRegistrationResponse = registerController.createRegistration(request);
 
-        verify(registerService).saveRegistration(request.getRegistration());
-        assertEquals(SaveRegistrationResponseStatus.OK, saveRegistrationResponse.getStatus());
+    verify(registerService).saveRegistration(request.getRegistration());
+    assertEquals(SaveRegistrationResponseStatus.OK, saveRegistrationResponse.getStatus());
 
-    }
+  }
 
-    @Test
-    public void testGetHospInformation() {
-        when(registerService.getHospInformation()).thenReturn(new HospInformation());
+  @Test
+  public void testGetHospInformation() {
+    when(registerService.getHospInformation()).thenReturn(new HospInformation());
 
-        var getHospInformationResponse = registerController.getHospInformation();
+    var getHospInformationResponse = registerController.getHospInformation();
 
-        verify(registerService).getHospInformation();
-        assertNotNull(getHospInformationResponse.getHospInformation());
-    }
+    verify(registerService).getHospInformation();
+    assertNotNull(getHospInformationResponse.getHospInformation());
+  }
 
-    @Test
-    public void testGetOmrade() {
-        var zipCode = "Zip code";
-        var omrade = new Omrade("", "", "", "");
-        when(postnummerService.getOmradeByPostnummer(anyString())).thenReturn(Collections.singletonList(omrade));
+  @Test
+  public void testGetOmrade() {
+    var zipCode = "Zip code";
+    var omrade = new Omrade("", "", "", "");
+    when(postnummerService.getOmradeByPostnummer(anyString())).thenReturn(
+        Collections.singletonList(omrade));
 
-        var getOmradeResponse = registerController.getOmrade(zipCode);
+    var getOmradeResponse = registerController.getOmrade(zipCode);
 
-        verify(postnummerService).getOmradeByPostnummer(zipCode);
-        assertEquals(1, getOmradeResponse.getOmradeList().size());
-    }
+    verify(postnummerService).getOmradeByPostnummer(zipCode);
+    assertEquals(1, getOmradeResponse.getOmradeList().size());
+  }
 }

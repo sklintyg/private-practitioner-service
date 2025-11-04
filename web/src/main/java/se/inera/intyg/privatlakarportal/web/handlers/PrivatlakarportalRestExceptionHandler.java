@@ -32,27 +32,31 @@ import se.inera.intyg.privatlakarportal.common.exception.PrivatlakarportalServic
 @ControllerAdvice
 public class PrivatlakarportalRestExceptionHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PrivatlakarportalRestExceptionHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+      PrivatlakarportalRestExceptionHandler.class);
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public PrivatlakarportalRestExceptionResponse serviceExceptionHandler(HttpServletRequest request, PrivatlakarportalServiceException e) {
-        LOG.warn("Internal exception occured! Internal error code: {} Error message: {}", e.getErrorCode(),
-            e.getMessage());
-        PrivatlakarportalRestExceptionResponse response =
-            new PrivatlakarportalRestExceptionResponse(e.getErrorCode(), e.getMessage());
-        return response;
-    }
+  @ExceptionHandler
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseBody
+  public PrivatlakarportalRestExceptionResponse serviceExceptionHandler(HttpServletRequest request,
+      PrivatlakarportalServiceException e) {
+    LOG.warn("Internal exception occured! Internal error code: {} Error message: {}",
+        e.getErrorCode(),
+        e.getMessage());
+    PrivatlakarportalRestExceptionResponse response =
+        new PrivatlakarportalRestExceptionResponse(e.getErrorCode(), e.getMessage());
+    return response;
+  }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public PrivatlakarportalRestExceptionResponse serviceExceptionHandler(HttpServletRequest request, RuntimeException re) {
-        LOG.error("Unhandled RuntimeException occured!", re);
-        PrivatlakarportalRestExceptionResponse response = new PrivatlakarportalRestExceptionResponse(
-            PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, "Unhandled runtime exception");
-        return response;
-    }
+  @ExceptionHandler
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseBody
+  public PrivatlakarportalRestExceptionResponse serviceExceptionHandler(HttpServletRequest request,
+      RuntimeException re) {
+    LOG.error("Unhandled RuntimeException occured!", re);
+    PrivatlakarportalRestExceptionResponse response = new PrivatlakarportalRestExceptionResponse(
+        PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, "Unhandled runtime exception");
+    return response;
+  }
 
 }

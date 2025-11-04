@@ -22,28 +22,29 @@ import se.inera.intyg.privatlakarportal.common.exception.PrivatlakarportalErrorC
 
 public class PrivatlakarportalRestExceptionResponse {
 
-    private PrivatlakarportalErrorCodeEnum errorCode;
+  private PrivatlakarportalErrorCodeEnum errorCode;
 
-    private String message;
+  private String message;
 
-    public PrivatlakarportalRestExceptionResponse(PrivatlakarportalErrorCodeEnum errorCode, String message) {
-        this.errorCode = errorCode;
-        this.message = message;
-    }
+  public PrivatlakarportalRestExceptionResponse(PrivatlakarportalErrorCodeEnum errorCode,
+      String message) {
+    this.errorCode = errorCode;
+    this.message = message;
+  }
 
-    public PrivatlakarportalErrorCodeEnum getErrorCode() {
-        return errorCode;
-    }
+  public PrivatlakarportalErrorCodeEnum getErrorCode() {
+    return errorCode;
+  }
 
-    public void setErrorCode(PrivatlakarportalErrorCodeEnum errorCode) {
-        this.errorCode = errorCode;
-    }
+  public void setErrorCode(PrivatlakarportalErrorCodeEnum errorCode) {
+    this.errorCode = errorCode;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 }

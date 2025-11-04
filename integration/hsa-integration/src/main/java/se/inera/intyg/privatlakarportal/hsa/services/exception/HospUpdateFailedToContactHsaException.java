@@ -25,14 +25,14 @@ import jakarta.xml.ws.WebServiceException;
  */
 public class HospUpdateFailedToContactHsaException extends Exception {
 
-    WebServiceException e;
+  WebServiceException e;
 
-    public HospUpdateFailedToContactHsaException(WebServiceException e) {
-        this.e = e;
-    }
+  public HospUpdateFailedToContactHsaException(WebServiceException e) {
+    this.e = e;
+  }
 
-    @Override
-    public String getMessage() {
-        return e.getMessage();
-    }
+  @Override
+  public String getMessage() {
+    return e.getMessage();
+  }
 }

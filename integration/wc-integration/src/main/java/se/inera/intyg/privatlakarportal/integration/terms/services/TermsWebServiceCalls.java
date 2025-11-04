@@ -33,13 +33,13 @@ import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitione
 @Service
 public class TermsWebServiceCalls {
 
-    @Autowired
-    private GetPrivatePractitionerTermsResponderInterface termsWebServiceClient;
+  @Autowired
+  private GetPrivatePractitionerTermsResponderInterface termsWebServiceClient;
 
-    private static final Logger LOG = LoggerFactory.getLogger(TermsWebServiceCalls.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TermsWebServiceCalls.class);
 
-    public GetPrivatePractitionerTermsResponseType getPrivatePractitionerTerms() {
-        GetPrivatePractitionerTermsType parameters = new GetPrivatePractitionerTermsType();
-        return termsWebServiceClient.getPrivatePractitionerTerms("", parameters);
-    }
+  public GetPrivatePractitionerTermsResponseType getPrivatePractitionerTerms() {
+    GetPrivatePractitionerTermsType parameters = new GetPrivatePractitionerTermsType();
+    return termsWebServiceClient.getPrivatePractitionerTerms("", parameters);
+  }
 }

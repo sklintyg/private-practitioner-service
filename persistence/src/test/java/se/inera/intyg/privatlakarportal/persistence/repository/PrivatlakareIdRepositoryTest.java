@@ -32,23 +32,24 @@ import se.inera.intyg.privatlakarportal.persistence.config.PersistenceConfigDev;
 import se.inera.intyg.privatlakarportal.persistence.model.PrivatlakareId;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {PersistenceConfigDev.class})
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {
+    PersistenceConfigDev.class})
 @ActiveProfiles({"h2"})
 public class PrivatlakareIdRepositoryTest {
 
-    @Autowired
-    private PrivatlakareIdRepository privatlakareIdRepository;
+  @Autowired
+  private PrivatlakareIdRepository privatlakareIdRepository;
 
-    @Before
-    public void clear() {
-        privatlakareIdRepository.deleteAll();
-    }
+  @Before
+  public void clear() {
+    privatlakareIdRepository.deleteAll();
+  }
 
-    @Test
-    public void testFindMaxId() {
-        privatlakareIdRepository.save(new PrivatlakareId());
-        privatlakareIdRepository.save(new PrivatlakareId());
-        privatlakareIdRepository.save(new PrivatlakareId());
-        assertEquals(Integer.valueOf(3), privatlakareIdRepository.findLatestGeneratedHsaId());
-    }
+  @Test
+  public void testFindMaxId() {
+    privatlakareIdRepository.save(new PrivatlakareId());
+    privatlakareIdRepository.save(new PrivatlakareId());
+    privatlakareIdRepository.save(new PrivatlakareId());
+    assertEquals(Integer.valueOf(3), privatlakareIdRepository.findLatestGeneratedHsaId());
+  }
 }

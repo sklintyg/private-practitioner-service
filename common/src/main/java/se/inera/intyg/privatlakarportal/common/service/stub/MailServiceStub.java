@@ -33,66 +33,71 @@ import se.inera.intyg.privatlakarportal.persistence.model.Privatlakare;
 @Service
 public class MailServiceStub implements MailService {
 
-    private static final String AUTHORIZED_BODY = "Registration klar";
-    private static final String NOT_AUTHORIZED_BODY = "Saknar behörighet";
-    private static final String WAITING_FOR_HOSP_BODY = "Väntar på hosp-information";
-    private static final String HSA_GENERATION_STATUS = "Dags att göra ny TAKning för genererade HSA-IDn";
-    private static final Logger LOG = LoggerFactory.getLogger(MailServiceStub.class);
-    private static final String REGISTRATION_REMOVED = "Registrering borttagen";
+  private static final String AUTHORIZED_BODY = "Registration klar";
+  private static final String NOT_AUTHORIZED_BODY = "Saknar behörighet";
+  private static final String WAITING_FOR_HOSP_BODY = "Väntar på hosp-information";
+  private static final String HSA_GENERATION_STATUS = "Dags att göra ny TAKning för genererade HSA-IDn";
+  private static final Logger LOG = LoggerFactory.getLogger(MailServiceStub.class);
+  private static final String REGISTRATION_REMOVED = "Registrering borttagen";
 
-    @Value("{mail.admin}")
-    private String adminEpost;
+  @Value("{mail.admin}")
+  private String adminEpost;
 
-    @Autowired(required = false)
-    private MailStubStore mailStore;
+  @Autowired(required = false)
+  private MailStubStore mailStore;
 
-    @Override
-    public void sendHsaGenerationStatusEmail() {
-        LOG.info("Sending registration status email to {}", adminEpost);
-        try {
-            mailStore.addMail("ADMIN", HSA_GENERATION_STATUS);
-        } catch (PrivatlakarportalServiceException e) {
-            throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, e.getMessage());
-        }
+  @Override
+  public void sendHsaGenerationStatusEmail() {
+    LOG.info("Sending registration status email to {}", adminEpost);
+    try {
+      mailStore.addMail("ADMIN", HSA_GENERATION_STATUS);
+    } catch (PrivatlakarportalServiceException e) {
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, e.getMessage());
     }
+  }
 
-    @Override
-    public void sendRegistrationStatusEmail(RegistrationStatus status, Privatlakare privatlakare) throws PrivatlakarportalServiceException {
-        LOG.info("Sending registration status email to {}", privatlakare.getEpost());
-        try {
-            mailStore.addMail(privatlakare.getPersonId(), createHtmlBody(status));
-        } catch (MessagingException | PrivatlakarportalServiceException e) {
-            throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, e.getMessage());
-        }
+  @Override
+  public void sendRegistrationStatusEmail(RegistrationStatus status, Privatlakare privatlakare)
+      throws PrivatlakarportalServiceException {
+    LOG.info("Sending registration status email to {}", privatlakare.getEpost());
+    try {
+      mailStore.addMail(privatlakare.getPersonId(), createHtmlBody(status));
+    } catch (MessagingException | PrivatlakarportalServiceException e) {
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, e.getMessage());
     }
+  }
 
-    @Override
-    public void sendRegistrationRemovedEmail(Privatlakare privatlakare) {
-        LOG.info("Sending registration removed email to {}", privatlakare.getEpost());
-        try {
-            mailStore.addMail(privatlakare.getPersonId(), REGISTRATION_REMOVED);
-        } catch (PrivatlakarportalServiceException e) {
-            throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, e.getMessage());
-        }
+  @Override
+  public void sendRegistrationRemovedEmail(Privatlakare privatlakare) {
+    LOG.info("Sending registration removed email to {}", privatlakare.getEpost());
+    try {
+      mailStore.addMail(privatlakare.getPersonId(), REGISTRATION_REMOVED);
+    } catch (PrivatlakarportalServiceException e) {
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, e.getMessage());
     }
+  }
 
-    private String createHtmlBody(RegistrationStatus status) throws MessagingException, PrivatlakarportalServiceException {
-        String htmlString = null;
+  private String createHtmlBody(RegistrationStatus status)
+      throws MessagingException, PrivatlakarportalServiceException {
+    String htmlString = null;
 
-        switch (status) {
-            case AUTHORIZED:
-                htmlString = AUTHORIZED_BODY;
-                break;
-            case NOT_AUTHORIZED:
-                htmlString = NOT_AUTHORIZED_BODY;
-                break;
-            case NOT_STARTED:
-                break;
-            case WAITING_FOR_HOSP:
-                htmlString = WAITING_FOR_HOSP_BODY;
-                break;
-        }
-        return htmlString;
+    switch (status) {
+      case AUTHORIZED:
+        htmlString = AUTHORIZED_BODY;
+        break;
+      case NOT_AUTHORIZED:
+        htmlString = NOT_AUTHORIZED_BODY;
+        break;
+      case NOT_STARTED:
+        break;
+      case WAITING_FOR_HOSP:
+        htmlString = WAITING_FOR_HOSP_BODY;
+        break;
     }
+    return htmlString;
+  }
 
 }

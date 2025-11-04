@@ -27,89 +27,89 @@ import lombok.Data;
 @Data
 public class HsaPerson {
 
-    private String hsaId;
+  private String hsaId;
 
-    private String personalIdentityNumber;
+  private String personalIdentityNumber;
 
-    private String givenName;
+  private String givenName;
 
-    private String middleAndSurname;
+  private String middleAndSurname;
 
-    private boolean protectedPerson;
+  private boolean protectedPerson;
 
-    private List<Speciality> specialities = new ArrayList<>();
+  private List<Speciality> specialities = new ArrayList<>();
 
-    private List<String> unitIds = new ArrayList<String>();
+  private List<String> unitIds = new ArrayList<String>();
 
-    private String title;
+  private String title;
 
-    private List<String> healthCareProfessionalLicence = new ArrayList<String>();
+  private List<String> healthCareProfessionalLicence = new ArrayList<String>();
 
-    private List<PaTitle> paTitle;
+  private List<PaTitle> paTitle;
 
-    private String personalPrescriptionCode;
+  private String personalPrescriptionCode;
 
-    private List<String> systemRoles;
+  private List<String> systemRoles;
 
-    private List<String> educationCodes;
+  private List<String> educationCodes;
 
-    private List<Restrictions> restrictions;
+  private List<Restrictions> restrictions;
 
-    private FakeProperties fakeProperties;
+  private FakeProperties fakeProperties;
 
-    private String gender;
+  private String gender;
 
-    private String age;
+  private String age;
 
-    private List<HealthCareProfessionalLicenceType> healthCareProfessionalLicenceType = new ArrayList<>();
+  private List<HealthCareProfessionalLicenceType> healthCareProfessionalLicenceType = new ArrayList<>();
 
-    // ~ Constructors
-    // ~ =====================================================================================
+  // ~ Constructors
+  // ~ =====================================================================================
 
-    public HsaPerson() {
-        super();
-    }
+  public HsaPerson() {
+    super();
+  }
 
-    public HsaPerson(String hsaId, String givenName, String middleAndSurname) {
-        super();
-        this.hsaId = hsaId;
-        this.givenName = givenName;
-        this.middleAndSurname = middleAndSurname;
-    }
+  public HsaPerson(String hsaId, String givenName, String middleAndSurname) {
+    super();
+    this.hsaId = hsaId;
+    this.givenName = givenName;
+    this.middleAndSurname = middleAndSurname;
+  }
 
-    public HsaPerson(String hsaId, String givenName, String middleAndSurname, String title) {
-        super();
-        this.hsaId = hsaId;
-        this.givenName = givenName;
-        this.middleAndSurname = middleAndSurname;
-        this.title = title;
-    }
+  public HsaPerson(String hsaId, String givenName, String middleAndSurname, String title) {
+    super();
+    this.hsaId = hsaId;
+    this.givenName = givenName;
+    this.middleAndSurname = middleAndSurname;
+    this.title = title;
+  }
 
-    @Data
-    public static class PaTitle {
+  @Data
+  public static class PaTitle {
 
-        private String titleCode;
-        private String titleName;
-    }
+    private String titleCode;
+    private String titleName;
+  }
 
-    @Data
-    public static class Restrictions {
+  @Data
+  public static class Restrictions {
 
-        private String restrictionCode;
-        private String restrictionName;
-    }
+    private String restrictionCode;
+    private String restrictionName;
+  }
 
-    @Data
-    public static class Speciality {
+  @Data
+  public static class Speciality {
 
-        private String specialityName;
-        private String specialityCode;
-    }
+    private String specialityName;
+    private String specialityCode;
+  }
 
-    @Data
-    public static class HealthCareProfessionalLicenceType {
+  @Data
+  public static class HealthCareProfessionalLicenceType {
 
-        private String healthCareProfessionalLicenceCode;
-        private String healthCareProfessionalLicenceName;
-    }
+    private String healthCareProfessionalLicenceCode;
+    private String healthCareProfessionalLicenceName;
+  }
 }

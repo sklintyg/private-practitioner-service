@@ -44,69 +44,75 @@ import se.inera.intyg.privatlakarportal.web.controller.internalapi.dto.PrivatePr
 @RequestMapping("/internalapi/privatepractitioner")
 public class PrivatePractitionerController {
 
-    private final PrivatePractitionerService privatePractitionerService;
-    private final IntegrationService integrationService;
-    private final EraseService eraseService;
+  private final PrivatePractitionerService privatePractitionerService;
+  private final IntegrationService integrationService;
+  private final EraseService eraseService;
 
-    @Autowired
-    public PrivatePractitionerController(PrivatePractitionerService privatePractitionerService, IntegrationService integrationService,
-        EraseService eraseService) {
-        this.privatePractitionerService = privatePractitionerService;
-        this.integrationService = integrationService;
-        this.eraseService = eraseService;
+  @Autowired
+  public PrivatePractitionerController(PrivatePractitionerService privatePractitionerService,
+      IntegrationService integrationService,
+      EraseService eraseService) {
+    this.privatePractitionerService = privatePractitionerService;
+    this.integrationService = integrationService;
+    this.eraseService = eraseService;
+  }
+
+  @GetMapping("")
+  @PerformanceLogging(eventAction = "get-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public ResponseEntity<PrivatePractitionerDto> getPrivatePractitioner(
+      @RequestParam String personOrHsaId) {
+    PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
+        personOrHsaId);
+
+    if (privatePractitioner == null) {
+      return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("")
-    @PerformanceLogging(eventAction = "get-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public ResponseEntity<PrivatePractitionerDto> getPrivatePractitioner(@RequestParam String personOrHsaId) {
-        PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(personOrHsaId);
+    return ResponseEntity.ok(convert(privatePractitioner));
+  }
 
-        if (privatePractitioner == null) {
-            return ResponseEntity.notFound().build();
-        }
+  @GetMapping("/all")
+  @PerformanceLogging(eventAction = "get-private-practitioners", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public ResponseEntity<List<PrivatePractitionerDto>> getPrivatePractitioners() {
+    List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
 
-        return ResponseEntity.ok(convert(privatePractitioner));
+    return ResponseEntity.ok(convert(privatePractitioners));
+  }
+
+  @PostMapping("/validate")
+  @PerformanceLogging(eventAction = "validate-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_INFO)
+  public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
+      @RequestBody ValidatePrivatePractitionerRequest request) {
+    final var response = integrationService.validatePrivatePractitionerByPersonId(
+        request.getPersonalIdentityNumber());
+    return ResponseEntity.ok(response);
+  }
+
+  @DeleteMapping("/erase/{id}")
+  @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
+  public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
+    eraseService.erasePrivatePractitioner(careProviderId);
+  }
+
+  private List<PrivatePractitionerDto> convert(List<PrivatePractitioner> privatePractitioners) {
+    if (privatePractitioners == null) {
+      return List.of();
     }
 
-    @GetMapping("/all")
-    @PerformanceLogging(eventAction = "get-private-practitioners", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-    public ResponseEntity<List<PrivatePractitionerDto>> getPrivatePractitioners() {
-        List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
+    return privatePractitioners.stream()
+        .map(this::convert)
+        .collect(Collectors.toList());
 
-        return ResponseEntity.ok(convert(privatePractitioners));
+  }
+
+  private PrivatePractitionerDto convert(PrivatePractitioner privatePractitioner) {
+    if (privatePractitioner == null) {
+      return null;
     }
 
-    @PostMapping("/validate")
-    @PerformanceLogging(eventAction = "validate-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_INFO)
-    public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
-        @RequestBody ValidatePrivatePractitionerRequest request) {
-        final var response = integrationService.validatePrivatePractitionerByPersonId(request.getPersonalIdentityNumber());
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/erase/{id}")
-    @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
-    public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
-        eraseService.erasePrivatePractitioner(careProviderId);
-    }
-
-    private List<PrivatePractitionerDto> convert(List<PrivatePractitioner> privatePractitioners) {
-        if (privatePractitioners == null) {
-            return List.of();
-        }
-
-        return privatePractitioners.stream()
-            .map(this::convert)
-            .collect(Collectors.toList());
-
-    }
-
-    private PrivatePractitionerDto convert(PrivatePractitioner privatePractitioner) {
-        if (privatePractitioner == null) {
-            return null;
-        }
-
-        return new PrivatePractitionerDto(privatePractitioner.getHsaId(), privatePractitioner.getPersonId(), privatePractitioner.getName(),
-            privatePractitioner.getCareproviderName(), privatePractitioner.getEmail(), privatePractitioner.getRegistrationDate());
-    }
+    return new PrivatePractitionerDto(privatePractitioner.getHsaId(),
+        privatePractitioner.getPersonId(), privatePractitioner.getName(),
+        privatePractitioner.getCareproviderName(), privatePractitioner.getEmail(),
+        privatePractitioner.getRegistrationDate());
+  }
 }
