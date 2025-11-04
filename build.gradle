@@ -8,6 +8,7 @@ plugins {
 }
 
 ext {
+    intygBomVersion = System.properties['intygBomVersion'] ?: '0.0.1-SNAPSHOT'
     infraVersion = System.properties['infraVersion'] ?: '4.0.0-SNAPSHOT'
 
     ppSchemasVersion = "1.0.5.2"
@@ -24,70 +25,41 @@ ext {
     stAntlr4Version = "4.3.4"
     shedlockSpringVersion = "5.16.0"
 
-    springbootMavenBomVersion = "3.3.4"
-
     nvdMirror = 'https://vulnz-nvd-mirror-devtest.intyg.nordicmedtest.se'
 }
 
 allprojects {
+    repositories {
+        mavenLocal()
+        maven { url "https://nexus.drift.inera.se/repository/it-public/" }
+        maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
+        mavenCentral()
+    }
+}
+
+subprojects {
     apply plugin: "io.spring.dependency-management"
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'idea'
 
-    group = 'se.inera.privatlakarportal'
-    version = System.properties['buildVersion'] ?: '0-SNAPSHOT'
-    sourceCompatibility = 21
-    targetCompatibility = 21
-
-    dependencyManagement {
-        imports { mavenBom "org.springframework.boot:spring-boot-dependencies:${springbootMavenBomVersion}" }
+    java {
+        sourceCompatibility = 21
+        targetCompatibility = 21
     }
 
-    compileJava {
-        options.encoding = "UTF-8"
-        options.compilerArgs.add("-parameters")
-    }
-
-    compileJava.dependsOn processResources
-    jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    dependencies {
-        implementation "ch.qos.logback:logback-classic"
-        implementation "jakarta.annotation:jakarta.annotation-api"
-        implementation "jakarta.jws:jakarta.jws-api:${jakartaJwsApiVersion}"
-        implementation "jakarta.xml.ws:jakarta.xml.ws-api"
-
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
-
-        testImplementation "junit:junit"
-        testImplementation "org.junit.jupiter:junit-jupiter-api"
-        testImplementation "org.junit.jupiter:junit-jupiter-params"
-        testImplementation "org.mockito:mockito-junit-jupiter"
-        testImplementation "org.mockito:mockito-core"
-        testImplementation "org.springframework:spring-test"
-
-        testCompileOnly 'org.projectlombok:lombok'
-        testAnnotationProcessor 'org.projectlombok:lombok'
-
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
-        testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
-    }
-
-    test { useJUnitPlatform() }
-
-    repositories {
-        mavenLocal()
-        maven { url "https://nexus.drift.inera.se/repository/it-public/" }
-        maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
-        mavenCentral {
-            content {
-                excludeGroupByRegex "se\\.inera.*"
-            }
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
         }
     }
 
+    dependencies {
+        implementation platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+        annotationProcessor platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+        testImplementation platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+        testAnnotationProcessor platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+    }
 
     jacocoTestReport {
         dependsOn test
@@ -101,12 +73,20 @@ allprojects {
             classDirectories.setFrom(files(classDirectories.files.collect {
                 fileTree(dir: it, exclude: [
                         "**/testability/**",
-                        "**/integrationtest/**"
+                        "**/integrationtest/**",
                 ])
             }))
         }
     }
+
+    tasks.withType(Test).configureEach {
+        jvmArgs '-Xshare:off'
+    }
 }
+
+group = 'se.inera.private-practitioner-service'
+version = System.properties['buildVersion'] ?: '0-SNAPSHOT'
+
 
 reporting {
     subprojects.collect { subproject -> subproject.name }.each { subprojectName ->
@@ -116,18 +96,9 @@ reporting {
 
 sonar {
     properties {
-        property "sonar.projectKey", "intyg-privatlakarportal"
-        property "sonar.projectName", "intyg-privatlakarportal"
+        property "sonar.projectKey", "intyg-private-practitioner-service"
+        property "sonar.projectName", "intyg-private-practitioner-service"
         property "sonar.dependencyCheck.jsonReportPath", "${layout.buildDirectory.get()}/reports/dependency-check-report.json" as String
         property "sonar.dependencyCheck.htmlReportPath", "${layout.buildDirectory.get()}/reports/dependency-check-report.html" as String
     }
-}
-
-dependencyCheck {
-    formats = ['HTML', 'JSON']
-    nvd.setDatafeedUrl(nvdMirror)
-    analyzers.setAssemblyEnabled(false)
-    analyzers.setCentralEnabled(false)
-    analyzers.ossIndex.setUsername(project.properties.get('ossIndexUsername') as String)
-    analyzers.ossIndex.setPassword(project.properties.get('ossIndexPassword') as String)
 }
