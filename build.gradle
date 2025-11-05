@@ -7,7 +7,7 @@ plugins {
 }
 
 ext {
-    intygBomVersion = System.properties['intygBomVersion'] ?: '0.1.0.3'
+    intygBomVersion = System.properties['intygBomVersion'] ?: '0.0.1-SNAPSHOT'
     infraVersion = System.properties['infraVersion'] ?: '4.0.0-SNAPSHOT'
 
     ppSchemasVersion = "1.0.5.2"
