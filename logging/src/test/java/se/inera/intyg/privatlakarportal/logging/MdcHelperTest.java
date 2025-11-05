@@ -38,36 +38,6 @@ class MdcHelperTest {
     mdcHelper = new MdcHelper();
   }
 
-  @Nested
-  class SessionId {
-
-    @Test
-    void shouldReturnTraceIdFromHeader() {
-      final var expectedValue = "sessionId";
-      final var httpServletRequest = mock(HttpServletRequest.class);
-      when(httpServletRequest.getHeader(MdcHelper.LOG_SESSION_ID_HEADER)).thenReturn(expectedValue);
-      final var result = mdcHelper.sessionId(httpServletRequest);
-      assertEquals(expectedValue, result);
-    }
-
-    @Test
-    void shouldReturnSessionIdFromCookie() {
-      final var expectedValue = "sessionId";
-      final var httpServletRequest = mock(HttpServletRequest.class);
-      when(httpServletRequest.getCookies()).thenReturn(
-          new Cookie[]{new Cookie("SESSION", expectedValue)});
-      final var result = mdcHelper.sessionId(httpServletRequest);
-      assertEquals(expectedValue, result);
-    }
-
-    @Test
-    void shouldReturnEmptySessionIdIfNotPresentInHeaderOrCookie() {
-      final var expectedValue = "-";
-      final var httpServletRequest = mock(HttpServletRequest.class);
-      final var result = mdcHelper.sessionId(httpServletRequest);
-      assertEquals(expectedValue, result);
-    }
-  }
 
   @Nested
   class TraceId {

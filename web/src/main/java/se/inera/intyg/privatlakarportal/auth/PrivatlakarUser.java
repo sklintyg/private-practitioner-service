@@ -18,13 +18,10 @@
  */
 package se.inera.intyg.privatlakarportal.auth;
 
-import java.io.Serializable;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
-
 /**
  * Created by pebe on 2015-08-11.
  */
-public class PrivatlakarUser implements Serializable, Saml2AuthenticatedPrincipal {
+public class PrivatlakarUser {
 
   private static final long serialVersionUID = 8711015219408194075L;
   private static final int THIRTYONE = 31;
@@ -96,7 +93,6 @@ public class PrivatlakarUser implements Serializable, Saml2AuthenticatedPrincipa
     return result;
   }
 
-  @Override
   public String getRelyingPartyRegistrationId() {
     return null;
   }

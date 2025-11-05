@@ -25,8 +25,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import se.inera.intyg.infra.security.filter.InternalApiFilter;
-import se.inera.intyg.infra.security.filter.PrincipalUpdatedFilter;
 
 @Configuration
 @EnableTransactionManagement
@@ -38,27 +36,18 @@ import se.inera.intyg.infra.security.filter.PrincipalUpdatedFilter;
     "se.inera.intyg.infra.pu.integration.intygproxyservice"})
 public class ApplicationConfig {
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+    return new PropertySourcesPlaceholderConfigurer();
+  }
 
-    @Bean
-    public ResourceBundleMessageSource messageSource() {
-        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasename("version");
-        source.setUseCodeAsDefaultMessage(true);
-        return source;
-    }
+  @Bean
+  public ResourceBundleMessageSource messageSource() {
+    ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+    source.setBasename("version");
+    source.setUseCodeAsDefaultMessage(true);
+    return source;
+  }
 
-    @Bean
-    public PrincipalUpdatedFilter principalUpdatedFilter() {
-        return new PrincipalUpdatedFilter();
-    }
-
-    @Bean
-    public InternalApiFilter internalApiFilter() {
-        return new InternalApiFilter();
-    }
 
 }

@@ -21,7 +21,6 @@ package se.inera.intyg.privatlakarportal.service;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.inera.intyg.infra.pu.integration.api.model.PersonSvar;
@@ -53,10 +52,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public PrivatlakarUser getUser() {
-    if (SecurityContextHolder.getContext().getAuthentication() == null) {
-      return null;
-    }
-    return (PrivatlakarUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+   return null;
   }
 
   @Override
