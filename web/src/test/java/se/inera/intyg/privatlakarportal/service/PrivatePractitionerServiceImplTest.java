@@ -18,10 +18,10 @@
  */
 package se.inera.intyg.privatlakarportal.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,11 +29,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import se.inera.intyg.privatlakarportal.common.integration.json.CustomObjectMapper;
 import se.inera.intyg.privatlakarportal.persistence.model.Befattning;
@@ -44,8 +44,8 @@ import se.inera.intyg.privatlakarportal.persistence.model.Verksamhetstyp;
 import se.inera.intyg.privatlakarportal.persistence.repository.PrivatlakareRepository;
 import se.inera.intyg.privatlakarportal.service.model.PrivatePractitioner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PrivatePractitionerServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class PrivatePractitionerServiceImplTest {
 
   @Mock
   private PrivatlakareRepository privatlakareRepository;
@@ -54,7 +54,7 @@ public class PrivatePractitionerServiceImplTest {
   private PrivatePractitionerServiceImpl privatePractitionerService;
 
   @Test
-  public void getPrivatePractitioners_ok() throws IOException {
+  void getPrivatePractitioners_ok() throws IOException {
     Privatlakare p1 = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
     Privatlakare p2 = readPrivatlakare("RegisterServiceImplTest/test.json");
 
@@ -63,13 +63,11 @@ public class PrivatePractitionerServiceImplTest {
     List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
 
     assertNotNull(privatePractitioners);
-    assertTrue(privatePractitioners.size() == 2);
-
-
+    assertEquals(2, privatePractitioners.size());
   }
 
   @Test
-  public void getPrivatePractitioners_empty_ok() {
+  void getPrivatePractitioners_empty_ok() {
     List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
 
     assertNotNull(privatePractitioners);
@@ -77,7 +75,7 @@ public class PrivatePractitionerServiceImplTest {
   }
 
   @Test
-  public void getPrivatePractitioner_hsaId_ok() throws IOException {
+  void getPrivatePractitioner_hsaId_ok() throws IOException {
     Privatlakare privatlakare = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
     String hsaId = privatlakare.getHsaId();
 
@@ -99,7 +97,7 @@ public class PrivatePractitionerServiceImplTest {
   }
 
   @Test
-  public void getPrivatePractitioner_personId_ok() throws IOException {
+  void getPrivatePractitioner_personId_ok() throws IOException {
     Privatlakare privatlakare = readPrivatlakare("RegisterServiceImplTest/test_lakare.json");
     String personId = privatlakare.getPersonId();
 
@@ -121,7 +119,7 @@ public class PrivatePractitionerServiceImplTest {
   }
 
   @Test
-  public void getPrivatePractitioner_notFound() {
+  void getPrivatePractitioner_notFound() {
 
     PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
         "notFound");
@@ -131,7 +129,7 @@ public class PrivatePractitionerServiceImplTest {
   }
 
   @Test
-  public void getPrivatePractitioner_missingPersonOrHsaId() {
+  void getPrivatePractitioner_missingPersonOrHsaId() {
 
     PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
         null);

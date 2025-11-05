@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,10 +64,10 @@ class HospPersonServiceImplTest {
     response.setPersonalIdentityNumber(VALID_PERSON_ID);
     response.setPersonalPrescriptionCode(CERTIFIER_ID);
 
-    when(authorizationManagementService.getHospCredentialsForPersonResponseType(
+    lenient().when(authorizationManagementService.getHospCredentialsForPersonResponseType(
         VALID_PERSON_ID)).thenReturn(response);
 
-    when(authorizationManagementService.getHospCredentialsForPersonResponseType(
+    lenient().when(authorizationManagementService.getHospCredentialsForPersonResponseType(
         INVALID_PERSON_ID)).thenReturn(null);
   }
 

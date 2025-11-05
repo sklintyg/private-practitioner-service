@@ -95,7 +95,15 @@ dependencies {
     runtimeOnly "se.inera.intyg.infra:pu-integration-intyg-proxy-service:${infraVersion}"
 
     testImplementation "com.googlecode.json-simple:json-simple:${jsonSimpleVersion}"
-    testImplementation "org.assertj:assertj-core"
-    testImplementation "org.antlr:ST4:${stAntlr4Version}"
     testImplementation "io.rest-assured:rest-assured"
+    testImplementation "org.antlr:ST4:${stAntlr4Version}"
+    testImplementation "org.assertj:assertj-core"
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.mockito:mockito-core"
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation "org.springframework:spring-test"
+}
+
+testing.suites {
+    test { useJUnitJupiter() }
 }

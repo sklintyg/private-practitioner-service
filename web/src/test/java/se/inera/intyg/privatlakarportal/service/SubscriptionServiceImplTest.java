@@ -18,21 +18,23 @@
  */
 package se.inera.intyg.privatlakarportal.service;
 
-import junit.framework.TestCase;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SubscriptionServiceImplTest extends TestCase {
+@ExtendWith(MockitoExtension.class)
+class SubscriptionServiceImplTest {
 
   @InjectMocks
   private SubscriptionServiceImpl subscriptionService;
 
   @Test
-  public void subscriptionInUseShouldReturnTrueIfSubscriptionAdaption() {
+  void subscriptionInUseShouldReturnTrueIfSubscriptionAdaption() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
@@ -40,7 +42,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void subscriptionInUseShouldReturnTrueIfSubscriptionRequired() {
+  void subscriptionInUseShouldReturnTrueIfSubscriptionRequired() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
@@ -48,7 +50,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void subscriptionInUseShouldReturnTrueIfSubscriptionAdaptationAndRequired() {
+  void subscriptionInUseShouldReturnTrueIfSubscriptionAdaptationAndRequired() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
@@ -56,7 +58,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void subscriptionInUseShouldReturnFalseIfNone() {
+  void subscriptionInUseShouldReturnFalseIfNone() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
@@ -64,7 +66,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void subscriptionAdaptationAndNotRequiredShouldReturnTrueIfSubscriptionAdaptation() {
+  void subscriptionAdaptationAndNotRequiredShouldReturnTrueIfSubscriptionAdaptation() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
@@ -72,7 +74,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionRequired() {
+  void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionRequired() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
@@ -80,7 +82,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionAdaptationAndRequired() {
+  void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfSubscriptionAdaptationAndRequired() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", true);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
@@ -88,7 +90,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfNone() {
+  void isSubscriptionAdaptationAndNotRequiredShouldReturnFalseIfNone() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionAdaptation", false);
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", false);
 
@@ -96,7 +98,7 @@ public class SubscriptionServiceImplTest extends TestCase {
   }
 
   @Test
-  public void subscriptionRequiredReturnTrue() {
+  void subscriptionRequiredReturnTrue() {
     ReflectionTestUtils.setField(subscriptionService, "subscriptionRequired", true);
 
     assertTrue(subscriptionService.isSubscriptionRequired());

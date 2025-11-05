@@ -22,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertFalse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,9 +37,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResultCode;
@@ -57,7 +57,7 @@ import se.riv.infrastructure.directory.privatepractitioner.v1.ResultCodeEnum;
 /**
  * Created by pebe on 2015-08-18.
  */
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class IntegrationServiceTest {
 
   @Mock
@@ -106,16 +106,18 @@ class IntegrationServiceTest {
     res = new ClassPathResource("IntegrationServiceTest/test_HosPerson.json");
     verifyHosPerson = objectMapper.readValue(res.getInputStream(), HoSPersonType.class);
 
-    when(privatlakareRepository.findByHsaId(GODKAND_HSA_ID)).thenReturn(privatlakare);
-    when(privatlakareRepository.findByPersonId(GODKAND_PERSON_ID)).thenReturn(privatlakare);
-    when(privatlakareRepository.findByHsaId(FINNS_EJ_HSA_ID)).thenReturn(null);
-    when(privatlakareRepository.findByPersonId(FINNS_EJ_PERSON_ID)).thenReturn(null);
-    when(privatlakareRepository.findByPersonId(INVALID_PERSON_ID)).thenReturn(null);
-    when(privatlakareRepository.findByPersonId(EJ_GODKAND_PERSON_ID)).thenReturn(
+    lenient().when(privatlakareRepository.findByHsaId(GODKAND_HSA_ID)).thenReturn(privatlakare);
+    lenient().when(privatlakareRepository.findByPersonId(GODKAND_PERSON_ID))
+        .thenReturn(privatlakare);
+    lenient().when(privatlakareRepository.findByHsaId(FINNS_EJ_HSA_ID)).thenReturn(null);
+    lenient().when(privatlakareRepository.findByPersonId(FINNS_EJ_PERSON_ID)).thenReturn(null);
+    lenient().when(privatlakareRepository.findByPersonId(INVALID_PERSON_ID)).thenReturn(null);
+    lenient().when(privatlakareRepository.findByPersonId(EJ_GODKAND_PERSON_ID)).thenReturn(
         privatlakareEjGodkand);
-    when(privatlakareRepository.findByPersonId(EJ_LAKARE_PERSON_ID)).thenReturn(null);
+    lenient().when(privatlakareRepository.findByPersonId(EJ_LAKARE_PERSON_ID)).thenReturn(null);
 
-    when(dateHelperService.now()).thenReturn(LocalDate.parse("2015-09-09").atStartOfDay());
+    lenient().when(dateHelperService.now())
+        .thenReturn(LocalDate.parse("2015-09-09").atStartOfDay());
   }
 
   @Test

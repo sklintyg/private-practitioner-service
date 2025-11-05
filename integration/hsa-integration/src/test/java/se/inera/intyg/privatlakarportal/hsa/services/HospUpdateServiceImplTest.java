@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -93,14 +93,14 @@ class HospUpdateServiceImplTest {
   void setup() {
     ReflectionTestUtils.setField(hospUpdateService, "mailInterval", 14400);
     ReflectionTestUtils.setField(hospUpdateService, "numberOfEmails", 3);
-    doReturn("traceId").when(mdcHelper).traceId();
-    doReturn("spanId").when(mdcHelper).spanId();
+    lenient().doReturn("traceId").when(mdcHelper).traceId();
+    lenient().doReturn("spanId").when(mdcHelper).spanId();
   }
 
   @Test
   void testUpdateHospInformationKanEjKontaktaHSA() {
     when(hospPersonService.getHospLastUpdate()).thenThrow(
-        new Exception("Could not send message"));
+        new IllegalStateException("Could not send message"));
 
     hospUpdateService.scheduledUpdateHospInformation();
 
@@ -135,7 +135,7 @@ class HospUpdateServiceImplTest {
 
     // Om det går fel vid kontakt med hsa ska uppdateringsrutinen ändå fortsätta med nästa i listan.
     when(hospPersonService.getHospPerson(PERSON_ID)).thenThrow(
-        new Exception("Could not send message"));
+        new IllegalStateException("Could not send message"));
     HospPerson hospPersonResponse2 = createGetHospPersonResponse();
     hospPersonResponse2.getTitleCodes().add("DT");
     hospPersonResponse2.getHsaTitles().add("Dietist");
@@ -208,7 +208,7 @@ class HospUpdateServiceImplTest {
     privatlakare.setPersonId(PERSON_ID);
 
     when(hospPersonService.getHospPerson(PERSON_ID)).thenThrow(
-        new Exception("Could not send message"));
+        new IllegalStateException("Could not send message"));
 
     assertThrows(HospUpdateFailedToContactHsaException.class,
         () -> hospUpdateService.updateHospInformation(privatlakare, true)
@@ -227,7 +227,7 @@ class HospUpdateServiceImplTest {
     privatlakare.setPersonId(PERSON_ID);
 
     when(hospPersonService.addToCertifier(eq(PERSON_ID), nullable(String.class)))
-        .thenThrow(new Exception("Could not send message"));
+        .thenThrow(new IllegalStateException("Could not send message"));
 
     assertThrows(HospUpdateFailedToContactHsaException.class,
         () -> hospUpdateService.updateHospInformation(privatlakare, true)
@@ -366,7 +366,8 @@ class HospUpdateServiceImplTest {
     privatlakare.setPersonId(PERSON_ID);
     privatlakare.setSenasteHospUppdatering(LocalDate.parse("2015-09-01").atStartOfDay());
 
-    when(hospPersonService.getHospLastUpdate()).thenThrow(new Exception("Could not send message"));
+    when(hospPersonService.getHospLastUpdate()).thenThrow(
+        new IllegalStateException("Could not send message"));
     hospUpdateService.checkForUpdatedHospInformation(privatlakare);
 
     assertEquals(LocalDate.parse("2015-09-01").atStartOfDay(),
@@ -384,7 +385,7 @@ class HospUpdateServiceImplTest {
         LocalDate.parse("2015-09-05").atStartOfDay());
 
     when(hospPersonService.getHospPerson(PERSON_ID)).thenThrow(
-        new Exception("Could not send message"));
+        new IllegalStateException("Could not send message"));
 
     hospUpdateService.checkForUpdatedHospInformation(privatlakare);
 
@@ -446,7 +447,7 @@ class HospUpdateServiceImplTest {
         LocalDate.parse("2015-09-05").atStartOfDay());
 
     // Läkarbehörigheten är borttagen ur HSA
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenThrow(new Exception());
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenThrow(new IllegalStateException());
 
     hospUpdateService.checkForUpdatedHospInformation(privatlakare);
 

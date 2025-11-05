@@ -14,3 +14,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation "org.springframework:spring-test"
 }
+
+testing.suites {
+    test { useJUnitJupiter() }
+}

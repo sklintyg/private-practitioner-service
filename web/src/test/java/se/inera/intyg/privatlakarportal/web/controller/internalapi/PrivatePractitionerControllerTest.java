@@ -18,21 +18,21 @@
  */
 package se.inera.intyg.privatlakarportal.web.controller.internalapi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
@@ -42,8 +42,8 @@ import se.inera.intyg.privatlakarportal.service.PrivatePractitionerService;
 import se.inera.intyg.privatlakarportal.service.model.PrivatePractitioner;
 import se.inera.intyg.privatlakarportal.web.controller.internalapi.dto.PrivatePractitionerDto;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PrivatePractitionerControllerTest {
+@ExtendWith(MockitoExtension.class)
+class PrivatePractitionerControllerTest {
 
   private static final String PERSONAL_IDENTITY_NUMBER = "191212121212";
 
@@ -57,7 +57,7 @@ public class PrivatePractitionerControllerTest {
   private PrivatePractitionerController privatePractitionerController;
 
   @Test
-  public void getPrivatePractitioners_ok() {
+  void getPrivatePractitioners_ok() {
     String hsaId1 = "SE123-1";
     String hsaId2 = "SE123-2";
     String personId = PERSONAL_IDENTITY_NUMBER;
@@ -75,22 +75,22 @@ public class PrivatePractitionerControllerTest {
     ResponseEntity<List<PrivatePractitionerDto>> privatePractitionersResponse = privatePractitionerController.getPrivatePractitioners();
 
     assertNotNull(privatePractitionersResponse);
-    assertSame(privatePractitionersResponse.getStatusCode(), HttpStatus.OK);
+    assertSame(HttpStatus.OK, privatePractitionersResponse.getStatusCode());
     assertEquals(2, privatePractitionersResponse.getBody().size());
   }
 
   @Test
-  public void getPrivatePractitioners_empty_ok() {
+  void getPrivatePractitioners_empty_ok() {
 
     ResponseEntity<List<PrivatePractitionerDto>> privatePractitionersResponse = privatePractitionerController.getPrivatePractitioners();
 
     assertNotNull(privatePractitionersResponse);
-    assertSame(privatePractitionersResponse.getStatusCode(), HttpStatus.OK);
+    assertSame(HttpStatus.OK, privatePractitionersResponse.getStatusCode());
     assertTrue(privatePractitionersResponse.getBody().isEmpty());
   }
 
   @Test
-  public void getPrivatePractitioner_hsaid_ok() {
+  void getPrivatePractitioner_hsaid_ok() {
     String hsaID = "SE123";
     String name = "My Name";
     String careprovider = "My Careprovider";
@@ -106,7 +106,7 @@ public class PrivatePractitionerControllerTest {
         hsaID);
 
     assertNotNull(privatePractitionerResponse);
-    assertSame(privatePractitionerResponse.getStatusCode(), HttpStatus.OK);
+    assertSame(HttpStatus.OK, privatePractitionerResponse.getStatusCode());
     PrivatePractitionerDto privatePractitioner = privatePractitionerResponse.getBody();
     assertNotNull(privatePractitioner);
     assertEquals(hsaID, privatePractitioner.getHsaId());
@@ -117,7 +117,7 @@ public class PrivatePractitionerControllerTest {
   }
 
   @Test
-  public void getPrivatePractitioner_personId_ok() {
+  void getPrivatePractitioner_personId_ok() {
     String hsaID = "SE123";
     String name = "My Name";
     String careprovider = "My Careprovider";
@@ -133,7 +133,7 @@ public class PrivatePractitionerControllerTest {
         .getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER);
 
     assertNotNull(privatePractitionerResponse);
-    assertSame(privatePractitionerResponse.getStatusCode(), HttpStatus.OK);
+    assertSame(HttpStatus.OK, privatePractitionerResponse.getStatusCode());
     PrivatePractitionerDto privatePractitioner = privatePractitionerResponse.getBody();
     assertNotNull(privatePractitioner);
     assertEquals(hsaID, privatePractitioner.getHsaId());
@@ -145,28 +145,28 @@ public class PrivatePractitionerControllerTest {
   }
 
   @Test
-  public void getPrivatePractitioner_notFound() {
+  void getPrivatePractitioner_notFound() {
     when(privatePractitionerService.getPrivatePractitioner(anyString())).thenReturn(null);
 
     ResponseEntity<PrivatePractitionerDto> notFoundResponse = privatePractitionerController.getPrivatePractitioner(
         "notFound");
 
     assertNotNull(notFoundResponse);
-    assertSame(notFoundResponse.getStatusCode(), HttpStatus.NOT_FOUND);
+    assertSame(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
 
   }
 
   @Test
-  public void getPrivatePractitioner_missingPersonOrHsaId() {
+  void getPrivatePractitioner_missingPersonOrHsaId() {
     ResponseEntity<PrivatePractitionerDto> notFoundResponse = privatePractitionerController.getPrivatePractitioner(
         null);
 
     assertNotNull(notFoundResponse);
-    assertSame(notFoundResponse.getStatusCode(), HttpStatus.NOT_FOUND);
+    assertSame(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
   }
 
   @Test
-  public void validatePrivatePractitioner() {
+  void validatePrivatePractitioner() {
     var validatePrivatePractitionerResponse = new ValidatePrivatePractitionerResponse();
     when(integrationService.validatePrivatePractitionerByPersonId(anyString())).thenReturn(
         validatePrivatePractitionerResponse);
