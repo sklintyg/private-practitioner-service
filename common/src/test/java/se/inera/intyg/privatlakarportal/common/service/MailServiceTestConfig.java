@@ -36,7 +36,7 @@ import se.inera.intyg.privatlakarportal.common.service.stub.MailStore;
 @PropertySource({"classpath:MailServiceTest/test.properties"})
 @EnableAspectJAutoProxy
 public class MailServiceTestConfig {
-
+  
   @Value("${mail.host}")
   private String mailHost;
 

@@ -21,37 +21,37 @@ package se.inera.intyg.privatlakarportal.persistence.repository;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 import se.inera.intyg.privatlakarportal.persistence.config.PersistenceConfigDev;
 import se.inera.intyg.privatlakarportal.persistence.model.Privatlakare;
 import se.inera.intyg.privatlakarportal.persistence.repository.util.PrivatelakareTestUtil;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {
     PersistenceConfigDev.class})
 @ActiveProfiles({"h2"})
 @Transactional
-public class PrivatlakareRepositoryTest {
+class PrivatlakareRepositoryTest {
 
   @Autowired
   private PrivatlakareRepository privatlakareRepository;
 
-  @Before
-  public void clear() {
+  @BeforeEach
+  void clear() {
     privatlakareRepository.deleteAll();
   }
 
@@ -96,7 +96,7 @@ public class PrivatlakareRepositoryTest {
   }
 
   @Test
-  public void testFindWithoutLakarBehorighet() {
+  void testFindWithoutLakarBehorighet() {
     Privatlakare p1 = privatlakareRepository.save(
         PrivatelakareTestUtil.buildPrivatlakare("p1", 1, true));
     Privatlakare p2 = privatlakareRepository.save(
@@ -121,7 +121,7 @@ public class PrivatlakareRepositoryTest {
   }
 
   @Test
-  public void testFindNeverHadLakarBehorighet() {
+  void testFindNeverHadLakarBehorighet() {
     Privatlakare p1 = privatlakareRepository.save(
         PrivatelakareTestUtil.buildPrivatlakare("p1", 1, true));
     Privatlakare p2 = privatlakareRepository.save(
@@ -148,7 +148,7 @@ public class PrivatlakareRepositoryTest {
   }
 
   @Test
-  public void testFindNeverHadBehorighetAndRegisteredBefore() {
+  void testFindNeverHadBehorighetAndRegisteredBefore() {
     Privatlakare p1 = PrivatelakareTestUtil.buildPrivatlakare("p1", 1, true);
     privatlakareRepository.save(p1);
     Privatlakare p2 = PrivatelakareTestUtil.buildPrivatlakare("p2", 2, false);

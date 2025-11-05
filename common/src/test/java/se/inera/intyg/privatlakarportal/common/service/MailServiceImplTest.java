@@ -40,55 +40,55 @@ import se.inera.intyg.privatlakarportal.persistence.model.Privatlakare;
 @ActiveProfiles(profiles = "dev")
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MailServiceTestConfig.class)
 class MailServiceImplTest {
+  
+  @Autowired
+  private MailStore mailStore;
 
-    @Autowired
-    private MailStore mailStore;
+  @Autowired
+  private MailService mailService;
 
-    @Autowired
-    private MailService mailService;
+  @Value("${mail.port}")
+  private String port;
 
-    @Value("${mail.port}")
-    private String port;
+  @Value("${mail.username}")
+  private String username;
 
-    @Value("${mail.username}")
-    private String username;
+  @Value("${mail.password}")
+  private String password;
 
-    @Value("${mail.password}")
-    private String password;
+  @Value("${mail.smtps.auth}")
+  private boolean smtpsAuth;
 
-    @Value("${mail.smtps.auth}")
-    private boolean smtpsAuth;
+  private Privatlakare createTestRegistration() {
+    Privatlakare privatlakare = new Privatlakare();
+    privatlakare.setPostadress("Testadress");
+    privatlakare.setAgarform("Testägarform");
+    privatlakare.setEpost("test@test.com");
+    return privatlakare;
+  }
 
-    private Privatlakare createTestRegistration() {
-        Privatlakare privatlakare = new Privatlakare();
-        privatlakare.setPostadress("Testadress");
-        privatlakare.setAgarform("Testägarform");
-        privatlakare.setEpost("test@test.com");
-        return privatlakare;
-    }
+  @Test
+  void testMailProperties() {
+    assertTrue(!password.isEmpty());
+    assertFalse(smtpsAuth);
+    assertEquals(25, Integer.parseInt(port));
+  }
 
-    @Test
-    void testMailProperties() {
-        assertTrue(!password.isEmpty());
-        assertFalse(smtpsAuth);
-        assertEquals(25, Integer.parseInt(port));
-    }
+  @Test
+  void testSendMail() {
+    Privatlakare privatlakare = createTestRegistration();
+    mailService.sendRegistrationStatusEmail(RegistrationStatus.AUTHORIZED, privatlakare);
+    mailStore.waitForMails(1);
 
-    @Test
-    void testSendMail() {
-        Privatlakare privatlakare = createTestRegistration();
-        mailService.sendRegistrationStatusEmail(RegistrationStatus.AUTHORIZED, privatlakare);
-        mailStore.waitForMails(1);
+    OutgoingMail oneMail = mailStore.getMails().get(0);
+    assertEquals(1, mailStore.getMails().size());
+    assertEquals("test@test.com", oneMail.getRecipients().get(0));
+    assertEquals("Webcert är klar att användas", oneMail.getSubject());
+  }
 
-        OutgoingMail oneMail = mailStore.getMails().get(0);
-        assertEquals(1, mailStore.getMails().size());
-        assertEquals("test@test.com", oneMail.getRecipients().get(0));
-        assertEquals("Webcert är klar att användas", oneMail.getSubject());
-    }
-
-    @AfterEach
-    void cleanMailStore() {
-        mailStore.getMails().clear();
-    }
+  @AfterEach
+  void cleanMailStore() {
+    mailStore.getMails().clear();
+  }
 
 }

@@ -18,35 +18,35 @@
  */
 package se.inera.intyg.privatlakarportal.persistence.repository;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import se.inera.intyg.privatlakarportal.persistence.config.PersistenceConfigDev;
 import se.inera.intyg.privatlakarportal.persistence.model.PrivatlakareId;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {
     PersistenceConfigDev.class})
 @ActiveProfiles({"h2"})
-public class PrivatlakareIdRepositoryTest {
+class PrivatlakareIdRepositoryTest {
 
   @Autowired
   private PrivatlakareIdRepository privatlakareIdRepository;
 
-  @Before
-  public void clear() {
+  @BeforeEach
+  void clear() {
     privatlakareIdRepository.deleteAll();
   }
 
   @Test
-  public void testFindMaxId() {
+  void testFindMaxId() {
     privatlakareIdRepository.save(new PrivatlakareId());
     privatlakareIdRepository.save(new PrivatlakareId());
     privatlakareIdRepository.save(new PrivatlakareId());

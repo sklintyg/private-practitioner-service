@@ -42,127 +42,128 @@ import se.inera.intyg.privatlakarportal.hsa.model.HospPerson;
 @ExtendWith(MockitoExtension.class)
 class HospPersonServiceImplTest {
 
-    private static final String VALID_PERSON_ID = "1912121212";
-    private static final String INVALID_PERSON_ID = "0000000000";
-    private static final String CERTIFIER_ID = "CERTIFIER_0001";
-    private static final String REASON = "Test";
-    private static final String ADD = "add";
-    private static final String REMOVE = "remove";
+  private static final String VALID_PERSON_ID = "1912121212";
+  private static final String INVALID_PERSON_ID = "0000000000";
+  private static final String CERTIFIER_ID = "CERTIFIER_0001";
+  private static final String REASON = "Test";
+  private static final String ADD = "add";
+  private static final String REMOVE = "remove";
 
-    @Mock
-    HsatkAuthorizationManagementService authorizationManagementService;
+  @Mock
+  HsatkAuthorizationManagementService authorizationManagementService;
 
-    @InjectMocks
-    HospPersonServiceImpl hospPersonService;
+  @InjectMocks
+  HospPersonServiceImpl hospPersonService;
 
-    @BeforeEach
-    void setupExpectations() {
+  @BeforeEach
+  void setupExpectations() {
 
-        HospCredentialsForPerson response = new HospCredentialsForPerson();
+    HospCredentialsForPerson response = new HospCredentialsForPerson();
 
-        response.setPersonalIdentityNumber(VALID_PERSON_ID);
-        response.setPersonalPrescriptionCode(CERTIFIER_ID);
+    response.setPersonalIdentityNumber(VALID_PERSON_ID);
+    response.setPersonalPrescriptionCode(CERTIFIER_ID);
 
-        when(authorizationManagementService.getHospCredentialsForPersonResponseType(
-            VALID_PERSON_ID)).thenReturn(response);
+    when(authorizationManagementService.getHospCredentialsForPersonResponseType(
+        VALID_PERSON_ID)).thenReturn(response);
 
-        when(authorizationManagementService.getHospCredentialsForPersonResponseType(
-            INVALID_PERSON_ID)).thenReturn(null);
-    }
+    when(authorizationManagementService.getHospCredentialsForPersonResponseType(
+        INVALID_PERSON_ID)).thenReturn(null);
+  }
 
-    @Test
-    void testGetHsaPersonInfoWithValidPerson() {
+  @Test
+  void testGetHsaPersonInfoWithValidPerson() {
 
-        HospPerson res = hospPersonService.getHospPerson(VALID_PERSON_ID);
+    HospPerson res = hospPersonService.getHospPerson(VALID_PERSON_ID);
 
-        assertNotNull(res);
-    }
+    assertNotNull(res);
+  }
 
-    @Test
-    void testGetHsaPersonInfoWithInvalidPerson() {
+  @Test
+  void testGetHsaPersonInfoWithInvalidPerson() {
 
-        HospPerson res = hospPersonService.getHospPerson(INVALID_PERSON_ID);
+    HospPerson res = hospPersonService.getHospPerson(INVALID_PERSON_ID);
 
-        assertNull(res);
-    }
+    assertNull(res);
+  }
 
 
-    @Test
-    void testAddToCertifier() {
-        Result response = new Result();
-        response.setResultText("OK");
-        when(authorizationManagementService.handleHospCertificationPersonResponseType(anyString(),
-            anyString(), anyString(), isNull())).thenReturn(response);
+  @Test
+  void testAddToCertifier() {
+    Result response = new Result();
+    response.setResultText("OK");
+    when(authorizationManagementService.handleHospCertificationPersonResponseType(anyString(),
+        anyString(), anyString(), isNull())).thenReturn(response);
 
-        hospPersonService.addToCertifier(VALID_PERSON_ID, CERTIFIER_ID);
+    hospPersonService.addToCertifier(VALID_PERSON_ID, CERTIFIER_ID);
 
-        verify(authorizationManagementService).handleHospCertificationPersonResponseType(CERTIFIER_ID,
-            ADD, VALID_PERSON_ID, null);
-    }
+    verify(authorizationManagementService).handleHospCertificationPersonResponseType(CERTIFIER_ID,
+        ADD, VALID_PERSON_ID, null);
+  }
 
-    @Test
-    void testRemoveFromCertifier() {
+  @Test
+  void testRemoveFromCertifier() {
 
-        Result response = new Result();
-        response.setResultText("OK");
-        when(authorizationManagementService.handleHospCertificationPersonResponseType(anyString(),
-            anyString(), anyString(), anyString())).thenReturn(response);
+    Result response = new Result();
+    response.setResultText("OK");
+    when(authorizationManagementService.handleHospCertificationPersonResponseType(anyString(),
+        anyString(), anyString(), anyString())).thenReturn(response);
 
-        hospPersonService.removeFromCertifier(VALID_PERSON_ID, CERTIFIER_ID, REASON);
+    hospPersonService.removeFromCertifier(VALID_PERSON_ID, CERTIFIER_ID, REASON);
 
-        verify(authorizationManagementService).handleHospCertificationPersonResponseType(CERTIFIER_ID,
-            REMOVE, VALID_PERSON_ID, REASON);
-    }
+    verify(authorizationManagementService).handleHospCertificationPersonResponseType(CERTIFIER_ID,
+        REMOVE, VALID_PERSON_ID, REASON);
+  }
 
-    @Test
-    void testAddToCertifierTrue() {
-        Result result = new Result();
-        result.setResultCode("OK");
-        result.setResultText("Det blev bra.");
-        when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID, ADD,
-            VALID_PERSON_ID, null)).thenReturn(result);
+  @Test
+  void testAddToCertifierTrue() {
+    Result result = new Result();
+    result.setResultCode("OK");
+    result.setResultText("Det blev bra.");
+    when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID, ADD,
+        VALID_PERSON_ID, null)).thenReturn(result);
 
-        assertTrue(hospPersonService.addToCertifier(VALID_PERSON_ID, CERTIFIER_ID));
-        verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
-            CERTIFIER_ID, ADD, VALID_PERSON_ID, null);
-    }
+    assertTrue(hospPersonService.addToCertifier(VALID_PERSON_ID, CERTIFIER_ID));
+    verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
+        CERTIFIER_ID, ADD, VALID_PERSON_ID, null);
+  }
 
-    @Test
-    void testAddToCertifierFalse() {
-        Result result = new Result();
-        result.setResultCode("Fail");
-        result.setResultText("Det blev inte bra.");
-        when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID, ADD,
-            VALID_PERSON_ID, null)).thenReturn(result);
+  @Test
+  void testAddToCertifierFalse() {
+    Result result = new Result();
+    result.setResultCode("Fail");
+    result.setResultText("Det blev inte bra.");
+    when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID, ADD,
+        VALID_PERSON_ID, null)).thenReturn(result);
 
-        assertFalse(hospPersonService.addToCertifier(VALID_PERSON_ID, CERTIFIER_ID));
-        verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
-            CERTIFIER_ID, ADD, VALID_PERSON_ID, null);
-    }
+    assertFalse(hospPersonService.addToCertifier(VALID_PERSON_ID, CERTIFIER_ID));
+    verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
+        CERTIFIER_ID, ADD, VALID_PERSON_ID, null);
+  }
 
-    @Test
-    void testRemoveFromCertifierTrue() {
-        Result result = new Result();
-        result.setResultCode("OK");
-        result.setResultText("Det blev bra.");
-        when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID,
-            REMOVE, VALID_PERSON_ID, REASON)).thenReturn(result);
 
-        assertTrue(hospPersonService.removeFromCertifier(VALID_PERSON_ID, CERTIFIER_ID, REASON));
-        verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
-            CERTIFIER_ID, REMOVE, VALID_PERSON_ID, REASON);
-    }
+  @Test
+  void testRemoveFromCertifierTrue() {
+    Result result = new Result();
+    result.setResultCode("OK");
+    result.setResultText("Det blev bra.");
+    when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID,
+        REMOVE, VALID_PERSON_ID, REASON)).thenReturn(result);
 
-    @Test
-    void testRemoveFromCertifierFalse() {
-        Result result = new Result();
-        result.setResultCode("Fail");
-        result.setResultText("Det blev inte bra.");
-        when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID,
-            REMOVE, VALID_PERSON_ID, REASON)).thenReturn(result);
+    assertTrue(hospPersonService.removeFromCertifier(VALID_PERSON_ID, CERTIFIER_ID, REASON));
+    verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
+        CERTIFIER_ID, REMOVE, VALID_PERSON_ID, REASON);
+  }
 
-        assertFalse(hospPersonService.removeFromCertifier(VALID_PERSON_ID, CERTIFIER_ID, REASON));
-        verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
-            CERTIFIER_ID, REMOVE, VALID_PERSON_ID, REASON);
-    }
+  @Test
+  void testRemoveFromCertifierFalse() {
+    Result result = new Result();
+    result.setResultCode("Fail");
+    result.setResultText("Det blev inte bra.");
+    when(authorizationManagementService.handleHospCertificationPersonResponseType(CERTIFIER_ID,
+        REMOVE, VALID_PERSON_ID, REASON)).thenReturn(result);
+
+    assertFalse(hospPersonService.removeFromCertifier(VALID_PERSON_ID, CERTIFIER_ID, REASON));
+    verify(authorizationManagementService, times(1)).handleHospCertificationPersonResponseType(
+        CERTIFIER_ID, REMOVE, VALID_PERSON_ID, REASON);
+  }
 }

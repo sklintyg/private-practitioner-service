@@ -7,4 +7,10 @@ dependencies {
     implementation "org.hibernate.orm:hibernate-hikaricp"
     implementation "org.liquibase:liquibase-core"
     implementation "org.springframework.data:spring-data-jpa"
+
+    testImplementation 'org.hamcrest:hamcrest'
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.mockito:mockito-core"
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation "org.springframework:spring-test"
 }
