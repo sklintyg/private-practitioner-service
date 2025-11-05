@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.services;
+package se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services;
 
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,20 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.kodverk.Befattningar;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.kodverk.Vardformer;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.kodverk.Verksamhetstyper;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.ArbetsplatsKodDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.BefattningDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.CareProviderDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.CvDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.EnhetsTyp;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.GeografiskIndelningDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.GetPrivatePractitionerResponseDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.HoSPersonDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.HsaIdDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.LegitimeradYrkesgruppDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.PersonIdDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.ResultCodeEnum;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.SpecialitetDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.VerksamhetDTO;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.Befattning;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.LegitimeradYrkesgrupp;
@@ -38,20 +52,6 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.mode
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.service.DateHelperService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.utils.PrivatlakareUtils;
-import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitionerresponder.v1.GetPrivatePractitionerResponseType;
-import se.riv.infrastructure.directory.privatepractitioner.types.v1.ArbetsplatsKod;
-import se.riv.infrastructure.directory.privatepractitioner.types.v1.CV;
-import se.riv.infrastructure.directory.privatepractitioner.types.v1.HsaId;
-import se.riv.infrastructure.directory.privatepractitioner.types.v1.PersonId;
-import se.riv.infrastructure.directory.privatepractitioner.v1.BefattningType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.EnhetType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.GeografiskIndelningType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.HoSPersonType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.LegitimeradYrkesgruppType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.ResultCodeEnum;
-import se.riv.infrastructure.directory.privatepractitioner.v1.SpecialitetType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.VardgivareType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.VerksamhetType;
 
 /**
  * Created by pebe on 2015-08-17.
@@ -81,9 +81,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
   @Override
   @Transactional
-  public GetPrivatePractitionerResponseType getPrivatePractitionerByHsaId(String personHsaId) {
+  public GetPrivatePractitionerResponseDTO getPrivatePractitionerByHsaId(String personHsaId) {
 
-    GetPrivatePractitionerResponseType response = new GetPrivatePractitionerResponseType();
+    final var response = new GetPrivatePractitionerResponseDTO();
 
     Privatlakare privatlakare = privatlakareRepository.findByHsaId(personHsaId);
 
@@ -102,10 +102,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
   @Override
   @Transactional
-  public GetPrivatePractitionerResponseType getPrivatePractitionerByPersonId(
+  public GetPrivatePractitionerResponseDTO getPrivatePractitionerByPersonId(
       String personalIdentityNumber) {
 
-    GetPrivatePractitionerResponseType response = new GetPrivatePractitionerResponseType();
+    final var response = new GetPrivatePractitionerResponseDTO();
 
     Privatlakare privatlakare = privatlakareRepository.findByPersonId(personalIdentityNumber);
 
@@ -165,55 +165,55 @@ public class IntegrationServiceImpl implements IntegrationService {
   private static final String HSAID_ROOT = "1.2.752.129.2.1.4.1";
   private static final String PERSONID_ROOT = "1.2.752.129.2.1.3.1";
 
-  private HsaId convertToHsaId(String ext) {
+  private HsaIdDTO convertToHsaId(String ext) {
     if (ext == null) {
       return null;
     }
-    HsaId hsaId = new HsaId();
+    final var hsaId = new HsaIdDTO();
     hsaId.setRoot(HSAID_ROOT);
     hsaId.setExtension(ext);
     return hsaId;
   }
 
-  private ArbetsplatsKod convertToArbetsplatsKod(String ext) {
+  private ArbetsplatsKodDTO convertToArbetsplatsKod(String ext) {
     if (ext == null) {
       return null;
     }
-    ArbetsplatsKod arbetsplatsKod = new ArbetsplatsKod();
+    final var arbetsplatsKod = new ArbetsplatsKodDTO();
     arbetsplatsKod.setRoot(ARBETSPLATSKOD_ROOT);
     arbetsplatsKod.setExtension(ext);
     return arbetsplatsKod;
   }
 
-  private PersonId convertToPersonId(String ext) {
+  private PersonIdDTO convertToPersonId(String ext) {
     if (ext == null) {
       return null;
     }
-    PersonId personId = new PersonId();
+    final var personId = new PersonIdDTO();
     personId.setRoot(PERSONID_ROOT);
     personId.setExtension(ext);
     return personId;
   }
 
   private void convertPrivatlakareToResponse(Privatlakare privatlakare,
-      GetPrivatePractitionerResponseType response) {
-    HoSPersonType hoSPersonType = new HoSPersonType();
+      GetPrivatePractitionerResponseDTO response) {
+    final var hoSPersonType = new HoSPersonDTO();
 
-    VardgivareType vardgivareType = new VardgivareType();
+    final var vardgivareType = new CareProviderDTO();
     vardgivareType.setSlutdatum(privatlakare.getVardgivareSlutdatum());
     vardgivareType.setStartdatum(privatlakare.getVardgivareStartdatum());
     vardgivareType.setVardgivareId(convertToHsaId(privatlakare.getVardgivareId()));
     vardgivareType.setVardgivarenamn(privatlakare.getVardgivareNamn());
 
-    GeografiskIndelningType geografiskIndelningType = new GeografiskIndelningType();
-    CV kommunCv = new CV();
+    final var geografiskIndelningType = new GeografiskIndelningDTO();
+    final var kommunCv = new CvDTO();
     kommunCv.setDisplayName(privatlakare.getKommun());
     geografiskIndelningType.setKommun(kommunCv);
-    CV lanCv = new CV();
+    final var lanCv = new CvDTO();
     lanCv.setDisplayName(privatlakare.getLan());
     geografiskIndelningType.setLan(lanCv);
 
-    EnhetType enhetType = new EnhetType();
+    final var enhetType = new EnhetsTyp();
     enhetType.setAgarform(privatlakare.getAgarform());
     enhetType.setArbetsplatskod(convertToArbetsplatsKod(privatlakare.getArbetsplatsKod()));
     enhetType.setEnhetsId(convertToHsaId(privatlakare.getEnhetsId()));
@@ -228,11 +228,11 @@ public class IntegrationServiceImpl implements IntegrationService {
     enhetType.setTelefonnummer(privatlakare.getTelefonnummer());
     enhetType.setVardgivare(vardgivareType);
 
-    VerksamhetType verksamhetType = new VerksamhetType();
+    final var verksamhetType = new VerksamhetDTO();
     if (privatlakare.getVardformer() != null) {
       for (Vardform vardform : privatlakare.getVardformer()) {
 
-        CV vardformCv = new CV();
+        final var vardformCv = new CvDTO();
         vardformCv.setCodeSystemName(Vardformer.VARDFORM_NAME);
         vardformCv.setCodeSystemVersion(Vardformer.VARDFORM_VERSION);
         vardformCv.setCodeSystem(Vardformer.VARDFORM_OID);
@@ -245,7 +245,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     if (privatlakare.getVerksamhetstyper() != null) {
       for (Verksamhetstyp verksamhetstyp : privatlakare.getVerksamhetstyper()) {
 
-        CV verksamhetstypCv = new CV();
+        final var verksamhetstypCv = new CvDTO();
         verksamhetstypCv.setCodeSystemName(Verksamhetstyper.VERKSAMHETSTYP_NAME);
         verksamhetstypCv.setCodeSystemVersion(Verksamhetstyper.VERKSAMHETSTYP_VERSION);
         verksamhetstypCv.setCodeSystem(Verksamhetstyper.VERKSAMHETSTYP_OID);
@@ -267,7 +267,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     if (privatlakare.getBefattningar() != null) {
       for (Befattning befattning : privatlakare.getBefattningar()) {
 
-        BefattningType befattningType = new BefattningType();
+        final var befattningType = new BefattningDTO();
         befattningType.setKod(befattning.getKod());
         befattningType.setNamn(Befattningar.getDisplayName(befattning.getKod()));
 
@@ -277,7 +277,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     if (privatlakare.getLegitimeradeYrkesgrupper() != null) {
       for (LegitimeradYrkesgrupp legitimeradYrkesgrupp : privatlakare.getLegitimeradeYrkesgrupper()) {
-        LegitimeradYrkesgruppType legitimeradYrkesgruppType = new LegitimeradYrkesgruppType();
+        final var legitimeradYrkesgruppType = new LegitimeradYrkesgruppDTO();
         legitimeradYrkesgruppType.setKod(legitimeradYrkesgrupp.getKod());
         legitimeradYrkesgruppType.setNamn(legitimeradYrkesgrupp.getNamn());
         hoSPersonType.getLegitimeradYrkesgrupp().add(legitimeradYrkesgruppType);
@@ -287,7 +287,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     if (privatlakare.getSpecialiteter() != null) {
       for (Specialitet specialitet : privatlakare.getSpecialiteter()) {
 
-        SpecialitetType specialitetType = new SpecialitetType();
+        final var specialitetType = new SpecialitetDTO();
         specialitetType.setKod(specialitet.getKod());
         specialitetType.setNamn(specialitet.getNamn());
 

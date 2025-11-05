@@ -45,15 +45,13 @@ import se.inera.intyg.privatepractitionerservice.application.web.controller.inte
 import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.ValidatePrivatePractitionerResultCode;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospUpdateService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.json.CustomObjectMapper;
-import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.services.IntegrationServiceImpl;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.HoSPersonDTO;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.ResultCodeEnum;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.LegitimeradYrkesgrupp;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.Privatlakare;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.service.DateHelperService;
-import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitionerresponder.v1.GetPrivatePractitionerResponseType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.HoSPersonType;
-import se.riv.infrastructure.directory.privatepractitioner.v1.ResultCodeEnum;
 
 /**
  * Created by pebe on 2015-08-18.
@@ -84,7 +82,7 @@ class IntegrationServiceTest {
   private static final String FINNS_EJ_PERSON_ID = "196705053723";
   private static final String INVALID_PERSON_ID = "XXYYZZAABBCC";
 
-  private HoSPersonType verifyHosPerson;
+  private HoSPersonDTO verifyHosPerson;
 
   @BeforeEach
   void setup() throws IOException {
@@ -105,7 +103,7 @@ class IntegrationServiceTest {
     privatlakareEjLakare.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupper);
 
     res = new ClassPathResource("IntegrationServiceTest/test_HosPerson.json");
-    verifyHosPerson = objectMapper.readValue(res.getInputStream(), HoSPersonType.class);
+    verifyHosPerson = objectMapper.readValue(res.getInputStream(), HoSPersonDTO.class);
 
     lenient().when(privatlakareRepository.findByHsaId(GODKAND_HSA_ID)).thenReturn(privatlakare);
     lenient().when(privatlakareRepository.findByPersonId(GODKAND_PERSON_ID))
@@ -123,8 +121,7 @@ class IntegrationServiceTest {
 
   @Test
   void testGetPrivatePractitionerByHsaId() {
-    GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByHsaId(
-        GODKAND_HSA_ID);
+    final var response = integrationService.getPrivatePractitionerByHsaId(GODKAND_HSA_ID);
     Assertions.assertEquals(ResultCodeEnum.OK, response.getResultCode());
     assertNotNull(response.getHoSPerson());
     org.assertj.core.api.Assertions.assertThat(response.getHoSPerson())
@@ -135,8 +132,7 @@ class IntegrationServiceTest {
 
   @Test
   void testGetPrivatePractitionerByPersonId() {
-    GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByPersonId(
-        GODKAND_PERSON_ID);
+    final var response = integrationService.getPrivatePractitionerByPersonId(GODKAND_PERSON_ID);
     Assertions.assertEquals(ResultCodeEnum.OK, response.getResultCode());
     assertNotNull(response.getHoSPerson());
     org.assertj.core.api.Assertions.assertThat(response.getHoSPerson())
@@ -147,16 +143,14 @@ class IntegrationServiceTest {
 
   @Test
   void testGetPrivatePractitionerByHsaIdNonExisting() {
-    GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByHsaId(
-        FINNS_EJ_HSA_ID);
+    final var response = integrationService.getPrivatePractitionerByHsaId(FINNS_EJ_HSA_ID);
     Assertions.assertEquals(ResultCodeEnum.ERROR, response.getResultCode());
     assertNull(response.getHoSPerson());
   }
 
   @Test
   void testGetPrivatePractitionerByPersonIdNonExisting() {
-    GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByPersonId(
-        FINNS_EJ_PERSON_ID);
+    final var response = integrationService.getPrivatePractitionerByPersonId(FINNS_EJ_PERSON_ID);
     Assertions.assertEquals(ResultCodeEnum.ERROR, response.getResultCode());
     assertNull(response.getHoSPerson());
     assertFalse("The personId must be hashed and not displayed in clear text.",
@@ -165,8 +159,7 @@ class IntegrationServiceTest {
 
   @Test
   void testGetPrivatePractitionerByInvalidPersonIdNonExisting() {
-    GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByPersonId(
-        INVALID_PERSON_ID);
+    final var response = integrationService.getPrivatePractitionerByPersonId(INVALID_PERSON_ID);
     Assertions.assertEquals(ResultCodeEnum.ERROR, response.getResultCode());
     assertNull(response.getHoSPerson());
     assertFalse("The personId must be hashed and not displayed in clear text.",

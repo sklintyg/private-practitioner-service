@@ -9,8 +9,6 @@ plugins {
 ext {
     intygBomVersion = System.properties['intygBomVersion'] ?: '0.0.1-SNAPSHOT'
 
-    ppSchemasVersion = "1.0.5.2"
-
     nvdMirror = 'https://vulnz-nvd-mirror-devtest.intyg.nordicmedtest.se'
 }
 

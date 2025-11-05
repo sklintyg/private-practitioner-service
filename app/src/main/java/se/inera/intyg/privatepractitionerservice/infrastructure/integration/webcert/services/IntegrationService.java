@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.services;
+package se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services;
 
 import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.ValidatePrivatePractitionerResponse;
-import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitionerresponder.v1.GetPrivatePractitionerResponseType;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.dto.GetPrivatePractitionerResponseDTO;
 
 /**
  * Created by pebe on 2015-08-17.
  */
 public interface IntegrationService {
 
-  GetPrivatePractitionerResponseType getPrivatePractitionerByHsaId(String personHsaId);
+  GetPrivatePractitionerResponseDTO getPrivatePractitionerByHsaId(String personHsaId);
 
-  GetPrivatePractitionerResponseType getPrivatePractitionerByPersonId(
+  GetPrivatePractitionerResponseDTO getPrivatePractitionerByPersonId(
       String personalIdentityNumber);
 
   ValidatePrivatePractitionerResponse validatePrivatePractitionerByPersonId(

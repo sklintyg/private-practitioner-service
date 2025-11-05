@@ -37,7 +37,7 @@ import se.inera.intyg.privatepractitionerservice.application.web.integration.stu
 import se.inera.intyg.privatepractitionerservice.application.web.integration.stub.model.HsaPerson;
 import se.inera.intyg.privatepractitionerservice.application.web.integration.test.dto.PrivatlakareDto;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospUpdateService;
-import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.services.IntegrationService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.IntegrationService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.HospUppdatering;

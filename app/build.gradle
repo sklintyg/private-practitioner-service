@@ -28,8 +28,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-redis"
     implementation "org.springframework.boot:spring-boot-starter-web"
 
-    implementation "se.inera.intyg.infrastructure.directory.privatepractitioner:intyg-infrastructure-directory-privatepractitioner-schemas:${ppSchemasVersion}"
-
     runtimeOnly "com.mysql:mysql-connector-j"
 
     compileOnly "jakarta.persistence:jakarta.persistence-api"

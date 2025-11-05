@@ -41,7 +41,7 @@ import se.inera.intyg.privatepractitionerservice.application.web.controller.inte
 import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.PrivatePractitionerDto;
 import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.ValidatePrivatePractitionerResponse;
-import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.services.IntegrationService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.IntegrationService;
 
 @ExtendWith(MockitoExtension.class)
 class PrivatePractitionerControllerTest {
