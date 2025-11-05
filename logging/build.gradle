@@ -1,8 +1,14 @@
 dependencies {
+    implementation "com.google.guava:guava:${guavaVersion}"
     implementation "jakarta.servlet:jakarta.servlet-api"
     implementation "org.aspectj:aspectjweaver"
+    implementation "org.slf4j:slf4j-api"
     implementation "org.springframework:spring-webmvc"
-    implementation "com.google.guava:guava:${guavaVersion}"
 
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    
     testImplementation "org.springframework:spring-test"
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.mockito:mockito-core"
 }
