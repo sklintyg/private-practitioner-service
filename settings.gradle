@@ -12,11 +12,15 @@ dependencyResolutionManagement {
 
 rootProject.name = 'private-practitioner-service'
 
+include ':web',
+        ':integration/hsa-integration',
+        ':integration/wc-integration',
+        ':persistence',
+        ':common',
+        ':logging',
+        ':app'
+
 include ':web', ':integration/hsa-integration', ':integration/wc-integration', ':persistence', ':common', ':logging'
 
-project(':web').name = 'private-practitioner-service-web'
 project(':integration/hsa-integration').name = 'private-practitioner-service-hsa-integration'
 project(':integration/wc-integration').name = 'private-practitioner-service-wc-integration'
-project(':persistence').name = 'private-practitioner-service-persistence'
-project(':common').name = 'private-practitioner-service-common'
-project(':logging').name = 'private-practitioner-service-logging'

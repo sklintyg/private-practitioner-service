@@ -108,7 +108,7 @@ public abstract class PersistenceConfigBase {
   SpringLiquibase initDb(DataSource dataSource) {
     final SpringLiquibase springLiquibase = new SpringLiquibase();
     springLiquibase.setDataSource(dataSource);
-    springLiquibase.setChangeLog("classpath:changelog/changelog.xml");
+    springLiquibase.setChangeLog("classpath:changelog/db.changelog-master.xml");
     return springLiquibase;
   }
 

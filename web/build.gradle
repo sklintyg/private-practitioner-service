@@ -1,44 +1,5 @@
-apply plugin: 'org.gretty'
 apply plugin: 'idea'
 apply plugin: 'war'
-
-def buildDirectory = project.layout.buildDirectory.get().asFile
-
-gretty {
-    def instance = System.properties['instance'] ?: '0'
-    def useHttpPort = 8060 + (instance as Integer)
-    def useInternalHttpPort = 8160 + (instance as Integer)
-    def applicationDir = "${rootProject.projectDir}/devops/dev"
-
-    servletContainer = 'tomcat10'
-    contextPath = '/'
-
-    // No webapp directory needed - pure backend service
-    inplaceMode = 'soft'
-
-    integrationTestTask = null
-    scanInterval = 0
-    debugPort = 8860 + (instance as Integer)
-    portPropertiesFileName = "gretty_ports_${instance}.properties"
-    debugSuspend = false
-    fastReload = true
-    enableNaming = true
-    serverConfigFile = "tomcat-gretty.xml"
-
-    jvmArgs = [
-            "-Dcatalina.base=${buildDirectory}/catalina.base",
-            "-Dspring.profiles.active=dev,caching-enabled,testability,pu-integration-intyg-proxy-service",
-            "-Dfile.encoding=UTF-8",
-            "-Dapplication.dir=${applicationDir}",
-            "-Ddev.config.file=${applicationDir}/config/application-dev.properties",
-            "-Ddev.http.port=${useHttpPort}",
-            "-Ddev.http.port.internal=${useInternalHttpPort}"
-    ]
-}
-
-test {
-    environment "catalina.base", "${buildDirectory}/catalina.base"
-}
 
 tasks.register('restAssuredTest', Test) {
     outputs.upToDateWhen { false }
@@ -53,11 +14,11 @@ test { exclude '**/*IT*' }
 
 
 dependencies {
-    implementation project(":private-practitioner-service-common")
+    implementation project(":common")
     implementation project(":private-practitioner-service-hsa-integration")
-    implementation project(":private-practitioner-service-persistence")
+    implementation project(":persistence")
     implementation project(":private-practitioner-service-wc-integration")
-    implementation project(":private-practitioner-service-logging")
+    implementation project(":logging")
 
     implementation "se.inera.intyg.schemas:schemas-contract:${schemasContractVersion}"
     implementation "se.riv.itintegration.monitoring:itintegration-monitoring-schemas:${rivtaItintegrationMonitoringSchemasVersion}"

@@ -33,5 +33,5 @@ dependencies {
     runtimeOnly "com.mysql:mysql-connector-j"
     runtimeOnly "org.liquibase:liquibase-core"
     runtimeOnly "org.liquibase.ext:liquibase-hibernate6:${liquibaseHibernate6Version}"
-    runtimeOnly project(':private-practitioner-service-persistence')
+    runtimeOnly project(':persistence')
 }
