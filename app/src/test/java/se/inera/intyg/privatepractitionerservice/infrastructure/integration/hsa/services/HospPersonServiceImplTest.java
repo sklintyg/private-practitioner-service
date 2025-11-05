@@ -35,10 +35,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.inera.intyg.infra.integration.hsatk.model.HospCredentialsForPerson;
-import se.inera.intyg.infra.integration.hsatk.model.Result;
-import se.inera.intyg.infra.integration.hsatk.services.HsatkAuthorizationManagementService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.model.HospPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 
 @ExtendWith(MockitoExtension.class)
 class HospPersonServiceImplTest {
@@ -51,7 +51,7 @@ class HospPersonServiceImplTest {
   private static final String REMOVE = "remove";
 
   @Mock
-  HsatkAuthorizationManagementService authorizationManagementService;
+  HospService authorizationManagementService;
 
   @InjectMocks
   HospPersonServiceImpl hospPersonService;

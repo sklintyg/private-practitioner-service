@@ -19,7 +19,6 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -31,11 +30,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource(ignoreResourceNotFound = true,
     value = {"classpath:application.properties", "file:${dev.config.file}",
         "classpath:version.properties"})
-@ComponentScan({
-    "se.inera.intyg.infra.integration.intygproxyservice",
-    "se.inera.intyg.infra.pu.integration.intygproxyservice",
-    "se.inera.intyg.infra.rediscache.core"
-})
 public class ApplicationConfig {
 
   @Bean
@@ -50,6 +44,4 @@ public class ApplicationConfig {
     source.setUseCodeAsDefaultMessage(true);
     return source;
   }
-
-
 }

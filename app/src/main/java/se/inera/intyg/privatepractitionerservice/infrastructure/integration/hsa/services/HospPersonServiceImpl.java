@@ -25,12 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import se.inera.intyg.infra.integration.hsatk.model.HCPSpecialityCodes;
-import se.inera.intyg.infra.integration.hsatk.model.HealthCareProfessionalLicence;
-import se.inera.intyg.infra.integration.hsatk.model.HospCredentialsForPerson;
-import se.inera.intyg.infra.integration.hsatk.model.Result;
-import se.inera.intyg.infra.integration.hsatk.services.HsatkAuthorizationManagementService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.model.HospPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 
 @Service
 public class HospPersonServiceImpl implements HospPersonService {
@@ -39,7 +39,7 @@ public class HospPersonServiceImpl implements HospPersonService {
   private static final String OK = "OK";
 
   @Autowired
-  private HsatkAuthorizationManagementService authorizationManagementService;
+  private HospService authorizationManagementService;
 
   @Override
   public HospPerson getHospPerson(String personId) {

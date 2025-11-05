@@ -13,3 +13,5 @@ dependencyResolutionManagement {
 rootProject.name = 'private-practitioner-service'
 
 include 'app'
+include 'integration-api'
+include 'integration-intyg-proxy-service'

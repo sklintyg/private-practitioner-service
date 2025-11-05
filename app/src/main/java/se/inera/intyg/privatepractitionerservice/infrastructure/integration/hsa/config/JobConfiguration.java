@@ -21,32 +21,18 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * Jobs depends on external redis for locking, and the same instance as for caching (see infra) is
- * used.
- */
-@Profile("caching-enabled")
 @Configuration
 @EnableScheduling
 @EnableSchedulerLock(defaultLockAtMostFor = "PT20M")
 public class JobConfiguration {
 
-  private static final Logger LOG = LoggerFactory.getLogger(JobConfiguration.class);
-
-  @Autowired
-  private JedisConnectionFactory jedisConnectionFactory;
-
   @Bean
-  public LockProvider lockProvider() {
-    return new RedisLockProvider(jedisConnectionFactory, "pp");
+  public LockProvider lockProvider(RedisConnectionFactory redisConnectionFactory) {
+    return new RedisLockProvider(redisConnectionFactory, "pp");
   }
 }
