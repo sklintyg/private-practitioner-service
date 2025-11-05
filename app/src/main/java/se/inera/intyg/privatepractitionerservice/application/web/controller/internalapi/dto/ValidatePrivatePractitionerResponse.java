@@ -19,7 +19,6 @@
 package se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto;
 
 import lombok.Data;
-import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResultCode;
 
 @Data
 public class ValidatePrivatePractitionerResponse {

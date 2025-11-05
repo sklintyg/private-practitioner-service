@@ -35,7 +35,6 @@ import se.inera.intyg.privatepractitionerservice.application.service.monitoring.
 import se.inera.intyg.privatepractitionerservice.application.web.integration.test.dto.PrivatlakareDto;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalErrorCodeEnum;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalServiceException;
-import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospPersonService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospUpdateService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.exception.HospUpdateFailedToContactHsaException;
@@ -63,9 +62,6 @@ public class RegisterServiceImpl implements RegisterService {
   private static final Logger LOG = LoggerFactory.getLogger(RegisterServiceImpl.class);
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
   private PrivatlakareRepository privatlakareRepository;
 
   @Autowired
@@ -91,9 +87,8 @@ public class RegisterServiceImpl implements RegisterService {
   private MonitoringLogService monitoringService;
 
   @Override
-  public HospInformation getHospInformation() {
-    HospPerson response = hospPersonService.getHospPerson(
-        userService.getUser().getPersonalIdentityNumber());
+  public HospInformation getHospInformation(String personalIdentityNumber) {
+    final var response = hospPersonService.getHospPerson(personalIdentityNumber);
 
     if (response == null) {
       return null;
@@ -109,8 +104,8 @@ public class RegisterServiceImpl implements RegisterService {
 
   @Override
   @Transactional(transactionManager = "transactionManager")
-  public RegistrationStatus createRegistration(Registration registration,
-      Long godkantMedgivandeVersion) {
+  public RegistrationStatus createRegistration(String personalIdentityNumber,
+      Registration registration, Long godkantMedgivandeVersion) {
 
     if (registration == null || !registration.checkIsValid()) {
       LOG.error("createRegistration: CreateRegistrationRequest is not valid");
@@ -126,29 +121,28 @@ public class RegisterServiceImpl implements RegisterService {
           "Not allowed to create registration without medgivande");
     }
 
-    if (privatlakareRepository.findByPersonId(userService.getUser().getPersonalIdentityNumber())
-        != null) {
+    if (privatlakareRepository.findByPersonId(personalIdentityNumber) != null) {
       LOG.error("createRegistration: Registration already exists");
       throw new PrivatlakarportalServiceException(
           PrivatlakarportalErrorCodeEnum.ALREADY_EXISTS,
           "Registration already exists");
     }
 
-    if (!userService.getUser().isNameFromPuService()) {
-      LOG.error(
-          "createRegistration: Not allowed to create registration without updated name from PU-service");
-      throw new PrivatlakarportalServiceException(
-          PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM,
-          "Not allowed to create registration without updated name from PU-service");
-    }
+//    if (!userService.getUser().isNameFromPuService()) {
+//      LOG.error(
+//          "createRegistration: Not allowed to create registration without updated name from PU-service");
+//      throw new PrivatlakarportalServiceException(
+//          PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM,
+//          "Not allowed to create registration without updated name from PU-service");
+//    }
 
     Privatlakare privatlakare = new Privatlakare();
 
     privatlakare.setMedgivande(createMedgivandeSet(godkantMedgivandeVersion, privatlakare));
 
     privatlakare.setRegistreringsdatum(dateHelperService.now());
-    privatlakare.setPersonId(userService.getUser().getPersonalIdentityNumber());
-    privatlakare.setFullstandigtNamn(userService.getUser().getName());
+    privatlakare.setPersonId(personalIdentityNumber);
+//    privatlakare.setFullstandigtNamn(userService.getUser().getName());
     privatlakare.setGodkandAnvandare(true);
 
     // PrivatlakareId uses an autoincrement column to get next value
@@ -193,15 +187,15 @@ public class RegisterServiceImpl implements RegisterService {
 
   @Override
   @Transactional(transactionManager = "transactionManager")
-  public SaveRegistrationResponseStatus saveRegistration(Registration registration) {
+  public SaveRegistrationResponseStatus saveRegistration(String personalIdentityNumber,
+      Registration registration) {
     if (registration == null || !registration.checkIsValid()) {
       throw new PrivatlakarportalServiceException(
           PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
           "SaveRegistrationRequest is not valid");
     }
 
-    Privatlakare privatlakare = privatlakareRepository.findByPersonId(
-        userService.getUser().getPersonalIdentityNumber());
+    Privatlakare privatlakare = privatlakareRepository.findByPersonId(personalIdentityNumber);
 
     if (privatlakare == null) {
       throw new PrivatlakarportalServiceException(

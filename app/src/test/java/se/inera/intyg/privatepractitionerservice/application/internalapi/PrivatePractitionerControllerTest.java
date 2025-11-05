@@ -35,12 +35,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
-import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.application.service.PrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.application.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.PrivatePractitionerController;
 import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.PrivatePractitionerDto;
+import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.ValidatePrivatePractitionerRequest;
+import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.services.IntegrationService;
 
 @ExtendWith(MockitoExtension.class)

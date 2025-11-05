@@ -18,7 +18,7 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.integration.webcert.services.services;
 
-import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
+import se.inera.intyg.privatepractitionerservice.application.web.controller.internalapi.dto.ValidatePrivatePractitionerResponse;
 import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitionerresponder.v1.GetPrivatePractitionerResponseType;
 
 /**

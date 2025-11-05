@@ -29,11 +29,13 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.model.Registrati
  */
 public interface RegisterService {
 
-  RegistrationStatus createRegistration(Registration registration, Long godkantMedgivandeVersion);
+  RegistrationStatus createRegistration(String personalIdentityNumber, Registration registration,
+      Long godkantMedgivandeVersion);
 
-  SaveRegistrationResponseStatus saveRegistration(Registration registration);
+  SaveRegistrationResponseStatus saveRegistration(String personalIdentityNumber,
+      Registration registration);
 
-  HospInformation getHospInformation();
+  HospInformation getHospInformation(String personalIdentityNumber);
 
   boolean removePrivatlakare(String personId);
 
