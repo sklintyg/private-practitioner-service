@@ -20,8 +20,8 @@ package se.inera.intyg.privatepractitionerservice.application.services;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base class for "REST-ish" integrationTests using RestAssured.
@@ -33,7 +33,7 @@ public abstract class BaseIntegrationTest {
   /**
    * Common setup for all tests.
    */
-  @Before
+  @BeforeEach
   public void setupBase() {
     RestAssured.reset();
     RestAssured.baseURI = System.getProperty("integration.tests.baseUrl", "http://127.0.0.1:8060");
@@ -45,7 +45,7 @@ public abstract class BaseIntegrationTest {
 
   }
 
-  @After
+  @AfterEach
   public void cleanupBase() {
     RestAssured.reset();
   }
