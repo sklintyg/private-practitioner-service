@@ -19,27 +19,27 @@
 package se.inera.intyg.privatlakarportal.integration.privatepractitioner.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.util.AssertionErrors.assertFalse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitioner.dto.ValidatePrivatePractitionerResultCode;
@@ -57,8 +57,8 @@ import se.riv.infrastructure.directory.privatepractitioner.v1.ResultCodeEnum;
 /**
  * Created by pebe on 2015-08-18.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class IntegrationServiceTest {
+@ExtendWith(SpringExtension.class)
+class IntegrationServiceTest {
 
   @Mock
   private PrivatlakareRepository privatlakareRepository;
@@ -85,8 +85,8 @@ public class IntegrationServiceTest {
 
   private HoSPersonType verifyHosPerson;
 
-  @Before
-  public void setup() throws IOException {
+  @BeforeEach
+  void setup() throws IOException {
     ReflectionTestUtils.setField(hashUtility, "salt", "salt");
     ObjectMapper objectMapper = new CustomObjectMapper();
 
@@ -119,7 +119,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testGetPrivatePractitionerByHsaId() {
+  void testGetPrivatePractitionerByHsaId() {
     GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByHsaId(
         GODKAND_HSA_ID);
     assertEquals(ResultCodeEnum.OK, response.getResultCode());
@@ -131,7 +131,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testGetPrivatePractitionerByPersonId() {
+  void testGetPrivatePractitionerByPersonId() {
     GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByPersonId(
         GODKAND_PERSON_ID);
     assertEquals(ResultCodeEnum.OK, response.getResultCode());
@@ -143,7 +143,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testGetPrivatePractitionerByHsaIdNonExisting() {
+  void testGetPrivatePractitionerByHsaIdNonExisting() {
     GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByHsaId(
         FINNS_EJ_HSA_ID);
     assertEquals(ResultCodeEnum.ERROR, response.getResultCode());
@@ -151,7 +151,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testGetPrivatePractitionerByPersonIdNonExisting() {
+  void testGetPrivatePractitionerByPersonIdNonExisting() {
     GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByPersonId(
         FINNS_EJ_PERSON_ID);
     assertEquals(ResultCodeEnum.ERROR, response.getResultCode());
@@ -161,7 +161,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testGetPrivatePractitionerByInvalidPersonIdNonExisting() {
+  void testGetPrivatePractitionerByInvalidPersonIdNonExisting() {
     GetPrivatePractitionerResponseType response = integrationService.getPrivatePractitionerByPersonId(
         INVALID_PERSON_ID);
     assertEquals(ResultCodeEnum.ERROR, response.getResultCode());
@@ -171,7 +171,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testValidatePrivatePractitionerByPersonId() {
+  void testValidatePrivatePractitionerByPersonId() {
     ValidatePrivatePractitionerResponse response = integrationService.validatePrivatePractitionerByPersonId(
         GODKAND_PERSON_ID);
     assertEquals(ValidatePrivatePractitionerResultCode.OK, response.getResultCode());
@@ -186,7 +186,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testValidatePrivatePractitionerByPersonIdFirstLogin() {
+  void testValidatePrivatePractitionerByPersonIdFirstLogin() {
     Privatlakare privatlakare = privatlakareRepository.findByHsaId(GODKAND_HSA_ID);
     privatlakare.setEnhetStartdatum(null);
     privatlakare.setVardgivareStartdatum(null);
@@ -201,7 +201,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testValidatePrivatePractitionerByPersonIdEjGodkand() {
+  void testValidatePrivatePractitionerByPersonIdEjGodkand() {
     ValidatePrivatePractitionerResponse response = integrationService.validatePrivatePractitionerByPersonId(
         EJ_GODKAND_PERSON_ID);
     assertEquals(ValidatePrivatePractitionerResultCode.NOT_AUTHORIZED_IN_HOSP,
@@ -211,7 +211,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testValidatePrivatePractitionerByPersonIdEjLakare() {
+  void testValidatePrivatePractitionerByPersonIdEjLakare() {
     ValidatePrivatePractitionerResponse response = integrationService.validatePrivatePractitionerByPersonId(
         EJ_LAKARE_PERSON_ID);
     assertEquals(ValidatePrivatePractitionerResultCode.NO_ACCOUNT, response.getResultCode());
@@ -220,7 +220,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testValidatePrivatePractitionerByPersonIdNonExisting() {
+  void testValidatePrivatePractitionerByPersonIdNonExisting() {
     ValidatePrivatePractitionerResponse response = integrationService.validatePrivatePractitionerByPersonId(
         FINNS_EJ_PERSON_ID);
     assertEquals(ValidatePrivatePractitionerResultCode.NO_ACCOUNT, response.getResultCode());
@@ -229,7 +229,7 @@ public class IntegrationServiceTest {
   }
 
   @Test
-  public void testValidatePrivatePractitionerByInvalidPersonIdNonExisting() {
+  void testValidatePrivatePractitionerByInvalidPersonIdNonExisting() {
     ValidatePrivatePractitionerResponse response = integrationService.validatePrivatePractitionerByPersonId(
         INVALID_PERSON_ID);
     assertEquals(ValidatePrivatePractitionerResultCode.NO_ACCOUNT, response.getResultCode());
