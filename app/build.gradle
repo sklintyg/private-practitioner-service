@@ -8,21 +8,14 @@ dependencies {
     implementation project(":integration-api")
     runtimeOnly project(":integration-intyg-proxy-service")
 
-    implementation 'com.fasterxml.jackson.core:jackson-annotations'
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
-    implementation "com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider"
+    implementation "commons-io:commons-io"
     implementation "com.google.guava:guava"
     implementation 'com.h2database:h2'
-    implementation "com.sun.mail:jakarta.mail:2.0.2"
-    implementation "jakarta.annotation:jakarta.annotation-api"
-    implementation "jakarta.servlet:jakarta.servlet-api"
+    implementation "com.sun.mail:jakarta.mail"
     implementation "net.javacrumbs.shedlock:shedlock-provider-redis-spring"
     implementation "net.javacrumbs.shedlock:shedlock-spring"
     implementation "org.apache.commons:commons-lang3"
     implementation "org.aspectj:aspectjweaver"
-    implementation 'org.liquibase:liquibase-core'
-    implementation "org.slf4j:slf4j-api"
-    implementation 'org.springframework.boot:spring-boot-starter-activemq'
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "org.springframework.boot:spring-boot-starter-data-redis"

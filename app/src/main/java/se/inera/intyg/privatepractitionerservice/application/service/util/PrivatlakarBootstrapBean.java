@@ -25,7 +25,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -41,7 +40,6 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 
 @Service
 @Profile({"dev", "pp-init-data"})
-@DependsOn("dbUpdate")
 public class PrivatlakarBootstrapBean {
 
   private static final Logger LOG = LoggerFactory.getLogger(PrivatlakarBootstrapBean.class);

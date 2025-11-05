@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -78,7 +79,7 @@ public class PrivatePractitionerController {
     return ResponseEntity.ok(convert(privatePractitioners));
   }
 
-  @GetMapping("/validate")
+  @PostMapping("/validate")
   @PerformanceLogging(eventAction = "validate-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_INFO)
   public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
       @RequestBody ValidatePrivatePractitionerRequest request) {
