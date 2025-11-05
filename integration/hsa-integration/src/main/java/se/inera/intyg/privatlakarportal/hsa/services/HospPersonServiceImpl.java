@@ -18,7 +18,6 @@
  */
 package se.inera.intyg.privatlakarportal.hsa.services;
 
-import jakarta.xml.ws.soap.SOAPFaultException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,92 +35,87 @@ import se.inera.intyg.privatlakarportal.hsa.model.HospPerson;
 @Service
 public class HospPersonServiceImpl implements HospPersonService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(HospPersonServiceImpl.class);
-  private static final String OK = "OK";
+    private static final Logger LOG = LoggerFactory.getLogger(HospPersonServiceImpl.class);
+    private static final String OK = "OK";
 
-  @Autowired
-  private HsatkAuthorizationManagementService authorizationManagementService;
+    @Autowired
+    private HsatkAuthorizationManagementService authorizationManagementService;
 
-  @Override
-  public HospPerson getHospPerson(String personId) {
+    @Override
+    public HospPerson getHospPerson(String personId) {
 
-    LOG.debug("Getting hospPerson from HSA for '{}'", personId);
+        LOG.debug("Getting hospPerson from HSA for '{}'", personId);
 
-    HospCredentialsForPerson response = null;
-    try {
-      response = authorizationManagementService.getHospCredentialsForPersonResponseType(personId);
-    } catch (SOAPFaultException e) {
-      LOG.debug("Soap exception", e);
+        HospCredentialsForPerson response = authorizationManagementService.getHospCredentialsForPersonResponseType(personId);
+
+        if (response == null || response.getPersonalIdentityNumber() == null) {
+            LOG.debug("Response did not contain any hospPerson for '{}'", personId);
+            return null;
+        }
+        HospPerson hospPerson = new HospPerson();
+
+        hospPerson.setPersonalIdentityNumber(response.getPersonalIdentityNumber());
+        hospPerson.setPersonalPrescriptionCode(response.getPersonalPrescriptionCode());
+
+        List<String> hsaTitles = new ArrayList<>();
+        List<String> titleCodes = new ArrayList<>();
+        if (response.getHealthCareProfessionalLicence() != null
+            && response.getHealthCareProfessionalLicence().size() > 0) {
+            for (HealthCareProfessionalLicence licence : response.getHealthCareProfessionalLicence()) {
+                hsaTitles.add(licence.getHealthCareProfessionalLicenceName());
+                titleCodes.add(licence.getHealthCareProfessionalLicenceCode());
+            }
+        }
+        hospPerson.setHsaTitles(hsaTitles);
+        hospPerson.setTitleCodes(titleCodes);
+
+        List<String> specialityNames = new ArrayList<>();
+        List<String> specialityCodes = new ArrayList<>();
+        if (response.getHealthCareProfessionalLicenceSpeciality() != null
+            && response.getHealthCareProfessionalLicenceSpeciality().size() > 0) {
+            for (HCPSpecialityCodes codes : response.getHealthCareProfessionalLicenceSpeciality()) {
+                specialityNames.add(codes.getSpecialityName());
+                specialityCodes.add(codes.getSpecialityCode());
+            }
+        }
+        hospPerson.setSpecialityNames(specialityNames);
+        hospPerson.setSpecialityCodes(specialityCodes);
+
+        return hospPerson;
     }
 
-    if (response == null || response.getPersonalIdentityNumber() == null) {
-      LOG.debug("Response did not contain any hospPerson for '{}'", personId);
-      return null;
-    }
-    HospPerson hospPerson = new HospPerson();
+    @Override
+    public LocalDateTime getHospLastUpdate() {
 
-    hospPerson.setPersonalIdentityNumber(response.getPersonalIdentityNumber());
-    hospPerson.setPersonalPrescriptionCode(response.getPersonalPrescriptionCode());
+        LOG.debug("Calling getHospLastUpdate");
 
-    List<String> hsaTitles = new ArrayList<>();
-    List<String> titleCodes = new ArrayList<>();
-    if (response.getHealthCareProfessionalLicence() != null
-        && response.getHealthCareProfessionalLicence().size() > 0) {
-      for (HealthCareProfessionalLicence licence : response.getHealthCareProfessionalLicence()) {
-        hsaTitles.add(licence.getHealthCareProfessionalLicenceName());
-        titleCodes.add(licence.getHealthCareProfessionalLicenceCode());
-      }
-    }
-    hospPerson.setHsaTitles(hsaTitles);
-    hospPerson.setTitleCodes(titleCodes);
-
-    List<String> specialityNames = new ArrayList<>();
-    List<String> specialityCodes = new ArrayList<>();
-    if (response.getHealthCareProfessionalLicenceSpeciality() != null
-        && response.getHealthCareProfessionalLicenceSpeciality().size() > 0) {
-      for (HCPSpecialityCodes codes : response.getHealthCareProfessionalLicenceSpeciality()) {
-        specialityNames.add(codes.getSpecialityName());
-        specialityCodes.add(codes.getSpecialityCode());
-      }
-    }
-    hospPerson.setSpecialityNames(specialityNames);
-    hospPerson.setSpecialityCodes(specialityCodes);
-
-    return hospPerson;
-  }
-
-  @Override
-  public LocalDateTime getHospLastUpdate() {
-
-    LOG.debug("Calling getHospLastUpdate");
-
-    return authorizationManagementService.getHospLastUpdate();
-  }
-
-  @Override
-  public boolean addToCertifier(String personId, String certifierId) {
-    return handleCertifier(true, personId, certifierId, null);
-  }
-
-  @Override
-  public boolean removeFromCertifier(String personId, String certifierId, String reason) {
-    return handleCertifier(false, personId, certifierId, reason);
-  }
-
-  private boolean handleCertifier(boolean add, String personId, String certifierId, String reason) {
-
-    LOG.debug("Calling handleCertifier for certifierId '{}'", certifierId);
-    Result result = authorizationManagementService
-        .handleHospCertificationPersonResponseType(certifierId, add ? "add" : "remove", personId,
-            reason);
-
-    if (!OK.equals(result.getResultCode())) {
-      LOG.error("handleCertifier returned result '{}' for certifierId '{}'", result.getResultText(),
-          certifierId);
-      return false;
+        return authorizationManagementService.getHospLastUpdate();
     }
 
-    return true;
-  }
+    @Override
+    public boolean addToCertifier(String personId, String certifierId) {
+        return handleCertifier(true, personId, certifierId, null);
+    }
+
+    @Override
+    public boolean removeFromCertifier(String personId, String certifierId, String reason) {
+        return handleCertifier(false, personId, certifierId, reason);
+    }
+
+    private boolean handleCertifier(boolean add, String personId, String certifierId, String reason) {
+
+        LOG.debug("Calling handleCertifier for certifierId '{}'", certifierId);
+        Result result = authorizationManagementService
+            .handleHospCertificationPersonResponseType(certifierId, add ? "add" : "remove", personId,
+                reason);
+
+        if (!OK.equals(result.getResultCode())) {
+            LOG.error("handleCertifier returned result '{}' for certifierId '{}'", result.getResultText(),
+                certifierId);
+            return false;
+        }
+
+        return true;
+    }
 
 }
