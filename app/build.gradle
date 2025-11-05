@@ -27,14 +27,12 @@ dependencies {
 
     implementation "se.inera.intyg.infra:dynamiclink:${infraVersion}"
     implementation "se.inera.intyg.infra:hsa-integration-api:${infraVersion}"
-    implementation "se.inera.intyg.infra:monitoring:${infraVersion}"
 
     implementation "se.inera.intyg.infrastructure.directory.privatepractitioner:intyg-infrastructure-directory-privatepractitioner-schemas:${ppSchemasVersion}"
     implementation "se.inera.intyg.schemas:schemas-contract:${schemasContractVersion}"
 
     runtimeOnly "com.mysql:mysql-connector-j"
     runtimeOnly "se.inera.intyg.infra:hsa-integration-intyg-proxy-service:${infraVersion}"
-    runtimeOnly "se.inera.intyg.infra:pu-integration-intyg-proxy-service:${infraVersion}"
 
     compileOnly "jakarta.persistence:jakarta.persistence-api"
     compileOnly "org.projectlombok:lombok"

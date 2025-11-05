@@ -25,19 +25,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.inera.intyg.privatepractitionerservice.application.service.model.HospInformation;
 import se.inera.intyg.privatepractitionerservice.application.service.model.SaveRegistrationResponseStatus;
-import se.inera.intyg.privatepractitionerservice.application.service.monitoring.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.application.web.integration.test.dto.PrivatlakareDto;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalErrorCodeEnum;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospPersonService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospUpdateService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.exception.HospUpdateFailedToContactHsaException;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.model.Registration;
 import se.inera.intyg.privatepractitionerservice.infrastructure.model.RegistrationStatus;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.Medgivande;
@@ -83,7 +82,6 @@ public class RegisterServiceImpl implements RegisterService {
   private DateHelperService dateHelperService;
 
   @Autowired
-  @Qualifier("webMonitoringLogService")
   private MonitoringLogService monitoringService;
 
   @Override

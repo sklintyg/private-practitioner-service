@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import se.inera.intyg.privatepractitionerservice.application.service.monitoring.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalErrorCodeEnum;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospPersonService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareRepository;
 
 @Service

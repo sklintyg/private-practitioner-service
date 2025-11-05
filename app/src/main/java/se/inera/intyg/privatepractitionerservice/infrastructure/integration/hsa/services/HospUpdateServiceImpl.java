@@ -33,7 +33,6 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -41,11 +40,11 @@ import org.springframework.transaction.annotation.Transactional;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalErrorCodeEnum;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.model.HospPerson;
-import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.monitoring.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.exception.HospUpdateFailedToContactHsaException;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcCloseableMap;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcHelper;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
 import se.inera.intyg.privatepractitionerservice.infrastructure.model.RegistrationStatus;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.HospUppdatering;
@@ -87,7 +86,6 @@ public class HospUpdateServiceImpl implements HospUpdateService {
   private int numberOfEmails;
 
   @Autowired
-  @Qualifier("hsaMonitoringLogService")
   private MonitoringLogService monitoringService;
 
   @Autowired

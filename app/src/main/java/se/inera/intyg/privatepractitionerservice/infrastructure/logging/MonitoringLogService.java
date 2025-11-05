@@ -16,14 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.monitoring;
+package se.inera.intyg.privatepractitionerservice.infrastructure.logging;
 
+import se.inera.intyg.privatepractitionerservice.infrastructure.model.RegistrationStatus;
 
 /**
  * Interface used when logging to monitoring file. Used to ensure that the log entries are uniform
  * and easy to parse.
  */
 public interface MonitoringLogService {
+
+  void logUserRegistered(String id, Long consentVersion, String hsaId,
+      RegistrationStatus registrationStatus);
+
+  void logUserDeleted(String id, String hsaId);
+
+  void logUserErased(String id, String careProviderId);
+
+  void logUserDetailsChanged(String id, String hsaId);
 
   void logHospWaiting(String id, String hsaId);
 

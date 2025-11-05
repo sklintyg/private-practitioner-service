@@ -16,29 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.privatepractitionerservice.application.service.monitoring;
+package se.inera.intyg.privatepractitionerservice.infrastructure.logging;
 
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.EVENT_ACTION;
-import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.EVENT_AUTHENTICATION_SCHEME;
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.EVENT_PRIVATE_PRACTITIONER_ID;
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.ORGANIZATION_ID;
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.USER_ID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.springframework.stereotype.Service;
-import se.inera.intyg.infra.monitoring.logging.LogMarkers;
-import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
-import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcCloseableMap;
 import se.inera.intyg.privatepractitionerservice.infrastructure.model.RegistrationStatus;
 
 @Slf4j
-@Service("webMonitoringLogService")
+@Service
 @RequiredArgsConstructor
 public class MonitoringLogServiceImpl implements MonitoringLogService {
 
   private final HashUtility hashUtility;
   private static final Object SPACE = " ";
+
+  private static final Marker MONITORING = MarkerFactory.getMarker("Monitoring");
 
   @Override
   public void logUserRegistered(String id, Long consentVersion, String hsaId,
@@ -85,34 +85,6 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
   }
 
   @Override
-  public void logUserLogin(String id, String authenticationScheme) {
-    final var hashedPersonId = hashUtility.hash(id);
-    try (MdcCloseableMap mdc =
-        MdcCloseableMap.builder()
-            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_LOGIN))
-            .put(USER_ID, hashedPersonId)
-            .put(EVENT_AUTHENTICATION_SCHEME, authenticationScheme)
-            .build()
-    ) {
-      logEvent(MonitoringEvent.USER_LOGIN, hashedPersonId, authenticationScheme);
-    }
-  }
-
-  @Override
-  public void logUserLogout(String id, String authenticationScheme) {
-    final var hashedPersonId = hashUtility.hash(id);
-    try (MdcCloseableMap mdc =
-        MdcCloseableMap.builder()
-            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_LOGOUT))
-            .put(USER_ID, hashedPersonId)
-            .put(EVENT_AUTHENTICATION_SCHEME, authenticationScheme)
-            .build()
-    ) {
-      logEvent(MonitoringEvent.USER_LOGOUT, hashedPersonId, authenticationScheme);
-    }
-  }
-
-  @Override
   public void logUserDetailsChanged(String id, String hsaId) {
     final var hashedPersonId = hashUtility.hash(id);
     try (MdcCloseableMap mdc =
@@ -126,8 +98,64 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
     }
   }
 
+  @Override
+  public void logHospWaiting(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_WAITING))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.HOSP_WAITING, hashedPersonId);
+    }
+  }
+
+  @Override
+  public void logUserAuthorizedInHosp(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_AUTHORIZED))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.HOSP_AUTHORIZED, hashedPersonId);
+    }
+  }
+
+  @Override
+  public void logUserNotAuthorizedInHosp(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.HOSP_NOT_AUTHORIZED))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.HOSP_NOT_AUTHORIZED, hashedPersonId);
+    }
+  }
+
+  @Override
+  public void logRegistrationRemoved(String id, String hsaId) {
+    final var hashedPersonId = hashUtility.hash(id);
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, toEventType(MonitoringEvent.REGISTRATION_REMOVED))
+            .put(EVENT_PRIVATE_PRACTITIONER_ID, hashedPersonId)
+            .put(ORGANIZATION_ID, hsaId)
+            .build()
+    ) {
+      logEvent(MonitoringEvent.REGISTRATION_REMOVED, hashedPersonId);
+    }
+  }
+
   private void logEvent(MonitoringEvent logEvent, Object... logMsgArgs) {
-    log.info(LogMarkers.MONITORING, buildMessage(logEvent), logMsgArgs);
+    log.info(MONITORING, buildMessage(logEvent), logMsgArgs);
   }
 
   private String buildMessage(MonitoringEvent logEvent) {
@@ -140,9 +168,11 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
     USER_REGISTERED(
         "User '{}' registered with consent version '{}' and hsaId '{}', returned status '{}'"),
     USER_DELETED("User '{}' deleted"),
-    USER_LOGIN("Login user '{}' using scheme '{}'"),
-    USER_LOGOUT("Logout user '{}' using scheme '{}'"),
-    USER_DETAILS_CHANGED("Details for user '{}' changed");
+    USER_DETAILS_CHANGED("Details for user '{}' changed"),
+    HOSP_WAITING("User '{}' is waiting for HOSP"),
+    HOSP_AUTHORIZED("User '{}' is authorized doctor in HOSP"),
+    HOSP_NOT_AUTHORIZED("User '{}' is not authorized doctor in HOSP"),
+    REGISTRATION_REMOVED("User '{}' exceeded number of registration attempts, removing user");
 
     private final String message;
 

@@ -32,9 +32,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import se.inera.intyg.privatepractitionerservice.application.service.monitoring.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.infrastructure.integration.hsa.services.HospPersonService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.model.Privatlakare;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareRepository;
 
