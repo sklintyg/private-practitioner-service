@@ -10,7 +10,7 @@ dependencies {
     implementation "com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider"
     implementation "com.google.guava:guava"
     implementation 'com.h2database:h2'
-    implementation "com.sun.mail:jakarta.mail"
+    implementation "com.sun.mail:jakarta.mail:2.0.2"
     implementation "jakarta.annotation:jakarta.annotation-api"
     implementation "jakarta.servlet:jakarta.servlet-api"
     implementation "net.javacrumbs.shedlock:shedlock-provider-redis-spring"
