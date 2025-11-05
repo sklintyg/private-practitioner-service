@@ -16,22 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.privatlakarportal.hsa.config;
+package se.inera.intyg.privatlakarportal.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Primary;
+import se.inera.intyg.privatlakarportal.common.integration.json.CustomObjectMapper;
 
 @Configuration
-@ComponentScan({"se.inera.intyg.privatlakarportal.common.config"})
-@Profile({"hsa-stub"})
-public class HsaStubConfiguration {
+public class JacksonConfiguration {
 
   @Bean
+  @Primary
   public ObjectMapper objectMapper() {
-    return new ObjectMapper();
+    return new CustomObjectMapper();
   }
-
 }
+

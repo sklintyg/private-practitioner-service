@@ -31,9 +31,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource(ignoreResourceNotFound = true,
     value = {"classpath:application.properties", "file:${dev.config.file}",
         "classpath:version.properties"})
-@ComponentScan({"se.inera.intyg.infra.integration.intygproxyservice",
+@ComponentScan({
+    "se.inera.intyg.infra.integration.intygproxyservice",
     "se.inera.intyg.privatlakarportal.logging",
-    "se.inera.intyg.infra.pu.integration.intygproxyservice"})
+    "se.inera.intyg.infra.pu.integration.intygproxyservice",
+    "se.inera.intyg.infra.rediscache.core"
+})
 public class ApplicationConfig {
 
   @Bean
