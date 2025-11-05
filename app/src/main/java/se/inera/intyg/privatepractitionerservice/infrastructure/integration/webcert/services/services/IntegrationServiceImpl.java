@@ -38,7 +38,6 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.mode
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.service.DateHelperService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.utils.PrivatlakareUtils;
-import se.inera.intyg.schemas.contract.Personnummer;
 import se.riv.infrastructure.directory.privatepractitioner.getprivatepractitionerresponder.v1.GetPrivatePractitionerResponseType;
 import se.riv.infrastructure.directory.privatepractitioner.types.v1.ArbetsplatsKod;
 import se.riv.infrastructure.directory.privatepractitioner.types.v1.CV;
@@ -314,7 +313,6 @@ public class IntegrationServiceImpl implements IntegrationService {
   }
 
   private String getPersonalIdentityNumberHash(String personalIdentityNumber) {
-    final var personalId = Personnummer.createPersonnummer(personalIdentityNumber);
-    return hashUtility.hash(personalId.map(Personnummer::getPersonnummer).orElse(null));
+    return hashUtility.hash(personalIdentityNumber);
   }
 }

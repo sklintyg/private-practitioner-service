@@ -29,7 +29,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
 
     implementation "se.inera.intyg.infrastructure.directory.privatepractitioner:intyg-infrastructure-directory-privatepractitioner-schemas:${ppSchemasVersion}"
-    implementation "se.inera.intyg.schemas:schemas-contract:${schemasContractVersion}"
 
     runtimeOnly "com.mysql:mysql-connector-j"
 
