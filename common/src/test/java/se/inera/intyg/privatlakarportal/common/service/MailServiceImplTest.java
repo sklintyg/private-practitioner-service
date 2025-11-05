@@ -18,78 +18,77 @@
  */
 package se.inera.intyg.privatlakarportal.common.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import jakarta.mail.MessagingException;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import se.inera.intyg.privatlakarportal.common.model.RegistrationStatus;
 import se.inera.intyg.privatlakarportal.common.service.stub.MailStore;
 import se.inera.intyg.privatlakarportal.common.service.stub.OutgoingMail;
 import se.inera.intyg.privatlakarportal.persistence.model.Privatlakare;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles(profiles = "dev")
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = MailServiceTestConfig.class)
-public class MailServiceImplTest {
+class MailServiceImplTest {
 
-  @Autowired
-  private MailStore mailStore;
+    @Autowired
+    private MailStore mailStore;
 
-  @Autowired
-  private MailService mailService;
+    @Autowired
+    private MailService mailService;
 
-  @Value("${mail.port}")
-  private String port;
+    @Value("${mail.port}")
+    private String port;
 
-  @Value("${mail.username}")
-  private String username;
+    @Value("${mail.username}")
+    private String username;
 
-  @Value("${mail.password}")
-  private String password;
+    @Value("${mail.password}")
+    private String password;
 
-  @Value("${mail.smtps.auth}")
-  private boolean smtpsAuth;
+    @Value("${mail.smtps.auth}")
+    private boolean smtpsAuth;
 
-  private Privatlakare createTestRegistration() {
-    Privatlakare privatlakare = new Privatlakare();
-    privatlakare.setPostadress("Testadress");
-    privatlakare.setAgarform("Testägarform");
-    privatlakare.setEpost("test@test.com");
-    return privatlakare;
-  }
+    private Privatlakare createTestRegistration() {
+        Privatlakare privatlakare = new Privatlakare();
+        privatlakare.setPostadress("Testadress");
+        privatlakare.setAgarform("Testägarform");
+        privatlakare.setEpost("test@test.com");
+        return privatlakare;
+    }
 
-  @Test
-  public void testMailProperties() {
-    assertTrue(!password.isEmpty());
-    assertFalse(smtpsAuth);
-    assertEquals(25, Integer.parseInt(port));
-  }
+    @Test
+    void testMailProperties() {
+        assertTrue(!password.isEmpty());
+        assertFalse(smtpsAuth);
+        assertEquals(25, Integer.parseInt(port));
+    }
 
-  @Test
-  public void testSendMail() throws MessagingException {
-    Privatlakare privatlakare = createTestRegistration();
-    mailService.sendRegistrationStatusEmail(RegistrationStatus.AUTHORIZED, privatlakare);
-    mailStore.waitForMails(1);
+    @Test
+    void testSendMail() {
+        Privatlakare privatlakare = createTestRegistration();
+        mailService.sendRegistrationStatusEmail(RegistrationStatus.AUTHORIZED, privatlakare);
+        mailStore.waitForMails(1);
 
-    OutgoingMail oneMail = mailStore.getMails().get(0);
-    assertEquals(1, mailStore.getMails().size());
-    assertEquals("test@test.com", oneMail.getRecipients().get(0));
-    assertEquals("Webcert är klar att användas", oneMail.getSubject());
-  }
+        OutgoingMail oneMail = mailStore.getMails().get(0);
+        assertEquals(1, mailStore.getMails().size());
+        assertEquals("test@test.com", oneMail.getRecipients().get(0));
+        assertEquals("Webcert är klar att användas", oneMail.getSubject());
+    }
 
-  @After
-  public void cleanMailStore() {
-    mailStore.getMails().clear();
-  }
+    @AfterEach
+    void cleanMailStore() {
+        mailStore.getMails().clear();
+    }
 
 }

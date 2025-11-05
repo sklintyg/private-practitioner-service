@@ -18,44 +18,41 @@
  */
 package se.inera.intyg.privatlakarportal.common.utils;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 import se.inera.intyg.privatlakarportal.persistence.model.LegitimeradYrkesgrupp;
 import se.inera.intyg.privatlakarportal.persistence.model.Privatlakare;
 
 /**
  * Created by pebe on 2015-09-07.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class PrivatlakareUtilsTest {
+class PrivatlakareUtilsTest {
 
-  @Test
-  public void testLakare() {
-    Privatlakare privatlakare = new Privatlakare();
-    Set<LegitimeradYrkesgrupp> legitimeradYrkesgrupper = new HashSet<LegitimeradYrkesgrupp>();
-    legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Extra", "E"));
-    legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Läkare", "LK"));
-    legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Mer", "M"));
-    privatlakare.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupper);
+    @Test
+    void testLakare() {
+        Privatlakare privatlakare = new Privatlakare();
+        Set<LegitimeradYrkesgrupp> legitimeradYrkesgrupper = new HashSet<LegitimeradYrkesgrupp>();
+        legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Extra", "E"));
+        legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Läkare", "LK"));
+        legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Mer", "M"));
+        privatlakare.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupper);
 
-    assertTrue(PrivatlakareUtils.hasLakareLegitimation(privatlakare));
-  }
+        assertTrue(PrivatlakareUtils.hasLakareLegitimation(privatlakare));
+    }
 
-  @Test
-  public void testEjLakare() {
-    Privatlakare privatlakare = new Privatlakare();
-    Set<LegitimeradYrkesgrupp> legitimeradYrkesgrupper = new HashSet<LegitimeradYrkesgrupp>();
-    legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Extra", "E"));
-    legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Mer", "M"));
-    privatlakare.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupper);
+    @Test
+    void testEjLakare() {
+        Privatlakare privatlakare = new Privatlakare();
+        Set<LegitimeradYrkesgrupp> legitimeradYrkesgrupper = new HashSet<LegitimeradYrkesgrupp>();
+        legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Extra", "E"));
+        legitimeradYrkesgrupper.add(new LegitimeradYrkesgrupp(privatlakare, "Mer", "M"));
+        privatlakare.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupper);
 
-    assertFalse(PrivatlakareUtils.hasLakareLegitimation(privatlakare));
-  }
+        assertFalse(PrivatlakareUtils.hasLakareLegitimation(privatlakare));
+    }
 
 }
