@@ -1,6 +1,12 @@
 ### GET
 GET http://localhost:18070/internalapi/privatepractitioner/all
 
+### GET
+GET http://localhost:18070/internalapi/privatepractitioner?personOrHsaId=192011189228
+
+### GET
+GET http://localhost:18070/internalapi/privatepractitioner?personOrHsaId=SE165565594230-WEBCERTBOOT3
+
 ### POST
 POST http://localhost:18070/internalapi/privatepractitioner/validate
 Content-Type: application/json

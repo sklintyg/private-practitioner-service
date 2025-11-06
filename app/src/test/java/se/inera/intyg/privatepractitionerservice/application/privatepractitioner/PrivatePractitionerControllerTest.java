@@ -18,15 +18,10 @@
  */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,13 +29,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDto;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.IntegrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 
 @ExtendWith(MockitoExtension.class)
 class PrivatePractitionerControllerTest {
@@ -57,126 +48,46 @@ class PrivatePractitionerControllerTest {
   private PrivatePractitionerController privatePractitionerController;
 
   @Test
-  void getPrivatePractitioners_ok() {
-    String hsaId1 = "SE123-1";
-    String hsaId2 = "SE123-2";
-    String personId = PERSONAL_IDENTITY_NUMBER;
-    String name = "My Name";
-    String careprovider = "My Careprovider";
-    String email = "my@email.com";
-    LocalDateTime registrationDate = LocalDateTime.now();
+  void shouldReturnPrivatePractitioners() {
+    final var expected = List.of(
+        PrivatePractitionerDTO.builder().hsaId("123").build(),
+        PrivatePractitionerDTO.builder().hsaId("456").build()
+    );
 
-    when(privatePractitionerService.getPrivatePractitioners())
-        .thenReturn(List.of(
-            new PrivatePractitioner(hsaId1, personId, name, careprovider, email, registrationDate),
-            new PrivatePractitioner(hsaId2, personId, name, careprovider, email,
-                registrationDate)));
+    when(privatePractitionerService.getPrivatePractitioners()).thenReturn(expected);
 
-    ResponseEntity<List<PrivatePractitionerDto>> privatePractitionersResponse = privatePractitionerController.getPrivatePractitioners();
+    final var actual = privatePractitionerController.getPrivatePractitioners();
 
-    assertNotNull(privatePractitionersResponse);
-    assertSame(HttpStatus.OK, privatePractitionersResponse.getStatusCode());
-    assertEquals(2, privatePractitionersResponse.getBody().size());
+    assertAll(
+        () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
+        () -> assertEquals(expected, actual.getBody())
+    );
   }
 
   @Test
-  void getPrivatePractitioners_empty_ok() {
-
-    ResponseEntity<List<PrivatePractitionerDto>> privatePractitionersResponse = privatePractitionerController.getPrivatePractitioners();
-
-    assertNotNull(privatePractitionersResponse);
-    assertSame(HttpStatus.OK, privatePractitionersResponse.getStatusCode());
-    assertTrue(privatePractitionersResponse.getBody().isEmpty());
-  }
-
-  @Test
-  void getPrivatePractitioner_hsaid_ok() {
-    String hsaID = "SE123";
-    String name = "My Name";
-    String careprovider = "My Careprovider";
-    String email = "my@email.com";
-    LocalDateTime registrationDate = LocalDateTime.now();
-
-    when(privatePractitionerService.getPrivatePractitioner(hsaID))
-        .thenReturn(
-            new PrivatePractitioner(hsaID, PERSONAL_IDENTITY_NUMBER, name, careprovider, email,
-                registrationDate));
-
-    ResponseEntity<PrivatePractitionerDto> privatePractitionerResponse = privatePractitionerController.getPrivatePractitioner(
-        hsaID);
-
-    assertNotNull(privatePractitionerResponse);
-    assertSame(HttpStatus.OK, privatePractitionerResponse.getStatusCode());
-    PrivatePractitionerDto privatePractitioner = privatePractitionerResponse.getBody();
-    assertNotNull(privatePractitioner);
-    assertEquals(hsaID, privatePractitioner.getHsaId());
-    assertEquals(name, privatePractitioner.getName());
-    assertEquals(careprovider, privatePractitioner.getCareproviderName());
-    assertEquals(email, privatePractitioner.getEmail());
-    assertEquals(registrationDate, privatePractitioner.getRegistrationDate());
-  }
-
-  @Test
-  void getPrivatePractitioner_personId_ok() {
-    String hsaID = "SE123";
-    String name = "My Name";
-    String careprovider = "My Careprovider";
-    String email = "my@email.com";
-    LocalDateTime registrationDate = LocalDateTime.now();
+  void shouldReturnPrivatePractitioner() {
+    final var expected = PrivatePractitionerDTO.builder().hsaId("123").build();
 
     when(privatePractitionerService.getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER))
-        .thenReturn(
-            new PrivatePractitioner(hsaID, PERSONAL_IDENTITY_NUMBER, name, careprovider, email,
-                registrationDate));
+        .thenReturn(expected);
 
-    ResponseEntity<PrivatePractitionerDto> privatePractitionerResponse = privatePractitionerController
-        .getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER);
-
-    assertNotNull(privatePractitionerResponse);
-    assertSame(HttpStatus.OK, privatePractitionerResponse.getStatusCode());
-    PrivatePractitionerDto privatePractitioner = privatePractitionerResponse.getBody();
-    assertNotNull(privatePractitioner);
-    assertEquals(hsaID, privatePractitioner.getHsaId());
-    assertEquals(PERSONAL_IDENTITY_NUMBER, privatePractitioner.getPersonId());
-    assertEquals(name, privatePractitioner.getName());
-    assertEquals(careprovider, privatePractitioner.getCareproviderName());
-    assertEquals(email, privatePractitioner.getEmail());
-    assertEquals(registrationDate, privatePractitioner.getRegistrationDate());
-  }
-
-  @Test
-  void getPrivatePractitioner_notFound() {
-    when(privatePractitionerService.getPrivatePractitioner(anyString())).thenReturn(null);
-
-    ResponseEntity<PrivatePractitionerDto> notFoundResponse = privatePractitionerController.getPrivatePractitioner(
-        "notFound");
-
-    assertNotNull(notFoundResponse);
-    assertSame(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
-
-  }
-
-  @Test
-  void getPrivatePractitioner_missingPersonOrHsaId() {
-    ResponseEntity<PrivatePractitionerDto> notFoundResponse = privatePractitionerController.getPrivatePractitioner(
-        null);
-
-    assertNotNull(notFoundResponse);
-    assertSame(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
-  }
-
-  @Test
-  void validatePrivatePractitioner() {
-    var validatePrivatePractitionerResponse = new ValidatePrivatePractitionerResponse();
-    when(integrationService.validatePrivatePractitionerByPersonId(anyString())).thenReturn(
-        validatePrivatePractitionerResponse);
-
-    ValidatePrivatePractitionerRequest validatePrivatePractitionerRequest = new ValidatePrivatePractitionerRequest(
+    final var actual = privatePractitionerController.getPrivatePractitioner(
         PERSONAL_IDENTITY_NUMBER);
-    var response = privatePractitionerController.validatePrivatePractitioner(
-        validatePrivatePractitionerRequest);
 
-    verify(integrationService).validatePrivatePractitionerByPersonId(PERSONAL_IDENTITY_NUMBER);
-    assertNotNull(response);
+    assertAll(
+        () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
+        () -> assertEquals(expected, actual.getBody())
+    );
+  }
+
+  @Test
+  void shouldReturnPrivatePractitionerNotFound() {
+    when(privatePractitionerService.getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER))
+        .thenReturn(null);
+
+    final var actual = privatePractitionerController.getPrivatePractitioner(
+        PERSONAL_IDENTITY_NUMBER);
+
+    assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
   }
 }

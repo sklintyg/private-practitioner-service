@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model;
+package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -24,7 +24,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class PrivatePractitioner {
+public class PrivatePractitionerDTO {
 
   String hsaId;
   String personId;
@@ -32,4 +32,5 @@ public class PrivatePractitioner {
   String careProviderName;
   String email;
   LocalDateTime registrationDate;
+
 }

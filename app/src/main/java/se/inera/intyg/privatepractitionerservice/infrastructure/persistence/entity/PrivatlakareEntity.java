@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -40,6 +41,7 @@ import org.hibernate.annotations.GenericGenerator;
  * Created by pebe on 2015-06-24.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

@@ -19,7 +19,6 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,13 +29,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDto;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.EraseService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.IntegrationService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
 
@@ -59,24 +57,23 @@ public class PrivatePractitionerController {
 
   @GetMapping("")
   @PerformanceLogging(eventAction = "get-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-  public ResponseEntity<PrivatePractitionerDto> getPrivatePractitioner(
+  public ResponseEntity<PrivatePractitionerDTO> getPrivatePractitioner(
       @RequestParam String personOrHsaId) {
-    PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
+    final var privatePractitioner = privatePractitionerService.getPrivatePractitioner(
         personOrHsaId);
 
     if (privatePractitioner == null) {
       return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok(convert(privatePractitioner));
+    return ResponseEntity.ok(privatePractitioner);
   }
 
   @GetMapping("/all")
   @PerformanceLogging(eventAction = "get-private-practitioners", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-  public ResponseEntity<List<PrivatePractitionerDto>> getPrivatePractitioners() {
-    List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
-
-    return ResponseEntity.ok(convert(privatePractitioners));
+  public ResponseEntity<List<PrivatePractitionerDTO>> getPrivatePractitioners() {
+    final var privatePractitioners = privatePractitionerService.getPrivatePractitioners();
+    return ResponseEntity.ok(privatePractitioners);
   }
 
   @PostMapping("/validate")
@@ -92,27 +89,5 @@ public class PrivatePractitionerController {
   @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
   public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
     eraseService.erasePrivatePractitioner(careProviderId);
-  }
-
-  private List<PrivatePractitionerDto> convert(List<PrivatePractitioner> privatePractitioners) {
-    if (privatePractitioners == null) {
-      return List.of();
-    }
-
-    return privatePractitioners.stream()
-        .map(this::convert)
-        .collect(Collectors.toList());
-
-  }
-
-  private PrivatePractitionerDto convert(PrivatePractitioner privatePractitioner) {
-    if (privatePractitioner == null) {
-      return null;
-    }
-
-    return new PrivatePractitionerDto(privatePractitioner.getHsaId(),
-        privatePractitioner.getPersonId(), privatePractitioner.getName(),
-        privatePractitioner.getCareproviderName(), privatePractitioner.getEmail(),
-        privatePractitioner.getRegistrationDate());
   }
 }
