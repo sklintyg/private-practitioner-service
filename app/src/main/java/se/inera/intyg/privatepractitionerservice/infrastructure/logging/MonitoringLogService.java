@@ -18,7 +18,7 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.logging;
 
-import se.inera.intyg.privatepractitionerservice.infrastructure.model.RegistrationStatus;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
 
 /**
  * Interface used when logging to monitoring file. Used to ensure that the log entries are uniform

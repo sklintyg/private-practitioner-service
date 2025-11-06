@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.springframework.stereotype.Service;
-import se.inera.intyg.privatepractitionerservice.infrastructure.model.RegistrationStatus;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
 
 @Slf4j
 @Service

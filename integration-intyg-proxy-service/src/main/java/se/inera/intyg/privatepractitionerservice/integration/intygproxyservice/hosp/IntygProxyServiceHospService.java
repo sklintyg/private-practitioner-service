@@ -45,7 +45,6 @@ public class IntygProxyServiceHospService implements
         personalIdentityNumber);
 
     if (hospCredentialsForPerson == null) {
-      log.warn("Response message did not contain proper response data.");
       throw new IllegalStateException("Response message did not contain proper response data.");
     }
 
@@ -58,7 +57,6 @@ public class IntygProxyServiceHospService implements
       return getHospLastUpdateService.get();
 
     } catch (Exception exception) {
-      log.warn(exception.getMessage());
       throw new IllegalStateException(exception);
     }
   }

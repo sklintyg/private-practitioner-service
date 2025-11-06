@@ -45,8 +45,7 @@ public class GetHospCertificationPersonService {
       throw new IllegalArgumentException("Missing required parameter 'personId'");
     }
     if (hospCertificationPersonRequestDTO.getOperation() == null
-        || hospCertificationPersonRequestDTO.getOperation()
-        .isEmpty()) {
+        || hospCertificationPersonRequestDTO.getOperation().isEmpty()) {
       throw new IllegalArgumentException("Missing required parameter 'operation'");
     }
   }

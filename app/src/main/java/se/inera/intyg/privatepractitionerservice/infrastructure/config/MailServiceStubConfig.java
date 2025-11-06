@@ -21,16 +21,14 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import se.inera.intyg.privatepractitionerservice.infrastructure.service.MailService;
-import se.inera.intyg.privatepractitionerservice.infrastructure.service.stub.MailServiceStub;
-import se.inera.intyg.privatepractitionerservice.infrastructure.service.stub.MailStubStore;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.stub.MailServiceStub;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.stub.MailStubStore;
 
 @Configuration
 @Profile({"mail-stub"})
-@PropertySource("classpath:application.properties")
 public class MailServiceStubConfig {
 
   @Bean

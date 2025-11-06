@@ -18,20 +18,22 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
-@PropertySource(ignoreResourceNotFound = true,
-    value = {"classpath:application.properties", "file:${dev.config.file}",
-        "classpath:version.properties"})
 public class ApplicationConfig {
 
+  @Bean
+  @Primary
+  public ObjectMapper objectMapper() {
+    return new CustomObjectMapper();
+  }
+  
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
     return new PropertySourcesPlaceholderConfigurer();

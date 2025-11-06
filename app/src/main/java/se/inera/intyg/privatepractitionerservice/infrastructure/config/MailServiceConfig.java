@@ -27,17 +27,15 @@ import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import se.inera.intyg.privatepractitionerservice.infrastructure.service.MailService;
-import se.inera.intyg.privatepractitionerservice.infrastructure.service.MailServiceImpl;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailServiceImpl;
 
 @Configuration
-@PropertySource(ignoreResourceNotFound = true, value = {"file:${dev.config.file}"})
 @EnableAsync
 public class MailServiceConfig implements AsyncConfigurer {
 
