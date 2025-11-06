@@ -46,7 +46,7 @@ testing.suites {
 
 bootRun {
     systemProperty("application.dir", "${applicationDir}")
-    systemProperty("spring.profiles.active", "dev,caching-enabled,testability,pu-integration-intyg-proxy-service")
+    systemProperty("spring.profiles.active", "dev")
     systemProperty("spring.config.additional-location", "file:${applicationDir}/config/")
 }
 
