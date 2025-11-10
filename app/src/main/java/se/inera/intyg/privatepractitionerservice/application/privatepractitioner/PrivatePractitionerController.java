@@ -30,13 +30,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.HospInformationResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDto;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.EraseService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.HospPersonService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.IntegrationService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter.PrivatePractitionerConverter;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
 
@@ -44,14 +47,17 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.logging.Performa
 @RequestMapping("/internalapi/privatepractitioner")
 public class PrivatePractitionerController {
 
+  private final HospPersonService hospPersonService;
   private final PrivatePractitionerService privatePractitionerService;
   private final IntegrationService integrationService;
   private final EraseService eraseService;
 
   @Autowired
-  public PrivatePractitionerController(PrivatePractitionerService privatePractitionerService,
+  public PrivatePractitionerController(HospPersonService hospPersonService,
+      PrivatePractitionerService privatePractitionerService,
       IntegrationService integrationService,
       EraseService eraseService) {
+    this.hospPersonService = hospPersonService;
     this.privatePractitionerService = privatePractitionerService;
     this.integrationService = integrationService;
     this.eraseService = eraseService;
@@ -92,6 +98,16 @@ public class PrivatePractitionerController {
   @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
   public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
     eraseService.erasePrivatePractitioner(careProviderId);
+  }
+
+  @GetMapping("/hosp-information")
+  @PerformanceLogging(eventAction = "get-hosp-information-information", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public ResponseEntity<HospInformationResponse> getHospInformation(
+      @RequestParam String personOrHsaId) {
+    final var response = hospPersonService.getHospPerson(personOrHsaId);
+    return ResponseEntity.ok(HospInformationResponse.builder()
+        .hospInformation(PrivatePractitionerConverter.convertHospPersonToHospInformation(response))
+        .build());
   }
 
   private List<PrivatePractitionerDto> convert(List<PrivatePractitioner> privatePractitioners) {
