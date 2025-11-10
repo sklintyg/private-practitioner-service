@@ -142,6 +142,14 @@ public class PrivatePractitionerRepository {
     );
 
     final var savedEntity = privatlakareEntityRepository.save(newEntity);
+
+// TODO: Add logic to send email notification about HSA ID generation status
+//    if (privatlakareIdEntityRepository.findLatestGeneratedHsaId() != 0
+//        && privatlakareIdEntityRepository.findLatestGeneratedHsaId() % hsaIdNotificationInterval
+//        == 0) {
+//      mailService.sendHsaGenerationStatusEmail();
+//    }
+
     return privatlakareEntityConverter.convert(savedEntity);
   }
 

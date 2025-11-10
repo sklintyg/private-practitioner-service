@@ -10,7 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
-import se.inera.intyg.privatepractitionerservice.testability.dto.PrivatlakareDto;
 
 
 @RequiredArgsConstructor
@@ -33,31 +32,4 @@ public class ApiUtil {
         Collections.emptyMap()
     );
   }
-
-  public ResponseEntity<PrivatlakareDto> testabilityGetRegistration() {
-    final var requestUrl = "http://localhost:" + port + "/api/test/registration/191212121212";
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.GET,
-        new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
-  }
-
-  public ResponseEntity<PrivatlakareDto> testabilityRemoveRegistration() {
-    final var requestUrl = "http://localhost:" + port + "/api/test/registration/191212121212";
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.DELETE,
-        new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
-  }
-
 }
