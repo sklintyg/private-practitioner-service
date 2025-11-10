@@ -34,9 +34,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -159,10 +157,10 @@ class HospUpdateServiceImplTest {
     verify(privatlakareEntityRepository, times(0)).save(privatlakareEntity1);
     verify(privatlakareEntityRepository).save(privatlakareEntity2);
     verify(mailService).sendRegistrationStatusEmail(RegistrationStatus.NOT_AUTHORIZED,
-        privatlakareEntity2);
+        privatlakareEntity2.getEpost());
     verify(privatlakareEntityRepository).save(privatlakareEntity3);
     verify(mailService).sendRegistrationStatusEmail(RegistrationStatus.AUTHORIZED,
-        privatlakareEntity3);
+        privatlakareEntity3.getEpost());
   }
 
   @Test
@@ -198,7 +196,7 @@ class HospUpdateServiceImplTest {
     // but should still be NOT_AUTHORIZED since GODKAND_ANVANDARE is false
     assertFalse(privatlakareEntity1.isGodkandAnvandare());
     verify(mailService).sendRegistrationStatusEmail(RegistrationStatus.NOT_AUTHORIZED,
-        privatlakareEntity1);
+        privatlakareEntity1.getEpost());
   }
 
   @Test
@@ -402,12 +400,12 @@ class HospUpdateServiceImplTest {
     privatlakareEntity.setGodkandAnvandare(true);
     privatlakareEntity.setPersonId(PERSON_ID);
     privatlakareEntity.setForskrivarKod("7777777");
-    Set<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new HashSet<>();
+    final List<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new ArrayList<>();
     legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Läkare", "LK"));
+        new LegitimeradYrkesgruppEntity("Läkare", "LK"));
     privatlakareEntity.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupperEntity);
     List<SpecialitetEntity> specialiteter = new ArrayList<>();
-    specialiteter.add(new SpecialitetEntity(privatlakareEntity, "Specialitet", "12"));
+    specialiteter.add(new SpecialitetEntity("Specialitet", "12"));
     privatlakareEntity.setSpecialiteter(specialiteter);
     privatlakareEntity.setSenasteHospUppdatering(LocalDate.parse("2015-09-01").atStartOfDay());
 
@@ -438,12 +436,12 @@ class HospUpdateServiceImplTest {
     privatlakareEntity.setGodkandAnvandare(true);
     privatlakareEntity.setPersonId(PERSON_ID);
     privatlakareEntity.setForskrivarKod("7777777");
-    Set<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new HashSet<>();
+    final List<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new ArrayList<>();
     legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Läkare", "LK"));
+        new LegitimeradYrkesgruppEntity("Läkare", "LK"));
     privatlakareEntity.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupperEntity);
     List<SpecialitetEntity> specialiteter = new ArrayList<>();
-    specialiteter.add(new SpecialitetEntity(privatlakareEntity, "Specialitet", "12"));
+    specialiteter.add(new SpecialitetEntity("Specialitet", "12"));
     privatlakareEntity.setSpecialiteter(specialiteter);
     privatlakareEntity.setSenasteHospUppdatering(LocalDate.parse("2015-09-01").atStartOfDay());
 
@@ -496,7 +494,7 @@ class HospUpdateServiceImplTest {
 
     // Since registreringsdatum is 10 or more days before the last hospUpdate, a mail should be sent
     verify(mailService).sendRegistrationStatusEmail(RegistrationStatus.WAITING_FOR_HOSP,
-        privatlakareEntity1);
+        privatlakareEntity1.getEpost());
   }
 
   @Test
@@ -528,7 +526,7 @@ class HospUpdateServiceImplTest {
 
     // Since registreringsdatum is less than 10 days before the last hospUpdate, a mail should not be sent
     verify(mailService, times(0)).sendRegistrationStatusEmail(RegistrationStatus.WAITING_FOR_HOSP,
-        privatlakareEntity1);
+        privatlakareEntity1.getEpost());
   }
 
   @Test

@@ -28,8 +28,8 @@ import static org.springframework.test.util.AssertionErrors.assertFalse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,9 +97,8 @@ class IntegrationServiceTest {
 
     PrivatlakareEntity privatlakareEntityEjLakare = objectMapper.readValue(res.getInputStream(),
         PrivatlakareEntity.class);
-    Set<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new HashSet<>();
-    legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Dietist", "DT"));
+    final List<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new ArrayList<>();
+    legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity("Dietist", "DT"));
     privatlakareEntityEjLakare.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupperEntity);
 
     res = new ClassPathResource("IntegrationServiceTest/test_HosPerson.json");

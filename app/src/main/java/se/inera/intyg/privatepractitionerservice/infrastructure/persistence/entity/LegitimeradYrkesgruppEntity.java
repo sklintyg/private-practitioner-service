@@ -18,25 +18,22 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
  * Created by pebe on 2015-06-24.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -47,21 +44,13 @@ public class LegitimeradYrkesgruppEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-  @JsonBackReference
-  @EqualsAndHashCode.Exclude
-  private PrivatlakareEntity privatlakare;
-
   @Column(name = "KOD", nullable = false)
   private String kod;
 
   @Column(name = "NAMN", nullable = false)
   private String namn;
 
-  public LegitimeradYrkesgruppEntity(PrivatlakareEntity privatlakare, String namn,
-      String kod) {
-    this.privatlakare = privatlakare;
+  public LegitimeradYrkesgruppEntity(String namn, String kod) {
     this.namn = namn;
     this.kod = kod;
   }

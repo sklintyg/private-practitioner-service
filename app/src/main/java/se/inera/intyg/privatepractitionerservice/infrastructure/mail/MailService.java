@@ -32,7 +32,7 @@ public interface MailService {
    * @{link PrivatlakarportalServiceException}
    */
   void sendRegistrationStatusEmail(RegistrationStatus status,
-      PrivatlakareEntity privatlakareEntity);
+      String privatlakareEntity);
 
   void sendRegistrationRemovedEmail(PrivatlakareEntity privatlakareEntity);
 

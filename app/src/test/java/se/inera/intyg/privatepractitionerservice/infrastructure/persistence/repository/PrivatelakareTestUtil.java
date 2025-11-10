@@ -20,9 +20,7 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.rep
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.BefattningEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
@@ -90,33 +88,33 @@ public final class PrivatelakareTestUtil {
       privatlakareEntity.setVardgivareSlutdatum(LocalDate.parse("2015-06-04").atStartOfDay());
     }
 
-    Set<BefattningEntity> befattningar = new HashSet<>();
-    befattningar.add(new BefattningEntity(privatlakareEntity, "Befattning kod 1"));
-    befattningar.add(new BefattningEntity(privatlakareEntity, "Befattning kod 2"));
+    final List<BefattningEntity> befattningar = new ArrayList<>();
+    befattningar.add(new BefattningEntity("Befattning kod 1"));
+    befattningar.add(new BefattningEntity("Befattning kod 2"));
     privatlakareEntity.setBefattningar(befattningar);
 
-    Set<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper = new HashSet<>();
+    final List<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper = new ArrayList<>();
     if (isLakare) {
       legitimeradeYrkesgrupper.add(
-          new LegitimeradYrkesgruppEntity(privatlakareEntity, "Läkare", "LK"));
+          new LegitimeradYrkesgruppEntity("Läkare", "LK"));
     }
     privatlakareEntity.setLegitimeradeYrkesgrupper(legitimeradeYrkesgrupper);
 
     List<SpecialitetEntity> specialiteter = new ArrayList<>();
     specialiteter.add(
-        new SpecialitetEntity(privatlakareEntity, "Specialitet kod 1", "Specialitet namn 1"));
+        new SpecialitetEntity("Specialitet kod 1", "Specialitet namn 1"));
     specialiteter.add(
-        new SpecialitetEntity(privatlakareEntity, "Specialitet kod 2", "Specialitet namn 2"));
+        new SpecialitetEntity("Specialitet kod 2", "Specialitet namn 2"));
     privatlakareEntity.setSpecialiteter(specialiteter);
 
-    Set<VerksamhetstypEntity> verksamhetsTyper = new HashSet<>();
-    verksamhetsTyper.add(new VerksamhetstypEntity(privatlakareEntity, "Verksamhetstyp 1"));
-    verksamhetsTyper.add(new VerksamhetstypEntity(privatlakareEntity, "Verksamhetstyp 2"));
+    final List<VerksamhetstypEntity> verksamhetsTyper = new ArrayList<>();
+    verksamhetsTyper.add(new VerksamhetstypEntity("Verksamhetstyp 1"));
+    verksamhetsTyper.add(new VerksamhetstypEntity("Verksamhetstyp 2"));
     privatlakareEntity.setVerksamhetstyper(verksamhetsTyper);
 
-    Set<VardformEntity> vardformer = new HashSet<>();
-    vardformer.add(new VardformEntity(privatlakareEntity, "Vardform 1"));
-    vardformer.add(new VardformEntity(privatlakareEntity, "Vardform 2"));
+    final List<VardformEntity> vardformer = new ArrayList<>();
+    vardformer.add(new VardformEntity("Vardform 1"));
+    vardformer.add(new VardformEntity("Vardform 2"));
     privatlakareEntity.setVardformer(vardformer);
 
     privatlakareEntity.setRegistreringsdatum(LocalDate.parse(registreringsdatum).atStartOfDay());

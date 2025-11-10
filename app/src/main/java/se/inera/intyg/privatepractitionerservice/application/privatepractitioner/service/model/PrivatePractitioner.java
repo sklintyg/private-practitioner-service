@@ -19,10 +19,11 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
-@Value
+@Getter
 @Builder
 public class PrivatePractitioner {
 
@@ -30,6 +31,59 @@ public class PrivatePractitioner {
   String personId;
   String name;
   String careProviderName;
+
+  String position;
+  String careUnitName;
+  String ownershipType;
+  String typeOfCare;
+  String healthcareServiceType;
+  String workplaceCode;
+
+  String phoneNumber;
   String email;
+  String address;
+  String zipCode;
+  String city;
+  String municipality;
+  String county;
+
+  String personalPrescriptionCode;
+  @Builder.Default
+  List<Speciality> specialties = List.of();
+  @Builder.Default
+  List<LicensedHealtcareProfession> licensedHealthcareProfessions = List.of();
+
+  Long consentFormVersion;
+
   LocalDateTime registrationDate;
+
+  public void updateWithHospInformation(HospPerson hosp) {
+    if (!hosp.getPersonalIdentityNumber().equalsIgnoreCase(this.personId)) {
+      throw new IllegalArgumentException("Personal identity number does not match!");
+    }
+    personalPrescriptionCode = hosp.getPersonalPrescriptionCode();
+    specialties = hosp.getSpecialities().stream().toList();
+    licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions().stream().toList();
+  }
+
+  public void clearHospInformation() {
+    personalPrescriptionCode = null;
+    specialties = List.of();
+    licensedHealthcareProfessions = List.of();
+  }
+
+  public boolean isLicensedPhysician() {
+    return licensedHealthcareProfessions.stream()
+        .anyMatch(LicensedHealtcareProfession::isLicensedPhysician);
+  }
+
+  public RegistrationStatus getRegistrationStatus() {
+    if (licensedHealthcareProfessions.isEmpty()) {
+      return RegistrationStatus.WAITING_FOR_HOSP;
+    }
+    if (isLicensedPhysician()) {
+      return RegistrationStatus.AUTHORIZED;
+    }
+    return RegistrationStatus.NOT_AUTHORIZED;
+  }
 }

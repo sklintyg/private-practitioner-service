@@ -27,8 +27,8 @@ import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalErrorCodeEnum;
 import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 
 @Service
 public class MailServiceStub implements MailService {
@@ -58,12 +58,11 @@ public class MailServiceStub implements MailService {
   }
 
   @Override
-  public void sendRegistrationStatusEmail(RegistrationStatus status,
-      PrivatlakareEntity privatlakareEntity)
+  public void sendRegistrationStatusEmail(RegistrationStatus status, String email)
       throws PrivatlakarportalServiceException {
-    LOG.info("Sending registration status email to {}", privatlakareEntity.getEpost());
+    LOG.info("Sending registration status email to {}", email);
     try {
-      mailStore.addMail(privatlakareEntity.getPersonId(), createHtmlBody(status));
+      mailStore.addMail(email, createHtmlBody(status));
     } catch (MessagingException | PrivatlakarportalServiceException e) {
       throw new PrivatlakarportalServiceException(
           PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, e.getMessage());

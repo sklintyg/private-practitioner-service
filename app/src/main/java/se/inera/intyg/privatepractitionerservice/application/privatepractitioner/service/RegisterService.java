@@ -18,28 +18,280 @@
  */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
+import com.google.common.annotations.VisibleForTesting;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import se.inera.intyg.privatepractitionerservice.application.exception.HospUpdateFailedToContactHsaException;
+import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalErrorCodeEnum;
+import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospInformation;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.SaveRegistrationResponseStatus;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Registration;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.SaveRegistrationResponseStatus;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeTextEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.MedgivandeTextEntityRepository;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareIdEntityRepository;
 import se.inera.intyg.privatepractitionerservice.testability.dto.PrivatlakareDto;
 
 /**
- * Created by pebe on 2015-06-25.
+ * Created by pebe on 2015-06-26.
  */
-public interface RegisterService {
+@Service
+public class RegisterService {
 
-  RegistrationStatus createRegistration(String personalIdentityNumber, Registration registration,
-      Long godkantMedgivandeVersion);
+  @Value("${mail.admin.notification.interval}")
+  private int hsaIdNotificationInterval;
 
-  SaveRegistrationResponseStatus saveRegistration(String personalIdentityNumber,
-      Registration registration);
+  private static final Logger LOG = LoggerFactory.getLogger(RegisterService.class);
 
-  HospInformation getHospInformation(String personalIdentityNumber);
+  @Autowired
+  private PrivatlakareEntityRepository privatlakareEntityRepository;
 
-  boolean removePrivatlakare(String personId);
+  @Autowired
+  private MedgivandeTextEntityRepository medgivandeTextEntityRepository;
 
-  void injectHsaInterval(int hsaIdNotificationInterval);
+  @Autowired
+  private PrivatlakareIdEntityRepository privatlakareidEntityRepository;
 
-  PrivatlakareDto getPrivatlakare(String personId);
+  @Autowired
+  private HospPersonService hospPersonService;
+
+  @Autowired
+  private HospUpdateService hospUpdateService;
+
+  @Autowired
+  private MailService mailService;
+
+  @Autowired
+  private DateHelperService dateHelperService;
+
+  @Autowired
+  private MonitoringLogService monitoringService;
+
+  public HospInformation getHospInformation(String personalIdentityNumber) {
+    final var response = hospPersonService.getHospPerson(personalIdentityNumber);
+
+    if (response == null) {
+      return null;
+    }
+
+    HospInformation hospInformation = new HospInformation();
+    hospInformation.setPersonalPrescriptionCode(response.getPersonalPrescriptionCode());
+    hospInformation.setSpecialityNames(response.getSpecialityNames());
+    hospInformation.setHsaTitles(response.getHsaTitles());
+
+    return hospInformation;
+  }
+
+  @Transactional(transactionManager = "transactionManager")
+  public RegistrationStatus createRegistration(String personalIdentityNumber,
+      Registration registration, Long godkantMedgivandeVersion) {
+
+    if (registration == null || !registration.checkIsValid()) {
+      LOG.error("createRegistration: CreateRegistrationRequest is not valid");
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
+          "CreateRegistrationRequest is not valid");
+    }
+
+    if (godkantMedgivandeVersion == null || godkantMedgivandeVersion <= 0) {
+      LOG.error("createRegistration: Not allowed to create registration without medgivande");
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
+          "Not allowed to create registration without medgivande");
+    }
+
+    if (privatlakareEntityRepository.findByPersonId(personalIdentityNumber) != null) {
+      LOG.error("createRegistration: Registration already exists");
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.ALREADY_EXISTS,
+          "Registration already exists");
+    }
+
+//    if (!userService.getUser().isNameFromPuService()) {
+//      LOG.error(
+//          "createRegistration: Not allowed to create registration without updated name from PU-service");
+//      throw new PrivatlakarportalServiceException(
+//          PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM,
+//          "Not allowed to create registration without updated name from PU-service");
+//    }
+
+    PrivatlakareEntity privatlakareEntity = new PrivatlakareEntity();
+
+    privatlakareEntity.setMedgivande(createMedgivandeSet(godkantMedgivandeVersion,
+        privatlakareEntity));
+
+    privatlakareEntity.setRegistreringsdatum(dateHelperService.now());
+    privatlakareEntity.setPersonId(personalIdentityNumber);
+//    privatlakare.setFullstandigtNamn(userService.getUser().getName());
+    privatlakareEntity.setGodkandAnvandare(true);
+
+    // PrivatlakareId uses an autoincrement column to get next value
+    PrivatlakareIdEntity privatlakareIdEntity = privatlakareidEntityRepository.save(
+        new PrivatlakareIdEntity());
+
+    String hsaId = generateHsaId(privatlakareIdEntity);
+
+    privatlakareEntity.setEnhetsId(hsaId);
+    privatlakareEntity.setHsaId(hsaId);
+    privatlakareEntity.setVardgivareId(hsaId);
+
+    // Set properties from client
+    convertRegistrationToPrivatlakare(registration, privatlakareEntity);
+
+    // Lookup hospPerson in HSA
+    RegistrationStatus status = null;
+    try {
+      status = hospUpdateService.updateHospInformation(privatlakareEntity, true);
+    } catch (HospUpdateFailedToContactHsaException e) {
+      LOG.error("Failed to contact HSA with error {}, setting status {} in the meantime.", e,
+          RegistrationStatus.WAITING_FOR_HOSP);
+      status = RegistrationStatus.WAITING_FOR_HOSP;
+    }
+
+    // Determine if an administrator needs to be notified about HSA ID's running out
+    if (privatlakareidEntityRepository.findLatestGeneratedHsaId() != 0
+        && privatlakareidEntityRepository.findLatestGeneratedHsaId() % hsaIdNotificationInterval
+        == 0) {
+      mailService.sendHsaGenerationStatusEmail();
+    }
+
+    // Mail notification of WAITING_FOR_HOSP is handled by HospUpdateService
+    if (status != RegistrationStatus.WAITING_FOR_HOSP) {
+      mailService.sendRegistrationStatusEmail(status, privatlakareEntity.getEpost());
+    }
+
+    privatlakareEntityRepository.save(privatlakareEntity);
+
+    monitoringService.logUserRegistered(privatlakareEntity.getPersonId(), godkantMedgivandeVersion,
+        privatlakareEntity.getHsaId(), status);
+    return status;
+  }
+
+  @Transactional(transactionManager = "transactionManager")
+  public SaveRegistrationResponseStatus saveRegistration(String personalIdentityNumber,
+      Registration registration) {
+    if (registration == null || !registration.checkIsValid()) {
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
+          "SaveRegistrationRequest is not valid");
+    }
+
+    PrivatlakareEntity privatlakareEntity = privatlakareEntityRepository.findByPersonId(
+        personalIdentityNumber);
+
+    if (privatlakareEntity == null) {
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.NOT_FOUND,
+          "Registration not found");
+    }
+
+    convertRegistrationToPrivatlakare(registration, privatlakareEntity);
+
+    privatlakareEntityRepository.save(privatlakareEntity);
+
+    monitoringService.logUserDetailsChanged(privatlakareEntity.getPersonId(),
+        privatlakareEntity.getHsaId());
+
+    return SaveRegistrationResponseStatus.OK;
+  }
+
+  @Transactional(transactionManager = "transactionManager")
+  public boolean removePrivatlakare(String personId) {
+    PrivatlakareEntity toDelete = privatlakareEntityRepository.findByPersonId(personId);
+    if (toDelete == null) {
+      LOG.error("No Privatlakare with id {} found in the database!", personId);
+      return false;
+    }
+    privatlakareEntityRepository.delete(toDelete);
+    LOG.info("Deleted Privatlakare with id {}", personId);
+
+    monitoringService.logUserDeleted(personId, toDelete.getHsaId());
+
+    return true;
+  }
+
+  @VisibleForTesting
+  public void injectHsaInterval(int hsaIdNotificationInterval) {
+    this.hsaIdNotificationInterval = hsaIdNotificationInterval;
+  }
+
+  @Transactional(transactionManager = "transactionManager")
+  public PrivatlakareDto getPrivatlakare(String personId) {
+    PrivatlakareEntity privatlakareEntity = privatlakareEntityRepository.findByPersonId(personId);
+    if (privatlakareEntity != null) {
+      return new PrivatlakareDto(privatlakareEntity);
+    }
+    return null;
+  }
+
+  /* Private helpers */
+
+  /**
+   * Generate next hsaId, Format: "SE" + ineras orgnr (inkl "sekelsiffror", alltså 165565594230) +
+   * "-" + "WEBCERT" + femsiffrigt löpnr.
+   */
+  private String generateHsaId(PrivatlakareIdEntity privatlakareIdEntity) {
+    // CHECKSTYLE:OFF MagicNumber
+    return "SE165565594230-WEBCERT" + StringUtils.leftPad(
+        Integer.toString(privatlakareIdEntity.getId()),
+        5, '0');
+    // CHECKSTYLE:ON MagicNumber
+  }
+
+  private List<MedgivandeEntity> createMedgivandeSet(Long godkantMedgivandeVersion,
+      PrivatlakareEntity privatlakareEntity) {
+    MedgivandeTextEntity medgivandeTextEntity = medgivandeTextEntityRepository.findById(
+            godkantMedgivandeVersion)
+        .orElse(null);
+    if (medgivandeTextEntity == null) {
+      LOG.error("createRegistration: Could not find medgivandetext with version '{}'",
+          godkantMedgivandeVersion);
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
+          "Could not find medgivandetext matching godkantMedgivandeVersion");
+    }
+    MedgivandeEntity medgivandeEntity = new MedgivandeEntity();
+    medgivandeEntity.setGodkandDatum(dateHelperService.now());
+    medgivandeEntity.setMedgivandeText(medgivandeTextEntity);
+    final List<MedgivandeEntity> medgivandeEntitySet = new ArrayList<>();
+    medgivandeEntitySet.add(medgivandeEntity);
+    return medgivandeEntitySet;
+  }
+
+  private void convertRegistrationToPrivatlakare(Registration registration,
+      PrivatlakareEntity privatlakareEntity) {
+    privatlakareEntity.setAgarform("Privat");
+    privatlakareEntity.setArbetsplatsKod(registration.getArbetsplatskod());
+    privatlakareEntity.setEnhetsNamn(registration.getVerksamhetensNamn());
+    privatlakareEntity.setEpost(registration.getEpost());
+    privatlakareEntity.setKommun(registration.getKommun());
+    privatlakareEntity.setLan(registration.getLan());
+    privatlakareEntity.setPostadress(registration.getAdress());
+    privatlakareEntity.setPostnummer(registration.getPostnummer());
+    privatlakareEntity.setPostort(registration.getPostort());
+    privatlakareEntity.setTelefonnummer(registration.getTelefonnummer());
+    privatlakareEntity.setVardgivareNamn(registration.getVerksamhetensNamn());
+
+    /*
+     * Effectively change the oneToMany cardinality of the following to act as oneToOne, see javadoc for more info
+     */
+    privatlakareEntity.updateBefattningar(registration.getBefattning());
+    privatlakareEntity.updateVardformer(registration.getVardform());
+    privatlakareEntity.updateVerksamhetstyper(registration.getVerksamhetstyp());
+  }
+
 }

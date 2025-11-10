@@ -18,10 +18,14 @@
  */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO.PrivatePractitionerDTOBuilder;
 
+@JsonDeserialize(builder = PrivatePractitionerDTOBuilder.class)
 @Value
 @Builder
 public class PrivatePractitionerDTO {
@@ -33,4 +37,8 @@ public class PrivatePractitionerDTO {
   String email;
   LocalDateTime registrationDate;
 
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class PrivatePractitionerDTOBuilder {
+
+  }
 }

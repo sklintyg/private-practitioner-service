@@ -34,7 +34,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.MedgivandeTextEntityRepository;
 
 @Service
-@Profile({"dev"})
+@Profile({"dev", "integration-test"})
 public class MedgivandeBootstrapBean {
 
   private static final Logger LOG = LoggerFactory.getLogger(MedgivandeBootstrapBean.class);

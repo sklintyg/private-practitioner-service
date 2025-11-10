@@ -29,6 +29,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ import lombok.NoArgsConstructor;
  * Created by pebe on 2015-09-09.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

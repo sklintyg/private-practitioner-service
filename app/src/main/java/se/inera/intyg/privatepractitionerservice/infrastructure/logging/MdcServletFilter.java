@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.logging;
 
+import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.SESSION_ID_KEY;
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.SPAN_ID_KEY;
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.TRACE_ID_KEY;
 
@@ -45,7 +46,7 @@ public class MdcServletFilter implements Filter {
       throws IOException, ServletException {
     try {
       if (request instanceof HttpServletRequest http) {
-//        MDC.put(SESSION_ID_KEY, mdcHelper.sessionId(http));
+        MDC.put(SESSION_ID_KEY, mdcHelper.sessionId(http));
         MDC.put(TRACE_ID_KEY, mdcHelper.traceId(http));
         MDC.put(SPAN_ID_KEY, mdcHelper.spanId());
       }

@@ -30,14 +30,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
  * Created by pebe on 2015-09-09.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -56,11 +57,4 @@ public class MedgivandeEntity {
   @JoinColumn(name = "MEDGIVANDE_VERSION", nullable = false)
   @JsonBackReference(value = "medgivandeText")
   private MedgivandeTextEntity medgivandeText;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-  @JsonBackReference
-  @EqualsAndHashCode.Exclude
-  private PrivatlakareEntity privatlakare;
-
 }

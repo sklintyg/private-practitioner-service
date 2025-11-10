@@ -15,6 +15,12 @@ public class PrivatlakareEntityConverter {
         .careProviderName(privatlakareEntity.getVardgivareNamn())
         .email(privatlakareEntity.getEpost())
         .registrationDate(privatlakareEntity.getRegistreringsdatum())
+        .consentFormVersion(
+            privatlakareEntity.getMedgivande() == null ? null
+                : privatlakareEntity.getMedgivande().stream().findFirst()
+                    .map(consent -> consent.getMedgivandeText().getVersion())
+                    .orElse(null)
+        )
         .build();
   }
 }

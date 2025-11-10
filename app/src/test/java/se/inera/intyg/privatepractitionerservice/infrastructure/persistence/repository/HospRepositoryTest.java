@@ -1,0 +1,70 @@
+package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE_HOSP_PERSON;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
+
+@ExtendWith(MockitoExtension.class)
+class HospRepositoryTest {
+
+  @Mock
+  private HospService hospService;
+  @Mock
+  private HashUtility hashUtility;
+  @InjectMocks
+  private HospRepository hospRepository;
+
+  @Test
+  void shouldAddToCertifier() {
+    when(hospService.handleHospCertificationPersonResponseType(
+        anyString(), anyString(), anyString(), any())
+    ).thenReturn(
+        Result.builder()
+            .resultCode("0")
+            .resultText("Success")
+            .build()
+    );
+
+    hospRepository.addToCertifier(DR_KRANSTEGE);
+
+    verify(hospService).handleHospCertificationPersonResponseType(
+        DR_KRANSTEGE.getHsaId(),
+        "add",
+        DR_KRANSTEGE.getPersonId(),
+        null
+    );
+  }
+
+  @Test
+  void shouldReturnEmptyWhenNoHospPersonFound() {
+    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getHsaId()))
+        .thenReturn(null);
+    final var actual = hospRepository.findByHsaId(DR_KRANSTEGE.getHsaId());
+    assertTrue(actual.isEmpty());
+  }
+
+  @Test
+  void shouldReturnWhenHospPersonFound() {
+    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getHsaId()))
+        .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
+
+    final var actual = hospRepository.findByHsaId(DR_KRANSTEGE.getHsaId());
+
+    assertEquals(DR_KRANSTEGE_HOSP_PERSON, actual.orElseThrow());
+  }
+}

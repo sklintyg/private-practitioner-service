@@ -19,7 +19,7 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +29,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.CreateRegistrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.EraseService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.IntegrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
@@ -40,19 +42,22 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.logging.Performa
 
 @RestController
 @RequestMapping("/internalapi/privatepractitioner")
+@RequiredArgsConstructor
 public class PrivatePractitionerController {
 
   private final PrivatePractitionerService privatePractitionerService;
+  private final CreateRegistrationService createRegistrationService;
   private final IntegrationService integrationService;
   private final EraseService eraseService;
 
-  @Autowired
-  public PrivatePractitionerController(PrivatePractitionerService privatePractitionerService,
-      IntegrationService integrationService,
-      EraseService eraseService) {
-    this.privatePractitionerService = privatePractitionerService;
-    this.integrationService = integrationService;
-    this.eraseService = eraseService;
+  @PostMapping("")
+  @PerformanceLogging(eventAction = "register-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CREATION)
+  public ResponseEntity<PrivatePractitionerDTO> registerPrivatePractitioner(
+      @RequestBody CreateRegistrationRequest createRegistrationRequest) {
+    final var privatePractitionerDTO = createRegistrationService.createRegistration(
+        createRegistrationRequest
+    );
+    return ResponseEntity.ok(privatePractitionerDTO);
   }
 
   @GetMapping("")
