@@ -30,8 +30,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.IntegrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
 
 @ExtendWith(MockitoExtension.class)
 class PrivatePractitionerControllerTest {
@@ -40,10 +40,8 @@ class PrivatePractitionerControllerTest {
 
   @Mock
   private PrivatePractitionerService privatePractitionerService;
-
   @Mock
-  private IntegrationService integrationService;
-
+  private ValidatePrivatePractitionerService validatePrivatePractitionerService;
   @InjectMocks
   private PrivatePractitionerController privatePractitionerController;
 

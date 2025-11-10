@@ -35,8 +35,8 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.CreateRegistrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.EraseService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.IntegrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
 
@@ -47,7 +47,7 @@ public class PrivatePractitionerController {
 
   private final PrivatePractitionerService privatePractitionerService;
   private final CreateRegistrationService createRegistrationService;
-  private final IntegrationService integrationService;
+  private final ValidatePrivatePractitionerService validatePrivatePractitionerService;
   private final EraseService eraseService;
 
   @PostMapping("")
@@ -85,7 +85,7 @@ public class PrivatePractitionerController {
   @PerformanceLogging(eventAction = "validate-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_INFO)
   public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
       @RequestBody ValidatePrivatePractitionerRequest request) {
-    final var response = integrationService.validatePrivatePractitionerByPersonId(
+    final var response = validatePrivatePractitionerService.validate(
         request.getPersonalIdentityNumber());
     return ResponseEntity.ok(response);
   }
