@@ -9,11 +9,11 @@ public final class TestDataConstants {
   public static final String DR_KRANSTEGE_PERSON_ID = "197705232382";
   public static final String DR_KRANSTEGE_HSA_ID = "SE165565594230-WEBCERT00001";
   public static final String DR_KRANSTEGE_NAME = "Frida Kranstege";
-  public static final String DR_KRANSTEGE_POSITION = "Överläkare";
+  public static final String DR_KRANSTEGE_POSITION = "201010";
   public static final String DR_KRANSTEGE_CARE_UNIT_NAME = "Kransteges specialistmottagning";
   public static final String DR_KRANSTEGE_OWNERSHIP_TYPE = "Privat";
   public static final String DR_KRANSTEGE_TYPE_OF_CARE = "01";
-  public static final String DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE = "11";
+  public static final String DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE = "15";
   public static final String DR_KRANSTEGE_WORKPLACE_CODE = "555";
   public static final String DR_KRANSTEGE_PHONE_NUMBER = "0123-456789";
   public static final String DR_KRANSTEGE_EMAIL = "frida@kranstege.se";

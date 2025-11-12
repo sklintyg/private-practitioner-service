@@ -31,13 +31,12 @@ POST http://localhost:18070/internalapi/privatepractitioner
 Content-Type: application/json
 
 {
-  "personId": "194112128154",
+  "personId": "201212121212",
   "name": "LillTolvan Tolvansson",
   "position": "202010",
   "careUnitName": "Lilltrollens vårdcentral",
-  "ownershipType": "Privat",
-  "typeOfCare": "Primärvård",
-  "healthcareServiceType": "Vårdcentral",
+  "typeOfCare": "01",
+  "healthcareServiceType": "15",
   "workplaceCode": "arbetsplatskod",
   "phoneNumber": "0123-456789",
   "email": "mail@nisse.se",

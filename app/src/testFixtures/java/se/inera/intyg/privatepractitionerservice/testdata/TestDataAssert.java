@@ -48,7 +48,8 @@ public class TestDataAssert {
                 expected.getRegistreringsdatum(),
                 actual.getRegistreringsdatum()
             )) <= 1,
-            "Registreringsdatum should be within 1 second")
+            "Registreringsdatum should be within 1 second"
+        )
     );
   }
 

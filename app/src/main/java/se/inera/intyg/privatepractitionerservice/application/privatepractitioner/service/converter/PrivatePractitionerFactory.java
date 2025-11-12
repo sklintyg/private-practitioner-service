@@ -14,7 +14,7 @@ public class PrivatePractitionerFactory {
         .name(createRegistrationRequest.getName())
         .position(createRegistrationRequest.getPosition())
         .careProviderName(createRegistrationRequest.getCareUnitName())
-        .ownershipType(createRegistrationRequest.getOwnershipType())
+        .ownershipType("Privat")
         .typeOfCare(createRegistrationRequest.getTypeOfCare())
         .healthcareServiceType(createRegistrationRequest.getHealthcareServiceType())
         .workplaceCode(createRegistrationRequest.getWorkplaceCode())

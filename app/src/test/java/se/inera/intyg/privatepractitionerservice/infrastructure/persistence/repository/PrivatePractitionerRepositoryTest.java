@@ -130,6 +130,26 @@ class PrivatePractitionerRepositoryTest {
     assertEquals(expected, actual);
   }
 
+  @Test
+  void shouldReturnTrueIfPrivatePractitionerExists() {
+    when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(DR_KRANSTEGE_ENTITY);
+
+    final var actual = privatePractitionerRepository.isExists(DR_KRANSTEGE_PERSON_ID);
+
+    assertTrue(actual, "Expected exists to be true when personId found");
+  }
+
+  @Test
+  void shouldReturnFalseIfPrivatePractitionerNotExists() {
+    when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(null);
+
+    final var actual = privatePractitionerRepository.isExists(DR_KRANSTEGE_PERSON_ID);
+
+    assertTrue(!actual, "Expected exists to be false when personId not found");
+  }
+
   @Nested
   class SavePrivatePractitionerTests {
 

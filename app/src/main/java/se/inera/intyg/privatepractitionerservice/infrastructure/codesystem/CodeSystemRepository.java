@@ -60,4 +60,19 @@ public class CodeSystemRepository {
   public List<TypeOfCare> getTypeOfCareCodes() {
     return typeOfCareCodes;
   }
+
+  public boolean positionExists(String code) {
+    return positionCodes.stream()
+        .anyMatch(position -> position.code().equalsIgnoreCase(code));
+  }
+
+  public boolean typeOfCareExists(String code) {
+    return typeOfCareCodes.stream()
+        .anyMatch(typeOfCare -> typeOfCare.code().equalsIgnoreCase(code));
+  }
+
+  public boolean healthcareServiceTypeExists(String code) {
+    return healthcareServiceTypeCodes.stream()
+        .anyMatch(healthcareServiceType -> healthcareServiceType.code().equalsIgnoreCase(code));
+  }
 }
