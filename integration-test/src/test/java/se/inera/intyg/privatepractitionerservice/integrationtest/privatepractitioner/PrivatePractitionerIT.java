@@ -2,6 +2,7 @@ package se.inera.intyg.privatepractitionerservice.integrationtest.privatepractit
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.addToCertifierResponseBuilder;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeCredentialsBuilder;
@@ -80,6 +81,28 @@ class PrivatePractitionerIT {
         () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
         () -> assertNotNull(actual.getRegistrationDate())
+    );
+  }
+
+  @Test
+  void shallReturnRegistrationConfiguration() {
+    final var response = api.registrationConfiguration();
+
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertAll(
+        () -> assertNotNull(actual.getConsentForm(), "Consent form should not be null"),
+        () -> assertNotNull(actual.getHealthcareServiceTypeCodes(),
+            "HealthcareServiceType codes should not be null"),
+        () -> assertFalse(actual.getHealthcareServiceTypeCodes().isEmpty(),
+            "HealthcareServiceType codes should not be empty"),
+        () -> assertNotNull(actual.getPositionCodes(), "Position codes should not be null"),
+        () -> assertFalse(actual.getPositionCodes().isEmpty(),
+            "Position codes should not be empty"),
+        () -> assertNotNull(actual.getTypeOfCareCodes(), "TypeOfCare codes should not be null"),
+        () -> assertFalse(actual.getTypeOfCareCodes().isEmpty(),
+            "TypeOfCare codes should not be empty")
     );
   }
 }
