@@ -13,15 +13,13 @@ public class CodeSystemRepository {
       new HealthcareServiceType("10", "Barn- och ungdomsverksamhet"),
       new HealthcareServiceType("11", "Medicinsk verksamhet"),
       new HealthcareServiceType("12", "Laboratorieverksamhet"),
-      // TODO: Har bytt namn till Kirurgisk verksamhet
-      new HealthcareServiceType("13", "Opererande verksamhet"),
+      new HealthcareServiceType("13", "Kirurgisk verksamhet"),
       new HealthcareServiceType("14", "Övrig medicinsk verksamhet"),
       new HealthcareServiceType("15", "Primärvårdsverksamhet"),
       new HealthcareServiceType("16", "Psykiatrisk verksamhet"),
       new HealthcareServiceType("17", "Radiologisk verksamhet"),
       new HealthcareServiceType("18", "Tandvårdsverksamhet"),
       new HealthcareServiceType("20", "Övrig medicinsk serviceverksamhet"),
-      // TODO: Denna gruppering finns inte längre
       new HealthcareServiceType("21", "Vård-, Omsorg- och Omvårdnadsverksamhet")
   );
 
