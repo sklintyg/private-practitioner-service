@@ -15,6 +15,9 @@ Content-Type: application/json
   "personalIdentityNumber": "194606109108"
 }
 
+### GET Configuration
+GET http://localhost:18070/internalapi/privatepractitioner/configuration
+
 ### POST create
 POST http://localhost:18070/internalapi/privatepractitioner
 Content-Type: application/json

@@ -31,11 +31,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.RegistrationConfigurationResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.CreateRegistrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.EraseService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.RegistrationConfigurationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
@@ -49,6 +51,7 @@ public class PrivatePractitionerController {
   private final CreateRegistrationService createRegistrationService;
   private final ValidatePrivatePractitionerService validatePrivatePractitionerService;
   private final EraseService eraseService;
+  private final RegistrationConfigurationService registrationConfigurationService;
 
   @PostMapping("")
   @PerformanceLogging(eventAction = "register-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CREATION)
@@ -58,6 +61,12 @@ public class PrivatePractitionerController {
         createRegistrationRequest
     );
     return ResponseEntity.ok(privatePractitionerDTO);
+  }
+
+  @GetMapping("/configuration")
+  public ResponseEntity<RegistrationConfigurationResponse> getRegistrationConfiguration() {
+    final var config = registrationConfigurationService.get();
+    return ResponseEntity.ok(config);
   }
 
   @GetMapping("")

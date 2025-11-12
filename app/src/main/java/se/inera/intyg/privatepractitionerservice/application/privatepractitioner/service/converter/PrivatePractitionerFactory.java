@@ -14,7 +14,7 @@ public class PrivatePractitionerFactory {
         .name(createRegistrationRequest.getName())
         .position(createRegistrationRequest.getPosition())
         .careProviderName(createRegistrationRequest.getCareUnitName())
-//        .ownershipType(createRegistrationRequest.getOwnershipType())
+        .ownershipType(createRegistrationRequest.getOwnershipType())
         .typeOfCare(createRegistrationRequest.getTypeOfCare())
         .healthcareServiceType(createRegistrationRequest.getHealthcareServiceType())
         .workplaceCode(createRegistrationRequest.getWorkplaceCode())
@@ -26,7 +26,6 @@ public class PrivatePractitionerFactory {
         .municipality(createRegistrationRequest.getMunicipality())
         .county(createRegistrationRequest.getCounty())
         .consentFormVersion(createRegistrationRequest.getConsentFormVersion())
-        .ownershipType("Privat")
         .registrationDate(LocalDateTime.now())
         .build();
   }

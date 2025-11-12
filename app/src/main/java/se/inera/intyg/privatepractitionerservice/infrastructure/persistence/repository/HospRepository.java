@@ -37,7 +37,7 @@ public class HospRepository {
 
   }
 
-  public Optional<HospPerson> findByHsaId(String personId) {
+  public Optional<HospPerson> findByPersonId(String personId) {
     final var response = hospService.getHospCredentialsForPersonResponseType(personId);
 
     if (response == null || response.getPersonalIdentityNumber() == null) {

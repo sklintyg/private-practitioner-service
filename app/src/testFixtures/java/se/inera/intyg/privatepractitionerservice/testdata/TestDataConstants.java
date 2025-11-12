@@ -33,6 +33,16 @@ public final class TestDataConstants {
       );
 
   public static final long CONSENT_FORM_VERSION = 1L;
+  public static final String CONSENT_FORM_TEXT = "<p>Jag samtycker till att ...</p>";
+
+  public static final String HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE = "11";
+  public static final String HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE = "Medicinsk verksamhet";
+
+  public static final String POSITION_CODE_SPECIALIST_DOCTOR = "202010";
+  public static final String POSITION_DESCRIPTION_SPECIALIST_DOCTOR = "Specialistläkare";
+
+  public static final String TYPE_OF_CARE_CODE_OUTPATIENT = "01";
+  public static final String TYPE_OF_CARE_DESCRIPTION_OUTPATIENT = "Öppenvård";
 
   private TestDataConstants() {
   }

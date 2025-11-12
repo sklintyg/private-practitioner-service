@@ -1,5 +1,6 @@
 package se.inera.intyg.privatepractitionerservice.testdata;
 
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.CONSENT_FORM_TEXT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.CONSENT_FORM_VERSION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_ADDRESS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_CARE_UNIT_NAME;
@@ -27,6 +28,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeTextEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeTextEntity.MedgivandeTextEntityBuilder;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.VardformEntity;
@@ -35,6 +37,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 public class TestDataEntities {
 
   public static final PrivatlakareEntity DR_KRANSTEGE_ENTITY = kranstegeEntityBuilder().build();
+  public static final MedgivandeTextEntity CURRENT_MEDGIVANDE_TEXT_ENTITY = currentMedgivandeTextEntityBuilder().build();
 
   public static PrivatlakareEntity.PrivatlakareEntityBuilder kranstegeEntityBuilder() {
     return PrivatlakareEntity.builder()
@@ -109,6 +112,13 @@ public class TestDataEntities {
                 .toList()
         )
         .godkandAnvandare(true);
+  }
+
+  public static MedgivandeTextEntityBuilder currentMedgivandeTextEntityBuilder() {
+    return MedgivandeTextEntity.builder()
+        .version(CONSENT_FORM_VERSION)
+        .medgivandeText(CONSENT_FORM_TEXT)
+        .datum(LocalDateTime.now());
   }
 
   private TestDataEntities() {

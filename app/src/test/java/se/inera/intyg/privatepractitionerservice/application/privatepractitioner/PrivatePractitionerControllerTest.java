@@ -21,6 +21,7 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.REGISTER_CONFIGURATION_RESPONSE;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.RegistrationConfigurationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,9 +43,21 @@ class PrivatePractitionerControllerTest {
   @Mock
   private PrivatePractitionerService privatePractitionerService;
   @Mock
+  private RegistrationConfigurationService registrationConfigurationService;
+  @Mock
   private ValidatePrivatePractitionerService validatePrivatePractitionerService;
   @InjectMocks
   private PrivatePractitionerController privatePractitionerController;
+
+  @Test
+  void shouldReturnConfiguration() {
+    when(registrationConfigurationService.get()).thenReturn(REGISTER_CONFIGURATION_RESPONSE);
+    final var actual = privatePractitionerController.getRegistrationConfiguration();
+    assertAll(
+        () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
+        () -> assertEquals(REGISTER_CONFIGURATION_RESPONSE, actual.getBody())
+    );
+  }
 
   @Test
   void shouldReturnPrivatePractitioners() {

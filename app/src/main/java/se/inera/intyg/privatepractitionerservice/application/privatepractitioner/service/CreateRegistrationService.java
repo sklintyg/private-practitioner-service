@@ -30,7 +30,7 @@ public class CreateRegistrationService {
 
     final var privatePractitioner = privatePractitionerFactory.create(registration);
 
-    final var hospPerson = hospRepository.findByHsaId(privatePractitioner.getPersonId());
+    final var hospPerson = hospRepository.findByPersonId(privatePractitioner.getPersonId());
     hospPerson.ifPresent(privatePractitioner::updateWithHospInformation);
 
     final var savedPrivatePractitioner = privatePractitionerRepository.save(privatePractitioner);

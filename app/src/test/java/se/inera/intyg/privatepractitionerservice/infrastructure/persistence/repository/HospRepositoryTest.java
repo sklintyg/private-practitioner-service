@@ -54,7 +54,7 @@ class HospRepositoryTest {
   void shouldReturnEmptyWhenNoHospPersonFound() {
     when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getHsaId()))
         .thenReturn(null);
-    final var actual = hospRepository.findByHsaId(DR_KRANSTEGE.getHsaId());
+    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getHsaId());
     assertTrue(actual.isEmpty());
   }
 
@@ -63,7 +63,7 @@ class HospRepositoryTest {
     when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getHsaId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
 
-    final var actual = hospRepository.findByHsaId(DR_KRANSTEGE.getHsaId());
+    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getHsaId());
 
     assertEquals(DR_KRANSTEGE_HOSP_PERSON, actual.orElseThrow());
   }
