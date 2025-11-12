@@ -20,9 +20,13 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.REGISTER_CONFIGURATION_RESPONSE;
 
 import java.util.List;
@@ -31,9 +35,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.CreateRegistrationService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.EraseService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.GetHospInformationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.RegistrationConfigurationService;
@@ -43,7 +53,11 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 class PrivatePractitionerControllerTest {
 
   private static final String PERSONAL_IDENTITY_NUMBER = "191212121212";
+  private static final Logger log = LoggerFactory.getLogger(
+      PrivatePractitionerControllerTest.class);
 
+  @Mock
+  private CreateRegistrationService createRegistrationService;
   @Mock
   private PrivatePractitionerService privatePractitionerService;
   @Mock
@@ -52,8 +66,24 @@ class PrivatePractitionerControllerTest {
   private GetHospInformationService getHospInformationService;
   @Mock
   private ValidatePrivatePractitionerService validatePrivatePractitionerService;
+  @Mock
+  private EraseService eraseService;
   @InjectMocks
   private PrivatePractitionerController privatePractitionerController;
+
+  @Test
+  void shouldRegisterPrivatePractitioner() {
+    when(createRegistrationService.createRegistration(DR_KRANSTEGE_REQUEST))
+        .thenReturn(DR_KRANSTEGE_DTO);
+
+    final var actual = privatePractitionerController.registerPrivatePractitioner(
+        DR_KRANSTEGE_REQUEST);
+
+    assertAll(
+        () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
+        () -> assertEquals(DR_KRANSTEGE_DTO, actual.getBody())
+    );
+  }
 
   @Test
   void shouldReturnConfiguration() {
@@ -125,5 +155,29 @@ class PrivatePractitionerControllerTest {
         PERSONAL_IDENTITY_NUMBER);
 
     assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+  }
+
+  @Test
+  void shouldValidatePrivatePractitioner() {
+    when(validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(ValidatePrivatePractitionerResponse.builder().build());
+
+    final var actual = privatePractitionerController.validatePrivatePractitioner(
+        ValidatePrivatePractitionerRequest.builder()
+            .personId(DR_KRANSTEGE_PERSON_ID)
+            .build()
+    );
+
+    assertAll(
+        () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
+        () -> assertEquals(ValidatePrivatePractitionerResponse.builder().build(), actual.getBody())
+    );
+  }
+
+  @Test
+  void shouldErasePrivatePractitioner() {
+    privatePractitionerController.erasePrivatePractitioner(DR_KRANSTEGE_HSA_ID);
+
+    verify(eraseService).erasePrivatePractitioner(DR_KRANSTEGE_HSA_ID);
   }
 }

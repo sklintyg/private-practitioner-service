@@ -47,11 +47,21 @@ public class CodeSystemRepository {
     return healthcareServiceTypeCodes;
   }
 
+  public boolean healthcareServiceTypeExists(String code) {
+    return healthcareServiceTypeCodes.stream()
+        .anyMatch(healthcareServiceType -> healthcareServiceType.code().equalsIgnoreCase(code));
+  }
+
   /**
    * Retrieves the list of Position codes (Befattningskoder).
    */
   public List<Position> getPositionCodes() {
     return positionCodes;
+  }
+
+  public boolean positionExists(String code) {
+    return positionCodes.stream()
+        .anyMatch(position -> position.code().equalsIgnoreCase(code));
   }
 
   /**
@@ -61,18 +71,8 @@ public class CodeSystemRepository {
     return typeOfCareCodes;
   }
 
-  public boolean positionExists(String code) {
-    return positionCodes.stream()
-        .anyMatch(position -> position.code().equalsIgnoreCase(code));
-  }
-
   public boolean typeOfCareExists(String code) {
     return typeOfCareCodes.stream()
         .anyMatch(typeOfCare -> typeOfCare.code().equalsIgnoreCase(code));
-  }
-
-  public boolean healthcareServiceTypeExists(String code) {
-    return healthcareServiceTypeCodes.stream()
-        .anyMatch(healthcareServiceType -> healthcareServiceType.code().equalsIgnoreCase(code));
   }
 }

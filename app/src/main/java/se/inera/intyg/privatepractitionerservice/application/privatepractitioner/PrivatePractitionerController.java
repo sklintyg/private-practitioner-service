@@ -50,12 +50,12 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.logging.Performa
 @RequiredArgsConstructor
 public class PrivatePractitionerController {
 
-  private final PrivatePractitionerService privatePractitionerService;
   private final CreateRegistrationService createRegistrationService;
-  private final ValidatePrivatePractitionerService validatePrivatePractitionerService;
-  private final EraseService eraseService;
+  private final PrivatePractitionerService privatePractitionerService;
   private final RegistrationConfigurationService registrationConfigurationService;
   private final GetHospInformationService getHospInformationService;
+  private final ValidatePrivatePractitionerService validatePrivatePractitionerService;
+  private final EraseService eraseService;
 
   @PostMapping("")
   @PerformanceLogging(eventAction = "register-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CREATION)
@@ -105,8 +105,7 @@ public class PrivatePractitionerController {
   @PerformanceLogging(eventAction = "validate-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_INFO)
   public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
       @RequestBody ValidatePrivatePractitionerRequest request) {
-    final var response = validatePrivatePractitionerService.validate(
-        request.getPersonalIdentityNumber());
+    final var response = validatePrivatePractitionerService.validate(request.getPersonId());
     return ResponseEntity.ok(response);
   }
 
