@@ -21,6 +21,8 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.REGISTER_CONFIGURATION_RESPONSE;
 
 import java.util.List;
@@ -30,7 +32,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.GetHospInformationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.RegistrationConfigurationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
@@ -45,6 +49,8 @@ class PrivatePractitionerControllerTest {
   @Mock
   private RegistrationConfigurationService registrationConfigurationService;
   @Mock
+  private GetHospInformationService getHospInformationService;
+  @Mock
   private ValidatePrivatePractitionerService validatePrivatePractitionerService;
   @InjectMocks
   private PrivatePractitionerController privatePractitionerController;
@@ -52,10 +58,28 @@ class PrivatePractitionerControllerTest {
   @Test
   void shouldReturnConfiguration() {
     when(registrationConfigurationService.get()).thenReturn(REGISTER_CONFIGURATION_RESPONSE);
+
     final var actual = privatePractitionerController.getRegistrationConfiguration();
+
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
         () -> assertEquals(REGISTER_CONFIGURATION_RESPONSE, actual.getBody())
+    );
+  }
+
+  @Test
+  void shouldReturnHospInformation() {
+    final var request = GetHospInformationRequest.builder()
+        .personId(DR_KRANSTEGE_PERSON_ID)
+        .build();
+
+    when(getHospInformationService.get(request)).thenReturn(DR_KRANSTEGE_HOSP_INFORMATION);
+
+    final var actual = privatePractitionerController.getHospInformation(request);
+
+    assertAll(
+        () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
+        () -> assertEquals(DR_KRANSTEGE_HOSP_INFORMATION, actual.getBody())
     );
   }
 

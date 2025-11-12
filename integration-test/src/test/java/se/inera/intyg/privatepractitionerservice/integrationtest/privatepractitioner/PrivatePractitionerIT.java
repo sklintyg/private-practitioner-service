@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.addToCertifierResponseBuilder;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeCredentialsBuilder;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REQUEST;
 
 import org.junit.jupiter.api.AfterEach;
@@ -82,6 +84,20 @@ class PrivatePractitionerIT {
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
         () -> assertNotNull(actual.getRegistrationDate())
     );
+  }
+
+  @Test
+  void shallReturnHospInformation() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    final var response = api.hospInformation(DR_KRANSTEGE_HOSP_INFORMATION_REQUEST);
+
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertEquals(DR_KRANSTEGE_HOSP_INFORMATION, actual);
   }
 
   @Test

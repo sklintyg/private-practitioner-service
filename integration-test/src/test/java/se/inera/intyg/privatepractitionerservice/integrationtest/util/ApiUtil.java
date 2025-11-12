@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.RegistrationConfigurationResponse;
 
@@ -22,6 +24,20 @@ public class ApiUtil {
   public ResponseEntity<PrivatePractitionerDTO> registerPrivatePractitioner(
       CreateRegistrationRequest request) {
     final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner";
+    final var headers = new HttpHeaders();
+    return this.restTemplate.exchange(
+        requestUrl,
+        HttpMethod.POST,
+        new HttpEntity<>(request, headers),
+        new ParameterizedTypeReference<>() {
+        },
+        Collections.emptyMap()
+    );
+  }
+
+  public ResponseEntity<GetHospInformationResponse> hospInformation(
+      GetHospInformationRequest request) {
+    final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner/hosp";
     final var headers = new HttpHeaders();
     return this.restTemplate.exchange(
         requestUrl,

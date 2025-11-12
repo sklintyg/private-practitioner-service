@@ -32,6 +32,9 @@ import java.util.List;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CodeDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ConsentFormDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse.GetHospInformationResponseBuilder;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO.PrivatePractitionerDTOBuilder;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.RegistrationConfigurationResponse;
@@ -44,13 +47,19 @@ import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Hosp
 public class TestDataDTO {
 
   public static final CreateRegistrationRequest DR_KRANSTEGE_REQUEST = kranstegeRegistrationRequest().build();
+  public static final GetHospInformationRequest DR_KRANSTEGE_HOSP_INFORMATION_REQUEST = GetHospInformationRequest.builder()
+      .personId(DR_KRANSTEGE_PERSON_ID)
+      .build();
   public static final PrivatePractitionerDTO DR_KRANSTEGE_DTO = kranstegeDTOBuilder().build();
+  public static final GetHospInformationResponse DR_KRANSTEGE_HOSP_INFORMATION = kranstegeHospInformationBuilder().build();
+
   public static final HospCredentialsForPerson DR_KRANSTEGE_HOSP_CREDENTIALS = kranstegeHospCredentialsBuilder().build();
 
   public static final ConsentFormDTO CONSENT_FORM_DTO = new ConsentFormDTO(
       CONSENT_FORM_VERSION,
       CONSENT_FORM_TEXT
   );
+
   public static final CodeDTO HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO = new CodeDTO(
       HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE,
       HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE
@@ -63,7 +72,6 @@ public class TestDataDTO {
       TYPE_OF_CARE_CODE_OUTPATIENT,
       TYPE_OF_CARE_DESCRIPTION_OUTPATIENT
   );
-
   public static final RegistrationConfigurationResponse REGISTER_CONFIGURATION_RESPONSE = registerConfigurationResponseBuilder().build();
 
   public static PrivatePractitionerDTOBuilder kranstegeDTOBuilder() {
@@ -125,5 +133,27 @@ public class TestDataDTO {
         .healthcareServiceTypeCodes(List.of(HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO))
         .positionCodes(List.of(POSITION_SPECIALIST_DOCTOR_DTO))
         .typeOfCareCodes(List.of(TYPE_OF_CARE_OUTPATIENT_DTO));
+  }
+
+  private static GetHospInformationResponseBuilder kranstegeHospInformationBuilder() {
+    return GetHospInformationResponse.builder()
+        .personId(DR_KRANSTEGE_PERSON_ID)
+        .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
+        .licensedHealthcareProfessions(
+            DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS.stream()
+                .map(licensedHealtcareProfession -> new CodeDTO(
+                    licensedHealtcareProfession.code(),
+                    licensedHealtcareProfession.name()
+                ))
+                .toList()
+        )
+        .specialities(
+            DR_KRANSTEGE_SPECIALITIES.stream()
+                .map(speciality -> new CodeDTO(
+                    speciality.code(),
+                    speciality.name()
+                ))
+                .toList()
+        );
   }
 }
