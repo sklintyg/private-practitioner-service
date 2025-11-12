@@ -108,7 +108,6 @@ class PrivatePractitionerIT {
     assertNotNull(response.getBody());
     final var actual = response.getBody();
     assertAll(
-        () -> assertNotNull(actual.getConsentForm(), "Consent form should not be null"),
         () -> assertNotNull(actual.getHealthcareServiceTypeCodes(),
             "HealthcareServiceType codes should not be null"),
         () -> assertFalse(actual.getHealthcareServiceTypeCodes().isEmpty(),

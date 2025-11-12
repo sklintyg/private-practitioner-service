@@ -25,13 +25,6 @@ public class CreateRegistrationRequestValidator {
       );
     }
 
-    if (registration.getConsentFormVersion() == null || registration.getConsentFormVersion() <= 0) {
-      throw new PrivatlakarportalServiceException(
-          PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
-          "Not allowed to create registration without medgivande"
-      );
-    }
-
     if (privatePractitionerRepository.isExists(registration.getPersonId())) {
       throw new PrivatlakarportalServiceException(
           PrivatlakarportalErrorCodeEnum.ALREADY_EXISTS,

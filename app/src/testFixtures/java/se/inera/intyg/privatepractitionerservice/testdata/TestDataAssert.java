@@ -43,16 +43,6 @@ public class TestDataAssert {
         () -> assertEquals(expected.getVardformer(), actual.getVardformer()),
         () -> assertEquals(expected.getSenasteHospUppdatering(),
             actual.getSenasteHospUppdatering()),
-        () -> assertEquals(
-            expected.getMedgivande().getFirst().getMedgivandeText().getVersion(),
-            actual.getMedgivande().getFirst().getMedgivandeText().getVersion()
-        ),
-        () -> assertTrue(
-            Math.abs(ChronoUnit.SECONDS.between(
-                expected.getMedgivande().getFirst().getGodkandDatum(),
-                actual.getMedgivande().getFirst().getGodkandDatum()
-            )) <= 1,
-            "GodkandDatum should be within 1 second"),
         () -> assertTrue(
             Math.abs(ChronoUnit.SECONDS.between(
                 expected.getRegistreringsdatum(),

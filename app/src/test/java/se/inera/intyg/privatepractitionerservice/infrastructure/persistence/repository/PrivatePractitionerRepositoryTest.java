@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataAssert.assertPrivatlakareEntity;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.CONSENT_FORM_VERSION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.DR_KRANSTEGE_ENTITY;
@@ -14,7 +13,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.D
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,8 +23,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.PrivatlakareEntityConverter;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeTextEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
 
@@ -37,8 +33,6 @@ class PrivatePractitionerRepositoryTest {
   private PrivatlakareEntityRepository privatlakareEntityRepository;
   @Mock
   private PrivatlakareIdEntityRepository privatlakareIdEntityRepository;
-  @Mock
-  private MedgivandeTextEntityRepository medgivandeTextEntityRepository;
   @Mock
   private PrivatlakareEntityConverter privatlakareEntityConverter;
   @InjectMocks
@@ -149,13 +143,6 @@ class PrivatePractitionerRepositoryTest {
         when(privatlakareIdEntityRepository.save(new PrivatlakareIdEntity())).thenReturn(
             PrivatlakareIdEntity.builder().id(1).build()
         );
-        when(medgivandeTextEntityRepository.findById(CONSENT_FORM_VERSION)).thenReturn(
-            Optional.of(
-                MedgivandeTextEntity.builder()
-                    .version(DR_KRANSTEGE.getConsentFormVersion())
-                    .build()
-            )
-        );
         when(privatlakareEntityRepository.save(any(PrivatlakareEntity.class)))
             .thenReturn(DR_KRANSTEGE_ENTITY);
         when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY))
@@ -190,19 +177,6 @@ class PrivatePractitionerRepositoryTest {
             .vardgivareId(DR_KRANSTEGE_HSA_ID)
             .registreringsdatum(LocalDateTime.now())
             .godkandAnvandare(true)
-            .medgivande(
-                List.of(
-                    MedgivandeEntity.builder()
-                        .godkandDatum(LocalDateTime.now())
-                        .medgivandeText(
-                            MedgivandeTextEntity.builder()
-                                .datum(LocalDateTime.now())
-                                .version(CONSENT_FORM_VERSION)
-                                .build()
-                        )
-                        .build()
-                )
-            )
             .build();
 
         when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE.getPersonId()))

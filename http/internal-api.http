@@ -31,7 +31,7 @@ POST http://localhost:18070/internalapi/privatepractitioner
 Content-Type: application/json
 
 {
-  "personId": "201212121212",
+  "personId": "194112128154",
   "name": "LillTolvan Tolvansson",
   "position": "202010",
   "careUnitName": "Lilltrollens vårdcentral",
@@ -45,6 +45,5 @@ Content-Type: application/json
   "zipCode": "12345",
   "city": "Stad",
   "municipality": "Kommun",
-  "county": "Län",
-  "consentFormVersion": 1
+  "county": "Län"
 }

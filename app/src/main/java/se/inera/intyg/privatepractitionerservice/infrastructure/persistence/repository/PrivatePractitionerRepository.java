@@ -1,19 +1,15 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
-import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalErrorCodeEnum;
-import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.PrivatlakareEntityConverter;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.MedgivandeEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
@@ -25,7 +21,6 @@ public class PrivatePractitionerRepository {
   private final PrivatlakareEntityRepository privatlakareEntityRepository;
   private final PrivatlakareIdEntityRepository privatlakareIdEntityRepository;
   private final PrivatlakareEntityConverter privatlakareEntityConverter;
-  private final MedgivandeTextEntityRepository medgivandeTextEntityRepository;
 
   public Optional<PrivatePractitioner> findByPersonId(String personId) {
     return Optional.ofNullable(
@@ -129,10 +124,6 @@ public class PrivatePractitionerRepository {
     newEntity.updateVardformer(privatePractitioner.getTypeOfCare());
     newEntity.updateVerksamhetstyper(privatePractitioner.getHealthcareServiceType());
 
-    newEntity.setMedgivande(
-        createMedgivandeSet(privatePractitioner.getConsentFormVersion())
-    );
-
     newEntity.setSpecialiteter(
         getSpecialiteter(privatePractitioner.getSpecialties())
     );
@@ -159,24 +150,6 @@ public class PrivatePractitionerRepository {
         5,
         '0'
     );
-  }
-
-  private List<MedgivandeEntity> createMedgivandeSet(Long godkantMedgivandeVersion) {
-    final var medgivandeTextEntity = medgivandeTextEntityRepository.findById(
-            godkantMedgivandeVersion)
-        .orElseThrow(
-            () -> new PrivatlakarportalServiceException(
-                PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
-                "Could not find medgivandetext with version '%s'".formatted(
-                    godkantMedgivandeVersion)
-            )
-        );
-
-    final var medgivandeEntity = new MedgivandeEntity();
-    medgivandeEntity.setGodkandDatum(LocalDateTime.now());
-    medgivandeEntity.setMedgivandeText(medgivandeTextEntity);
-
-    return List.of(medgivandeEntity);
   }
 
   private List<SpecialitetEntity> getSpecialiteter(List<Speciality> specialities) {

@@ -25,7 +25,6 @@ public class PrivatePractitionerFactory {
         .city(createRegistrationRequest.getCity())
         .municipality(createRegistrationRequest.getMunicipality())
         .county(createRegistrationRequest.getCounty())
-        .consentFormVersion(createRegistrationRequest.getConsentFormVersion())
         .registrationDate(LocalDateTime.now())
         .build();
   }

@@ -1,7 +1,5 @@
 package se.inera.intyg.privatepractitionerservice.testdata;
 
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.CONSENT_FORM_TEXT;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.CONSENT_FORM_VERSION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_ADDRESS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_CARE_UNIT_NAME;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_CITY;
@@ -30,7 +28,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 
 import java.util.List;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CodeDTO;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ConsentFormDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
@@ -54,11 +51,6 @@ public class TestDataDTO {
   public static final GetHospInformationResponse DR_KRANSTEGE_HOSP_INFORMATION = kranstegeHospInformationBuilder().build();
 
   public static final HospCredentialsForPerson DR_KRANSTEGE_HOSP_CREDENTIALS = kranstegeHospCredentialsBuilder().build();
-
-  public static final ConsentFormDTO CONSENT_FORM_DTO = new ConsentFormDTO(
-      CONSENT_FORM_VERSION,
-      CONSENT_FORM_TEXT
-  );
 
   public static final CodeDTO HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO = new CodeDTO(
       HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE,
@@ -99,8 +91,7 @@ public class TestDataDTO {
         .zipCode(DR_KRANSTEGE_ZIP_CODE)
         .city(DR_KRANSTEGE_CITY)
         .municipality(DR_KRANSTEGE_MUNICIPALITY)
-        .county(DR_KRANSTEGE_COUNTY)
-        .consentFormVersion(CONSENT_FORM_VERSION);
+        .county(DR_KRANSTEGE_COUNTY);
   }
 
   public static HospCredentialsForPersonBuilder kranstegeHospCredentialsBuilder() {
@@ -129,7 +120,6 @@ public class TestDataDTO {
 
   public static RegistrationConfigurationResponseBuilder registerConfigurationResponseBuilder() {
     return RegistrationConfigurationResponse.builder()
-        .consentForm(CONSENT_FORM_DTO)
         .healthcareServiceTypeCodes(List.of(HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO))
         .positionCodes(List.of(POSITION_SPECIALIST_DOCTOR_DTO))
         .typeOfCareCodes(List.of(TYPE_OF_CARE_OUTPATIENT_DTO));

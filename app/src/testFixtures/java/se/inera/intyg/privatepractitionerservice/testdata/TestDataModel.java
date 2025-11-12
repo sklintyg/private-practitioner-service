@@ -1,7 +1,5 @@
 package se.inera.intyg.privatepractitionerservice.testdata;
 
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.CONSENT_FORM_TEXT;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.CONSENT_FORM_VERSION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_ADDRESS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_CARE_UNIT_NAME;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_CITY;
@@ -29,7 +27,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.TYPE_OF_CARE_DESCRIPTION_OUTPATIENT;
 
 import java.time.LocalDateTime;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.ConsentForm;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HealthcareServiceType;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Position;
@@ -40,11 +37,6 @@ public class TestDataModel {
 
   public static final PrivatePractitioner DR_KRANSTEGE = kranstegeBuilder().build();
   public static final HospPerson DR_KRANSTEGE_HOSP_PERSON = kranstegeHospPersonBuilder().build();
-
-  public static final ConsentForm CURRENT_CONSENT_FORM = new ConsentForm(
-      CONSENT_FORM_VERSION,
-      CONSENT_FORM_TEXT
-  );
 
   public static final HealthcareServiceType HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE =
       new HealthcareServiceType(
@@ -81,7 +73,6 @@ public class TestDataModel {
         .city(DR_KRANSTEGE_CITY)
         .municipality(DR_KRANSTEGE_MUNICIPALITY)
         .county(DR_KRANSTEGE_COUNTY)
-        .consentFormVersion(CONSENT_FORM_VERSION)
         .registrationDate(LocalDateTime.now())
         .specialties(DR_KRANSTEGE_SPECIALITIES)
         .licensedHealthcareProfessions(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS)

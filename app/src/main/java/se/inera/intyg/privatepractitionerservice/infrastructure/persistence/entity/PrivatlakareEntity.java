@@ -143,10 +143,6 @@ public class PrivatlakareEntity {
   @Column(name = "SENASTE_HOSP_UPPDATERING", nullable = true)
   private LocalDateTime senasteHospUppdatering;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-  private List<MedgivandeEntity> medgivande;
-
   @Column(name = "REGISTRERINGSDATUM", nullable = false)
   private LocalDateTime registreringsdatum;
 

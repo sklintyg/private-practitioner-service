@@ -13,7 +13,6 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 @Builder
 public class RegistrationConfigurationResponse {
 
-  ConsentFormDTO consentForm;
   List<CodeDTO> positionCodes;
   List<CodeDTO> typeOfCareCodes;
   List<CodeDTO> healthcareServiceTypeCodes;

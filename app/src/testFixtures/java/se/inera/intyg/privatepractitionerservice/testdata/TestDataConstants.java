@@ -32,9 +32,6 @@ public final class TestDataConstants {
           new LicensedHealtcareProfession("LK", "Läkare")
       );
 
-  public static final long CONSENT_FORM_VERSION = 1L;
-  public static final String CONSENT_FORM_TEXT = "<p>Jag samtycker till att ...</p>";
-
   public static final String HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE = "11";
   public static final String HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE = "Medicinsk verksamhet";
 
