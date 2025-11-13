@@ -26,9 +26,7 @@ import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,24 +35,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.inera.intyg.privatepractitionerservice.application.exception.HospUpdateFailedToContactHsaException;
 import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalErrorCodeEnum;
 import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
-import se.inera.intyg.privatepractitionerservice.application.exception.HospUpdateFailedToContactHsaException;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.util.PrivatlakareUtils;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcCloseableMap;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcHelper;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.HospUppdateringEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospUppdateringEntityRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
-import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.util.PrivatlakareUtils;
 
 /**
  * Created by pebe on 2015-09-03.
@@ -161,7 +159,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
           if (status.equals(RegistrationStatus.AUTHORIZED)
               || status.equals(RegistrationStatus.NOT_AUTHORIZED)) {
             privatlakareEntityRepository.save(privatlakareEntity);
-            mailService.sendRegistrationStatusEmail(status, privatlakareEntity);
+            mailService.sendRegistrationStatusEmail(status, privatlakareEntity.getEpost());
           } else if (status.equals(RegistrationStatus.WAITING_FOR_HOSP)) {
             privatlakareEntityRepository.save(privatlakareEntity);
             handleWaitingForHosp(now, privatlakareEntity, status);
@@ -227,7 +225,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
         privatlakareEntity.setSpecialiteter(specialiteter);
       }
 
-      Set<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper = getLegitimeradeYrkesgrupper(
+      final var legitimeradeYrkesgrupper = getLegitimeradeYrkesgrupper(
           privatlakareEntity, hospPersonResponse);
       if (privatlakareEntity.getLegitimeradeYrkesgrupper() != null) {
         privatlakareEntity.getLegitimeradeYrkesgrupper().clear();
@@ -310,7 +308,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
         if (isTimeToNotifyAboutAwaitingHospStatus(privatlakareEntity.getRegistreringsdatum(), i,
             now)) {
           LOG.info("Sending AWAITING_HOSP mail to {}", privatlakareEntity.getPersonId());
-          mailService.sendRegistrationStatusEmail(status, privatlakareEntity);
+          mailService.sendRegistrationStatusEmail(status, privatlakareEntity.getEpost());
           return; // Only ever send one email
         }
       }
@@ -341,7 +339,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
           "Inconsistent data from HSA");
     } else {
       for (int i = 0; i < hospPersonResponse.getSpecialityCodes().size(); i++) {
-        specialiteter.add(new SpecialitetEntity(privatlakareEntity,
+        specialiteter.add(new SpecialitetEntity(
             hospPersonResponse.getSpecialityNames().get(i),
             hospPersonResponse.getSpecialityCodes().get(i)));
       }
@@ -349,10 +347,10 @@ public class HospUpdateServiceImpl implements HospUpdateService {
     return specialiteter;
   }
 
-  private Set<LegitimeradYrkesgruppEntity> getLegitimeradeYrkesgrupper(
+  private List<LegitimeradYrkesgruppEntity> getLegitimeradeYrkesgrupper(
       PrivatlakareEntity privatlakareEntity,
       HospPerson hospPersonResponse) {
-    Set<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new HashSet<>();
+    final ArrayList<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new ArrayList<>();
     if (hospPersonResponse.getHsaTitles().size() != hospPersonResponse.getTitleCodes().size()) {
       LOG.error("getHospPerson getHsaTitles count "
           + hospPersonResponse.getHsaTitles().size()
@@ -363,7 +361,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
           "Inconsistent data from HSA");
     } else {
       for (int i = 0; i < hospPersonResponse.getHsaTitles().size(); i++) {
-        legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity(privatlakareEntity,
+        legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity(
             hospPersonResponse.getHsaTitles().get(i),
             hospPersonResponse.getTitleCodes().get(i)));
       }

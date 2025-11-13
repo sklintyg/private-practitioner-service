@@ -21,8 +21,8 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
@@ -35,13 +35,10 @@ class PrivatlakareUtilsTest {
   @Test
   void testLakare() {
     PrivatlakareEntity privatlakareEntity = new PrivatlakareEntity();
-    Set<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new HashSet<LegitimeradYrkesgruppEntity>();
-    legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Extra", "E"));
-    legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Läkare", "LK"));
-    legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Mer", "M"));
+    final List<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new ArrayList<LegitimeradYrkesgruppEntity>();
+    legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity("Extra", "E"));
+    legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity("Läkare", "LK"));
+    legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity("Mer", "M"));
     privatlakareEntity.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupperEntity);
 
     assertTrue(PrivatlakareUtils.hasLakareLegitimation(privatlakareEntity));
@@ -50,11 +47,9 @@ class PrivatlakareUtilsTest {
   @Test
   void testEjLakare() {
     PrivatlakareEntity privatlakareEntity = new PrivatlakareEntity();
-    Set<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new HashSet<LegitimeradYrkesgruppEntity>();
-    legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Extra", "E"));
-    legitimeradYrkesgrupperEntity.add(
-        new LegitimeradYrkesgruppEntity(privatlakareEntity, "Mer", "M"));
+    final List<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new ArrayList<LegitimeradYrkesgruppEntity>();
+    legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity("Extra", "E"));
+    legitimeradYrkesgrupperEntity.add(new LegitimeradYrkesgruppEntity("Mer", "M"));
     privatlakareEntity.setLegitimeradeYrkesgrupper(legitimeradYrkesgrupperEntity);
 
     assertFalse(PrivatlakareUtils.hasLakareLegitimation(privatlakareEntity));

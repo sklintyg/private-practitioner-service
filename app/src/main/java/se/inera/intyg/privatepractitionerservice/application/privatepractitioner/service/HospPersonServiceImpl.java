@@ -39,14 +39,14 @@ public class HospPersonServiceImpl implements HospPersonService {
   private static final String OK = "OK";
 
   @Autowired
-  private HospService authorizationManagementService;
+  private HospService hospService;
 
   @Override
   public HospPerson getHospPerson(String personId) {
 
     LOG.debug("Getting hospPerson from HSA for '{}'", personId);
 
-    HospCredentialsForPerson response = authorizationManagementService.getHospCredentialsForPersonResponseType(
+    HospCredentialsForPerson response = hospService.getHospCredentialsForPersonResponseType(
         personId);
 
     if (response == null || response.getPersonalIdentityNumber() == null) {
@@ -90,7 +90,7 @@ public class HospPersonServiceImpl implements HospPersonService {
 
     LOG.debug("Calling getHospLastUpdate");
 
-    return authorizationManagementService.getHospLastUpdate();
+    return hospService.getHospLastUpdate();
   }
 
   @Override
@@ -106,9 +106,9 @@ public class HospPersonServiceImpl implements HospPersonService {
   private boolean handleCertifier(boolean add, String personId, String certifierId, String reason) {
 
     LOG.debug("Calling handleCertifier for certifierId '{}'", certifierId);
-    Result result = authorizationManagementService
-        .handleHospCertificationPersonResponseType(certifierId, add ? "add" : "remove", personId,
-            reason);
+    Result result = hospService.handleHospCertificationPersonResponseType(certifierId,
+        add ? "add" : "remove", personId,
+        reason);
 
     if (!OK.equals(result.getResultCode())) {
       LOG.error("handleCertifier returned result '{}' for certifierId '{}'", result.getResultText(),

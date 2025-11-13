@@ -38,6 +38,9 @@ dependencies {
     testImplementation "org.mockito:mockito-core"
     testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation "org.springframework:spring-test"
+
+    testFixturesImplementation "org.junit.jupiter:junit-jupiter"
+    testFixturesImplementation project(":integration-api")
 }
 
 testing.suites {

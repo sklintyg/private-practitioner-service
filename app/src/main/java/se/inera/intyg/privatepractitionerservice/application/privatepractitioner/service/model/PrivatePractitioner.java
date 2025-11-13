@@ -19,48 +19,86 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
+@Builder
 public class PrivatePractitioner {
 
-  private final String hsaId;
-  private final String personId;
-  private final String name;
-  private final String careproviderName;
-  private final String email;
-  private final LocalDateTime registrationDate;
+  String hsaId;
+  String personId;
+  String name;
+  String careProviderName;
 
-  public PrivatePractitioner(String hsaId, String personId, String name, String careproviderName,
-      String email,
-      LocalDateTime registrationDate) {
-    this.hsaId = hsaId;
-    this.personId = personId;
-    this.name = name;
-    this.careproviderName = careproviderName;
-    this.email = email;
-    this.registrationDate = registrationDate;
+  String position;
+  String careUnitName;
+  String ownershipType;
+  String typeOfCare;
+  String healthcareServiceType;
+  String workplaceCode;
+
+  String phoneNumber;
+  String email;
+  String address;
+  String zipCode;
+  String city;
+  String municipality;
+  String county;
+
+  String personalPrescriptionCode;
+  @Builder.Default
+  List<Speciality> specialties = List.of();
+  @Builder.Default
+  List<LicensedHealtcareProfession> licensedHealthcareProfessions = List.of();
+
+  LocalDateTime startDate;
+  LocalDateTime endDate;
+
+  LocalDateTime registrationDate;
+  LocalDateTime hospUpdated;
+
+  public void updateWithHospInformation(HospPerson hosp) {
+    if (!hosp.getPersonalIdentityNumber().equalsIgnoreCase(this.personId)) {
+      throw new IllegalArgumentException("Personal identity number does not match!");
+    }
+    personalPrescriptionCode = hosp.getPersonalPrescriptionCode();
+    specialties = hosp.getSpecialities().stream().toList();
+    licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions().stream().toList();
+    hospUpdated = hosp.getHospUpdated();
   }
 
-  public String getHsaId() {
-    return hsaId;
+  public void clearHospInformation() {
+    personalPrescriptionCode = null;
+    specialties = List.of();
+    licensedHealthcareProfessions = List.of();
   }
 
-  public String getPersonId() {
-    return personId;
+  public boolean isLicensedPhysician() {
+    return licensedHealthcareProfessions.stream()
+        .anyMatch(LicensedHealtcareProfession::isLicensedPhysician);
   }
 
-  public String getName() {
-    return name;
+  public RegistrationStatus getRegistrationStatus() {
+    if (licensedHealthcareProfessions.isEmpty()) {
+      return RegistrationStatus.WAITING_FOR_HOSP;
+    }
+    if (isLicensedPhysician()) {
+      return RegistrationStatus.AUTHORIZED;
+    }
+    return RegistrationStatus.NOT_AUTHORIZED;
   }
 
-  public String getCareproviderName() {
-    return careproviderName;
+  public boolean needHospUpdate(LocalDateTime hospLastUpdate) {
+    return hospUpdated == null || hospLastUpdate == null || hospUpdated.isBefore(hospLastUpdate);
   }
 
-  public String getEmail() {
-    return email;
+  public boolean isFirstLogin() {
+    return startDate == null;
   }
 
-  public LocalDateTime getRegistrationDate() {
-    return registrationDate;
+  public void firstLogin() {
+    startDate = LocalDateTime.now();
   }
 }

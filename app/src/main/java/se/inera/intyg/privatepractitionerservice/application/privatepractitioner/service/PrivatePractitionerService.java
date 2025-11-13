@@ -19,22 +19,35 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import java.util.List;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter.PrivatePractitionerConverter;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
-public interface PrivatePractitionerService {
+@Service
+@RequiredArgsConstructor
+public class PrivatePractitionerService {
 
-  /**
-   * Get the specified private practitioner by pnr or hsaId.
-   *
-   * @param personOrHsaId PNR or HSAid
-   * @return PrivatePractitioner or <code>null</code>
-   */
-  PrivatePractitioner getPrivatePractitioner(String personOrHsaId);
+  private final PrivatePractitionerRepository privatePractitionerRepository;
+  private final PrivatePractitionerConverter privatePractitionerConverter;
 
-  /**
-   * Get a list of all registered Private Practitioners
-   *
-   * @return A list of all PrivatePractitioners or empty list
-   */
-  List<PrivatePractitioner> getPrivatePractitioners();
+  public PrivatePractitionerDTO getPrivatePractitioner(String personOrHsaId) {
+    if (personOrHsaId == null) {
+      return null;
+    }
+
+    return privatePractitionerRepository.findByPersonId(personOrHsaId)
+        .map(privatePractitionerConverter::convert)
+        .orElseGet(() -> privatePractitionerRepository.findByHsaId(personOrHsaId)
+            .map(privatePractitionerConverter::convert)
+            .orElse(null)
+        );
+  }
+
+  public List<PrivatePractitionerDTO> getPrivatePractitioners() {
+    return privatePractitionerRepository.findAll().stream()
+        .map(privatePractitionerConverter::convert)
+        .toList();
+  }
 }

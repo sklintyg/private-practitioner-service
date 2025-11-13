@@ -108,13 +108,13 @@ public class MailServiceImpl implements MailService {
 
   @Override
   @Async
-  public void sendRegistrationStatusEmail(RegistrationStatus status,
-      PrivatlakareEntity privatlakareEntity) {
+  public void sendRegistrationStatusEmail(RegistrationStatus status, String epost) {
     try {
-      LOG.info("Sending registration status email to {}", privatlakareEntity.getEpost());
-      MimeMessage message = createMessage(privatlakareEntity.getEpost(),
+      LOG.info("Sending registration status email to {}", epost);
+      final var message = createMessage(epost,
           messageSubjectFromRegistrationStatus(status),
-          messageBodyFromRegistrationStatus(status));
+          messageBodyFromRegistrationStatus(status)
+      );
       message.saveChanges();
       mailSender.send(message);
     } catch (MessagingException | PrivatlakarportalServiceException | MailException |

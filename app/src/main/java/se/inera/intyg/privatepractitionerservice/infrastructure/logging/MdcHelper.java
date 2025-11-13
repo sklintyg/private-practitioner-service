@@ -33,6 +33,12 @@ public class MdcHelper {
   private static final int LENGTH_LIMIT = 8;
   private static final char[] BASE62CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
+  public String sessionId(HttpServletRequest http) {
+    return Optional.ofNullable(
+            http.getHeader(LOG_SESSION_ID_HEADER)
+        )
+        .orElse("-");
+  }
 
   public String traceId(HttpServletRequest http) {
     return Optional.ofNullable(

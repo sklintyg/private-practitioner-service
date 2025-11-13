@@ -30,12 +30,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.BefattningEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.VardformEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.VerksamhetstypEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
 
 @Service
@@ -64,21 +59,6 @@ public class PrivatlakarBootstrapBean {
           res.getInputStream(),
           PrivatlakareEntity.class);
       if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId()) == null) {
-        for (BefattningEntity befattningEntity : privatlakareEntity.getBefattningar()) {
-          befattningEntity.setPrivatlakare(privatlakareEntity);
-        }
-        for (LegitimeradYrkesgruppEntity legitimeradYrkesgruppEntity : privatlakareEntity.getLegitimeradeYrkesgrupper()) {
-          legitimeradYrkesgruppEntity.setPrivatlakare(privatlakareEntity);
-        }
-        for (SpecialitetEntity specialitetEntity : privatlakareEntity.getSpecialiteter()) {
-          specialitetEntity.setPrivatlakare(privatlakareEntity);
-        }
-        for (VerksamhetstypEntity verksamhetstypEntity : privatlakareEntity.getVerksamhetstyper()) {
-          verksamhetstypEntity.setPrivatlakare(privatlakareEntity);
-        }
-        for (VardformEntity vardformEntity : privatlakareEntity.getVardformer()) {
-          vardformEntity.setPrivatlakare(privatlakareEntity);
-        }
         privatlakareEntityRepository.save(privatlakareEntity);
       }
     } catch (IOException e) {

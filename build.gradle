@@ -4,6 +4,7 @@ plugins {
     id 'org.sonarqube' version '6.3.1.5724'
     id "org.owasp.dependencycheck" version "12.1.6"
     id 'jacoco'
+    id 'org.cyclonedx.bom' version '3.0.1'
 }
 
 ext {
@@ -26,6 +27,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'idea'
+    apply plugin: 'java-test-fixtures'
 
     java {
         sourceCompatibility = 21
@@ -43,6 +45,7 @@ subprojects {
         annotationProcessor platform("se.inera.intyg.bom:platform:${intygBomVersion}")
         testImplementation platform("se.inera.intyg.bom:platform:${intygBomVersion}")
         testAnnotationProcessor platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+        testFixturesImplementation platform("se.inera.intyg.bom:platform:${intygBomVersion}")
     }
 
     jacocoTestReport {

@@ -77,7 +77,8 @@ class MailServiceImplTest {
   @Test
   void testSendMail() {
     PrivatlakareEntity privatlakareEntity = createTestRegistration();
-    mailService.sendRegistrationStatusEmail(RegistrationStatus.AUTHORIZED, privatlakareEntity);
+    mailService.sendRegistrationStatusEmail(RegistrationStatus.AUTHORIZED,
+        privatlakareEntity.getEpost());
     mailStore.waitForMails(1);
 
     OutgoingMail oneMail = mailStore.getMails().get(0);

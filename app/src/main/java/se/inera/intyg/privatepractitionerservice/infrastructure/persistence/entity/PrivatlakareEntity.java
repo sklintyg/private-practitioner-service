@@ -18,20 +18,20 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -40,6 +40,7 @@ import org.hibernate.annotations.GenericGenerator;
  * Created by pebe on 2015-06-24.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -118,33 +119,29 @@ public class PrivatlakareEntity {
   @Column(name = "VARDGIVARE_SLUTDATUM", nullable = true)
   private LocalDateTime vardgivareSlutdatum;
 
-  @JsonManagedReference
-  @OneToMany(mappedBy = "privatlakare", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<BefattningEntity> befattningar;
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  private List<BefattningEntity> befattningar;
 
-  @JsonManagedReference
-  @OneToMany(mappedBy = "privatlakare", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper;
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  private List<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper;
 
-  @JsonManagedReference
-  @OneToMany(mappedBy = "privatlakare", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
   @OrderBy("namn ASC")
   private List<SpecialitetEntity> specialiteter;
 
-  @JsonManagedReference
-  @OneToMany(mappedBy = "privatlakare", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<VerksamhetstypEntity> verksamhetstyper;
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  private List<VerksamhetstypEntity> verksamhetstyper;
 
-  @JsonManagedReference
-  @OneToMany(mappedBy = "privatlakare", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<VardformEntity> vardformer;
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  private List<VardformEntity> vardformer;
 
   @Column(name = "SENASTE_HOSP_UPPDATERING", nullable = true)
   private LocalDateTime senasteHospUppdatering;
-
-  @JsonManagedReference
-  @OneToMany(mappedBy = "privatlakare", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<MedgivandeEntity> medgivande;
 
   @Column(name = "REGISTRERINGSDATUM", nullable = false)
   private LocalDateTime registreringsdatum;
@@ -155,10 +152,10 @@ public class PrivatlakareEntity {
    */
   public void updateBefattningar(String kod) {
     if (this.getBefattningar() != null && !this.getBefattningar().isEmpty()) {
-      this.befattningar.iterator().next().setKod(kod);
+      this.befattningar.getFirst().setKod(kod);
     } else {
-      this.befattningar = new HashSet<>();
-      this.befattningar.add(new BefattningEntity(this, kod));
+      this.befattningar = new ArrayList<>();
+      this.befattningar.add(new BefattningEntity(kod));
     }
   }
 
@@ -168,10 +165,10 @@ public class PrivatlakareEntity {
    */
   public void updateVerksamhetstyper(String kod) {
     if (this.getVerksamhetstyper() != null && !this.getVerksamhetstyper().isEmpty()) {
-      this.verksamhetstyper.iterator().next().setKod(kod);
+      this.verksamhetstyper.getFirst().setKod(kod);
     } else {
-      this.verksamhetstyper = new HashSet<>();
-      this.verksamhetstyper.add(new VerksamhetstypEntity(this, kod));
+      this.verksamhetstyper = new ArrayList<>();
+      this.verksamhetstyper.add(new VerksamhetstypEntity(kod));
     }
   }
 
@@ -181,10 +178,10 @@ public class PrivatlakareEntity {
    */
   public void updateVardformer(String kod) {
     if (this.getVardformer() != null && !this.getVardformer().isEmpty()) {
-      this.vardformer.iterator().next().setKod(kod);
+      this.vardformer.getFirst().setKod(kod);
     } else {
-      this.vardformer = new HashSet<>();
-      this.vardformer.add(new VardformEntity(this, kod));
+      this.vardformer = new ArrayList<>();
+      this.vardformer.add(new VardformEntity(kod));
     }
   }
 }

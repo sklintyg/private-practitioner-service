@@ -18,11 +18,22 @@
  */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.Value;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse.ValidatePrivatePractitionerResponseBuilder;
 
-@Data
+@JsonDeserialize(builder = ValidatePrivatePractitionerResponseBuilder.class)
+@Value
+@Builder
 public class ValidatePrivatePractitionerResponse {
 
-  private ValidatePrivatePractitionerResultCode resultCode;
-  private String resultText;
+  ValidatePrivatePractitionerResultCode resultCode;
+  String resultText;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class ValidatePrivatePractitionerResponseBuilder {
+
+  }
 }

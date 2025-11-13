@@ -19,8 +19,7 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,61 +29,85 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDto;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.RegistrationConfigurationResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.CreateRegistrationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.EraseService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.GetHospInformationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.IntegrationService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.RegistrationConfigurationService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
 
 @RestController
 @RequestMapping("/internalapi/privatepractitioner")
+@RequiredArgsConstructor
 public class PrivatePractitionerController {
 
+  private final CreateRegistrationService createRegistrationService;
   private final PrivatePractitionerService privatePractitionerService;
-  private final IntegrationService integrationService;
+  private final RegistrationConfigurationService registrationConfigurationService;
+  private final GetHospInformationService getHospInformationService;
+  private final ValidatePrivatePractitionerService validatePrivatePractitionerService;
   private final EraseService eraseService;
 
-  @Autowired
-  public PrivatePractitionerController(PrivatePractitionerService privatePractitionerService,
-      IntegrationService integrationService,
-      EraseService eraseService) {
-    this.privatePractitionerService = privatePractitionerService;
-    this.integrationService = integrationService;
-    this.eraseService = eraseService;
+  @PostMapping("")
+  @PerformanceLogging(eventAction = "register-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CREATION)
+  public ResponseEntity<PrivatePractitionerDTO> registerPrivatePractitioner(
+      @RequestBody CreateRegistrationRequest createRegistrationRequest) {
+    final var privatePractitionerDTO = createRegistrationService.createRegistration(
+        createRegistrationRequest
+    );
+    return ResponseEntity.ok(privatePractitionerDTO);
+  }
+
+  @GetMapping("/configuration")
+  @PerformanceLogging(eventAction = "registration-configuration", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  public ResponseEntity<RegistrationConfigurationResponse> getRegistrationConfiguration() {
+    final var registrationConfigurationResponse = registrationConfigurationService.get();
+    return ResponseEntity.ok(registrationConfigurationResponse);
+  }
+
+  @PostMapping("/hosp")
+  @PerformanceLogging(eventAction = "get-hosp-information", eventType = MdcLogConstants.EVENT_TYPE_INFO)
+  public ResponseEntity<GetHospInformationResponse> getHospInformation(
+      @RequestBody GetHospInformationRequest getHospInformationRequest) {
+    final var getHospInformationResponse = getHospInformationService.get(getHospInformationRequest);
+    return ResponseEntity.ok(getHospInformationResponse);
   }
 
   @GetMapping("")
   @PerformanceLogging(eventAction = "get-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-  public ResponseEntity<PrivatePractitionerDto> getPrivatePractitioner(
+  public ResponseEntity<PrivatePractitionerDTO> getPrivatePractitioner(
       @RequestParam String personOrHsaId) {
-    PrivatePractitioner privatePractitioner = privatePractitionerService.getPrivatePractitioner(
+    final var privatePractitioner = privatePractitionerService.getPrivatePractitioner(
         personOrHsaId);
 
     if (privatePractitioner == null) {
       return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok(convert(privatePractitioner));
+    return ResponseEntity.ok(privatePractitioner);
   }
 
   @GetMapping("/all")
   @PerformanceLogging(eventAction = "get-private-practitioners", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
-  public ResponseEntity<List<PrivatePractitionerDto>> getPrivatePractitioners() {
-    List<PrivatePractitioner> privatePractitioners = privatePractitionerService.getPrivatePractitioners();
-
-    return ResponseEntity.ok(convert(privatePractitioners));
+  public ResponseEntity<List<PrivatePractitionerDTO>> getPrivatePractitioners() {
+    final var privatePractitioners = privatePractitionerService.getPrivatePractitioners();
+    return ResponseEntity.ok(privatePractitioners);
   }
 
   @PostMapping("/validate")
   @PerformanceLogging(eventAction = "validate-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_INFO)
   public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
       @RequestBody ValidatePrivatePractitionerRequest request) {
-    final var response = integrationService.validatePrivatePractitionerByPersonId(
-        request.getPersonalIdentityNumber());
+    final var response = validatePrivatePractitionerService.validate(request.getPersonId());
     return ResponseEntity.ok(response);
   }
 
@@ -92,27 +115,5 @@ public class PrivatePractitionerController {
   @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
   public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
     eraseService.erasePrivatePractitioner(careProviderId);
-  }
-
-  private List<PrivatePractitionerDto> convert(List<PrivatePractitioner> privatePractitioners) {
-    if (privatePractitioners == null) {
-      return List.of();
-    }
-
-    return privatePractitioners.stream()
-        .map(this::convert)
-        .collect(Collectors.toList());
-
-  }
-
-  private PrivatePractitionerDto convert(PrivatePractitioner privatePractitioner) {
-    if (privatePractitioner == null) {
-      return null;
-    }
-
-    return new PrivatePractitionerDto(privatePractitioner.getHsaId(),
-        privatePractitioner.getPersonId(), privatePractitioner.getName(),
-        privatePractitioner.getCareproviderName(), privatePractitioner.getEmail(),
-        privatePractitioner.getRegistrationDate());
   }
 }
