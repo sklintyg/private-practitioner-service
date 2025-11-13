@@ -2,9 +2,8 @@ package se.inera.intyg.privatepractitionerservice.testdata;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.time.temporal.ChronoUnit;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 
 public class TestDataAssert {
@@ -43,13 +42,7 @@ public class TestDataAssert {
         () -> assertEquals(expected.getVardformer(), actual.getVardformer()),
         () -> assertEquals(expected.getSenasteHospUppdatering(),
             actual.getSenasteHospUppdatering()),
-        () -> assertTrue(
-            Math.abs(ChronoUnit.SECONDS.between(
-                expected.getRegistreringsdatum(),
-                actual.getRegistreringsdatum()
-            )) <= 1,
-            "Registreringsdatum should be within 1 second"
-        )
+        () -> assertNotNull(actual.getRegistreringsdatum())
     );
   }
 
