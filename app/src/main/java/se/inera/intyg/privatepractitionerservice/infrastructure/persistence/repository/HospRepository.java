@@ -70,4 +70,24 @@ public class HospRepository {
             .build()
     );
   }
+
+  public Optional<HospPerson> updatedHospPerson(PrivatePractitioner privatePractitioner) {
+    final var hospLastUpdate = hospService.getHospLastUpdate();
+    if (!privatePractitioner.needHospUpdate(hospLastUpdate)) {
+      log.info("No update needed for hosp person '{}'",
+          hashUtility.hash(privatePractitioner.getPersonId())
+      );
+      return Optional.empty();
+    }
+
+    return findByPersonId(privatePractitioner.getPersonId())
+        .map(person -> person.withHospUpdated(hospLastUpdate))
+        .or(() -> Optional.of(
+                HospPerson.builder()
+                    .personalIdentityNumber(privatePractitioner.getPersonId())
+                    .hospUpdated(hospLastUpdate)
+                    .build()
+            )
+        );
+  }
 }

@@ -15,6 +15,7 @@ public class PrivatlakareEntityConverter {
         .careProviderName(privatlakareEntity.getVardgivareNamn())
         .email(privatlakareEntity.getEpost())
         .registrationDate(privatlakareEntity.getRegistreringsdatum())
+        .startDate(privatlakareEntity.getVardgivareStartdatum())
         .build();
   }
 }

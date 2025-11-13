@@ -26,7 +26,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
  */
 public interface MonitoringLogService {
 
-  void logUserRegistered(String id, Long consentVersion, String hsaId,
+  void logUserRegistered(String id, String consentVersion, String hsaId,
       RegistrationStatus registrationStatus);
 
   void logUserDeleted(String id, String hsaId);

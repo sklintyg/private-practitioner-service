@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
 @Service
@@ -16,22 +17,32 @@ public class ValidatePrivatePractitionerService {
 
   private final PrivatePractitionerRepository privatePractitionerRepository;
   private final HashUtility hashUtility;
+  private final HospRepository hospRepository;
 
   public ValidatePrivatePractitionerResponse validate(String personId) {
-    final var privatePractitioner = privatePractitionerRepository.findByPersonId(personId);
-    if (privatePractitioner.isEmpty()) {
+    final var existingPrivatePractitioner = privatePractitionerRepository.findByPersonId(personId);
+    if (existingPrivatePractitioner.isEmpty()) {
       return ValidatePrivatePractitionerResponse.builder()
           .resultCode(NO_ACCOUNT)
-          .resultText(
-              "No private practitioner with personal identity number: %s exists."
-                  .formatted(hashUtility.hash(personId))
+          .resultText("No private practitioner with personId '%s' exists."
+              .formatted(hashUtility.hash(personId))
           )
           .build();
     }
 
-    // TODO: Check if update from hosp
-    if (privatePractitioner.get().isLicensedPhysician()) {
-      // TODO: Check first login
+    final var privatePractitioner = existingPrivatePractitioner.get();
+    final var hospPerson = hospRepository.updatedHospPerson(privatePractitioner);
+    hospPerson.ifPresent(hosp -> {
+          privatePractitioner.updateWithHospInformation(hosp);
+          privatePractitionerRepository.save(privatePractitioner);
+        }
+    );
+
+    if (privatePractitioner.isLicensedPhysician()) {
+      if (privatePractitioner.isFirstLogin()) {
+        privatePractitioner.firstLogin();
+        privatePractitionerRepository.save(privatePractitioner);
+      }
       return ValidatePrivatePractitionerResponse.builder()
           .resultCode(OK)
           .build();
@@ -39,9 +50,8 @@ public class ValidatePrivatePractitionerService {
 
     return ValidatePrivatePractitionerResponse.builder()
         .resultCode(NOT_AUTHORIZED_IN_HOSP)
-        .resultText(
-            "Private practitioner with personal identity number: %s is not authorized to use webcert."
-                .formatted(hashUtility.hash(personId))
+        .resultText("Private practitioner with personId '%s' is not authorized to use webcert."
+            .formatted(hashUtility.hash(personId))
         )
         .build();
   }

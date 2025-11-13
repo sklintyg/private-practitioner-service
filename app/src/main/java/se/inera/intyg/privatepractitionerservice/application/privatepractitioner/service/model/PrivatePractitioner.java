@@ -53,9 +53,11 @@ public class PrivatePractitioner {
   @Builder.Default
   List<LicensedHealtcareProfession> licensedHealthcareProfessions = List.of();
 
-  Long consentFormVersion;
+  LocalDateTime startDate;
+  LocalDateTime endDate;
 
   LocalDateTime registrationDate;
+  LocalDateTime hospUpdated;
 
   public void updateWithHospInformation(HospPerson hosp) {
     if (!hosp.getPersonalIdentityNumber().equalsIgnoreCase(this.personId)) {
@@ -64,6 +66,7 @@ public class PrivatePractitioner {
     personalPrescriptionCode = hosp.getPersonalPrescriptionCode();
     specialties = hosp.getSpecialities().stream().toList();
     licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions().stream().toList();
+    hospUpdated = hosp.getHospUpdated();
   }
 
   public void clearHospInformation() {
@@ -85,5 +88,17 @@ public class PrivatePractitioner {
       return RegistrationStatus.AUTHORIZED;
     }
     return RegistrationStatus.NOT_AUTHORIZED;
+  }
+
+  public boolean needHospUpdate(LocalDateTime hospLastUpdate) {
+    return hospUpdated == null || hospLastUpdate == null || hospUpdated.isBefore(hospLastUpdate);
+  }
+
+  public boolean isFirstLogin() {
+    return startDate == null;
+  }
+
+  public void firstLogin() {
+    startDate = LocalDateTime.now();
   }
 }

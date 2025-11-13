@@ -41,7 +41,7 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
   private static final Marker MONITORING = MarkerFactory.getMarker("Monitoring");
 
   @Override
-  public void logUserRegistered(String id, Long consentVersion, String hsaId,
+  public void logUserRegistered(String id, String consentVersion, String hsaId,
       RegistrationStatus registrationStatus) {
     final var hashedPersonId = hashUtility.hash(id);
     try (MdcCloseableMap mdc =

@@ -38,7 +38,7 @@ public class NotifyPrivatePractitionerRegistration {
 
     monitoringLogService.logUserRegistered(
         privatePractitioner.getPersonId(),
-        privatePractitioner.getConsentFormVersion(),
+        "N/A",
         privatePractitioner.getHsaId(),
         registrationStatus
     );

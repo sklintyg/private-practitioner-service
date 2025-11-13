@@ -9,7 +9,10 @@ import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE_HOSP_PERSON;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeBuilder;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeHospPersonBuilder;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -67,4 +70,38 @@ class HospRepositoryTest {
 
     assertEquals(DR_KRANSTEGE_HOSP_PERSON, actual.orElseThrow());
   }
+
+  @Test
+  void shouldReturnHospInformationIfHospUpdated() {
+    final var expected = kranstegeHospPersonBuilder()
+        .hospUpdated(LocalDateTime.now())
+        .build();
+
+    final var drKranstege = kranstegeBuilder()
+        .hospUpdated(LocalDateTime.now().minusDays(1))
+        .build();
+
+    when(hospService.getHospLastUpdate()).thenReturn(expected.getHospUpdated());
+    when(hospService.getHospCredentialsForPersonResponseType(drKranstege.getPersonId()))
+        .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
+
+    final var actual = hospRepository.updatedHospPerson(drKranstege);
+
+    assertEquals(expected, actual.orElseThrow());
+  }
+
+  @Test
+  void shouldEmptyHospInformationIfNotHospUpdated() {
+    final var drKranstege = kranstegeBuilder()
+        .hospUpdated(LocalDateTime.now().plusDays(1))
+        .build();
+
+    when(hospService.getHospLastUpdate()).thenReturn(LocalDateTime.now());
+
+    final var actual = hospRepository.updatedHospPerson(drKranstege);
+
+    assertTrue(actual.isEmpty(), "Expected empty when no hosp update is needed");
+  }
+
+
 }

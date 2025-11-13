@@ -87,6 +87,14 @@ public class PrivatePractitionerRepository {
         getLegitimeradeYrkesgrupper(privatePractitioner.getLicensedHealthcareProfessions())
     );
 
+    if (existingEntity.getEnhetStartdatum() == null) {
+      existingEntity.setEnhetStartdatum(privatePractitioner.getStartDate());
+    }
+
+    if (existingEntity.getVardgivareStartdatum() == null) {
+      existingEntity.setVardgivareStartdatum(privatePractitioner.getStartDate());
+    }
+
     final var savedEntity = privatlakareEntityRepository.save(existingEntity);
     return privatlakareEntityConverter.convert(savedEntity);
   }

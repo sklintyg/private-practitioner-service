@@ -68,12 +68,14 @@ public class PrivatePractitionerController {
   }
 
   @GetMapping("/configuration")
+  @PerformanceLogging(eventAction = "registration-configuration", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
   public ResponseEntity<RegistrationConfigurationResponse> getRegistrationConfiguration() {
     final var registrationConfigurationResponse = registrationConfigurationService.get();
     return ResponseEntity.ok(registrationConfigurationResponse);
   }
 
   @PostMapping("/hosp")
+  @PerformanceLogging(eventAction = "get-hosp-information", eventType = MdcLogConstants.EVENT_TYPE_INFO)
   public ResponseEntity<GetHospInformationResponse> getHospInformation(
       @RequestBody GetHospInformationRequest getHospInformationRequest) {
     final var getHospInformationResponse = getHospInformationService.get(getHospInformationRequest);
