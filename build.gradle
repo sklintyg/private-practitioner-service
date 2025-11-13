@@ -1,16 +1,20 @@
 plugins {
-    id "io.spring.dependency-management" version "1.1.6" apply false
+    alias(libs.plugins.org.springframework.boot)
+    alias(libs.plugins.org.sonarqube)
+    alias(libs.plugins.org.owasp.dependencycheck)
+    alias(libs.plugins.com.github.ben.manes.versions)
     id 'test-report-aggregation'
-    id 'org.sonarqube' version '6.3.1.5724'
-    id "org.owasp.dependencycheck" version "12.1.6"
-    id 'jacoco'
-    id 'org.cyclonedx.bom' version '3.0.1'
+    id 'application'
 }
 
 ext {
     intygBomVersion = System.properties['intygBomVersion'] ?: '0.0.1-SNAPSHOT'
 
     nvdMirror = 'https://vulnz-nvd-mirror-devtest.intyg.nordicmedtest.se'
+}
+
+application {
+    mainClassName = 'se.inera.intyg.privatepractitionerservice.PrivatePractitionerServiceApplication'
 }
 
 allprojects {
@@ -23,10 +27,8 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: "io.spring.dependency-management"
     apply plugin: 'java'
     apply plugin: 'jacoco'
-    apply plugin: 'idea'
     apply plugin: 'java-test-fixtures'
 
     java {
@@ -74,10 +76,18 @@ subprojects {
 group = 'se.inera.private-practitioner-service'
 version = System.properties['buildVersion'] ?: '0-SNAPSHOT'
 
-
 reporting {
-    subprojects.collect { subproject -> subproject.name }.each { subprojectName ->
-        dependencies { testReportAggregation project(":${subprojectName}") }
+    reports {
+        integrationTestAggregateTestReport(AggregateTestReport) {
+            testSuiteName = 'integrationTest'
+        }
+    }
+
+    dependencies {
+        testReportAggregation project(':app')
+        testReportAggregation project(':integration-api')
+        testReportAggregation project(':integration-intyg-proxy-service')
+        testReportAggregation project(':integration-test')
     }
 }
 
