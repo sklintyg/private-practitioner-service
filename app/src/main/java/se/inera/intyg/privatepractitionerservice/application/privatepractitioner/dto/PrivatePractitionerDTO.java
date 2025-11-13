@@ -21,6 +21,7 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO.PrivatePractitionerDTOBuilder;
@@ -36,6 +37,29 @@ public class PrivatePractitionerDTO {
   String careProviderName;
   String email;
   LocalDateTime registrationDate;
+
+  String position;
+  String careUnitName;
+  String ownershipType;
+  String typeOfCare;
+  String healthcareServiceType;
+  String workplaceCode;
+
+  String phoneNumber;
+  String address;
+  String zipCode;
+  String city;
+  String municipality;
+  String county;
+
+  String personalPrescriptionCode;
+  List<SpecialityDTO> specialties;
+  List<LicensedHealthcareProfessionDTO> licensedHealthcareProfessions;
+
+  LocalDateTime startDate;
+  LocalDateTime endDate;
+
+  LocalDateTime hospUpdated;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class PrivatePractitionerDTOBuilder {

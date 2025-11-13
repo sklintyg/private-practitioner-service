@@ -1,13 +1,22 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter;
 
+import java.util.List;
 import org.springframework.stereotype.Component;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.LicensedHealthcareProfessionDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.SpecialityDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 
 @Component
 public class PrivatePractitionerConverter {
 
   public PrivatePractitionerDTO convert(PrivatePractitioner privatePractitioner) {
+    if (privatePractitioner == null) {
+      return null;
+    }
+
     return PrivatePractitionerDTO.builder()
         .hsaId(privatePractitioner.getHsaId())
         .personId(privatePractitioner.getPersonId())
@@ -15,6 +24,57 @@ public class PrivatePractitionerConverter {
         .email(privatePractitioner.getEmail())
         .careProviderName(privatePractitioner.getCareProviderName())
         .registrationDate(privatePractitioner.getRegistrationDate())
+        .position(privatePractitioner.getPosition())
+        .careUnitName(privatePractitioner.getCareUnitName())
+        .ownershipType(privatePractitioner.getOwnershipType())
+        .typeOfCare(privatePractitioner.getTypeOfCare())
+        .healthcareServiceType(privatePractitioner.getHealthcareServiceType())
+        .workplaceCode(privatePractitioner.getWorkplaceCode())
+        .phoneNumber(privatePractitioner.getPhoneNumber())
+        .address(privatePractitioner.getAddress())
+        .zipCode(privatePractitioner.getZipCode())
+        .city(privatePractitioner.getCity())
+        .municipality(privatePractitioner.getMunicipality())
+        .county(privatePractitioner.getCounty())
+        .personalPrescriptionCode(privatePractitioner.getPersonalPrescriptionCode())
+        .specialties(convertSpecialities(privatePractitioner.getSpecialties()))
+        .licensedHealthcareProfessions(
+            convertLicensed(privatePractitioner.getLicensedHealthcareProfessions()))
+        .startDate(privatePractitioner.getStartDate())
+        .endDate(privatePractitioner.getEndDate())
+        .hospUpdated(privatePractitioner.getHospUpdated())
         .build();
+  }
+
+  private List<SpecialityDTO> convertSpecialities(
+      List<Speciality> specialities) {
+    if (specialities == null) {
+      return List.of();
+    }
+
+    return specialities.stream()
+        .map(
+            s -> SpecialityDTO.builder()
+                .code(s.code())
+                .name(s.name())
+                .build()
+        )
+        .toList();
+  }
+
+  private List<LicensedHealthcareProfessionDTO> convertLicensed(
+      List<LicensedHealtcareProfession> licensed) {
+    if (licensed == null) {
+      return List.of();
+    }
+
+    return licensed.stream()
+        .map(
+            l -> LicensedHealthcareProfessionDTO.builder()
+                .code(l.code())
+                .name(l.name())
+                .build()
+        )
+        .toList();
   }
 }
