@@ -40,8 +40,6 @@ public class PrivatePractitionerDTO {
 
   String position;
   String careUnitName;
-  String ownershipType;
-  String typeOfCare;
   String healthcareServiceType;
   String workplaceCode;
 
@@ -53,13 +51,8 @@ public class PrivatePractitionerDTO {
   String county;
 
   String personalPrescriptionCode;
-  List<SpecialityDTO> specialties;
-  List<LicensedHealthcareProfessionDTO> licensedHealthcareProfessions;
-
-  LocalDateTime startDate;
-  LocalDateTime endDate;
-
-  LocalDateTime hospUpdated;
+  List<CodeDTO> specialties;
+  List<CodeDTO> licensedHealthcareProfessions;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class PrivatePractitionerDTOBuilder {

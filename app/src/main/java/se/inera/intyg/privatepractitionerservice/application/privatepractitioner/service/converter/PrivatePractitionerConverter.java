@@ -2,9 +2,8 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 
 import java.util.List;
 import org.springframework.stereotype.Component;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.LicensedHealthcareProfessionDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CodeDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.SpecialityDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
@@ -26,8 +25,6 @@ public class PrivatePractitionerConverter {
         .registrationDate(privatePractitioner.getRegistrationDate())
         .position(privatePractitioner.getPosition())
         .careUnitName(privatePractitioner.getCareUnitName())
-        .ownershipType(privatePractitioner.getOwnershipType())
-        .typeOfCare(privatePractitioner.getTypeOfCare())
         .healthcareServiceType(privatePractitioner.getHealthcareServiceType())
         .workplaceCode(privatePractitioner.getWorkplaceCode())
         .phoneNumber(privatePractitioner.getPhoneNumber())
@@ -39,14 +36,12 @@ public class PrivatePractitionerConverter {
         .personalPrescriptionCode(privatePractitioner.getPersonalPrescriptionCode())
         .specialties(convertSpecialities(privatePractitioner.getSpecialties()))
         .licensedHealthcareProfessions(
-            convertLicensed(privatePractitioner.getLicensedHealthcareProfessions()))
-        .startDate(privatePractitioner.getStartDate())
-        .endDate(privatePractitioner.getEndDate())
-        .hospUpdated(privatePractitioner.getHospUpdated())
+            convertLicensed(privatePractitioner.getLicensedHealthcareProfessions())
+        )
         .build();
   }
 
-  private List<SpecialityDTO> convertSpecialities(
+  private List<CodeDTO> convertSpecialities(
       List<Speciality> specialities) {
     if (specialities == null) {
       return List.of();
@@ -54,15 +49,12 @@ public class PrivatePractitionerConverter {
 
     return specialities.stream()
         .map(
-            s -> SpecialityDTO.builder()
-                .code(s.code())
-                .name(s.name())
-                .build()
+            s -> new CodeDTO(s.code(), s.name())
         )
         .toList();
   }
 
-  private List<LicensedHealthcareProfessionDTO> convertLicensed(
+  private List<CodeDTO> convertLicensed(
       List<LicensedHealtcareProfession> licensed) {
     if (licensed == null) {
       return List.of();
@@ -70,10 +62,7 @@ public class PrivatePractitionerConverter {
 
     return licensed.stream()
         .map(
-            l -> LicensedHealthcareProfessionDTO.builder()
-                .code(l.code())
-                .name(l.name())
-                .build()
+            l -> new CodeDTO(l.code(), l.name())
         )
         .toList();
   }

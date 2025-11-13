@@ -1,19 +1,12 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.DR_KRANSTEGE_ENTITY;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.BefattningEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.VardformEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.VerksamhetstypEntity;
 
 @ExtendWith(MockitoExtension.class)
 class PrivatlakareEntityConverterTest {
@@ -23,149 +16,122 @@ class PrivatlakareEntityConverterTest {
 
   @Test
   void shouldConvertCareUnitName() {
-    final var expected = "UnitName";
-    var entity = PrivatlakareEntity.builder().enhetsNamn(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getCareUnitName());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getEnhetsNamn(), actual.getCareUnitName());
   }
 
   @Test
   void shouldConvertPosition() {
-    final var expected = "POS";
-    var entity = PrivatlakareEntity.builder().befattningar(List.of(new BefattningEntity(expected))).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getPosition());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getBefattningar().getFirst().getKod(), actual.getPosition());
   }
 
   @Test
   void shouldConvertWorkplaceCode() {
-    final var expected = "WP";
-    var entity = PrivatlakareEntity.builder().arbetsplatsKod(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getWorkplaceCode());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getArbetsplatsKod(), actual.getWorkplaceCode());
   }
 
   @Test
   void shouldConvertOwnershipType() {
-    final var expected = "Owner";
-    var entity = PrivatlakareEntity.builder().agarform(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getOwnershipType());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getAgarform(), actual.getOwnershipType());
   }
 
   @Test
   void shouldConvertTypeOfCare() {
-    final var expected = "TOC";
-    var entity = PrivatlakareEntity.builder().vardformer(List.of(new VardformEntity(expected))).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getTypeOfCare());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getVardformer().getFirst().getKod(), actual.getTypeOfCare());
   }
 
   @Test
   void shouldConvertHealthcareServiceType() {
-    final var expected = "HST";
-    var entity = PrivatlakareEntity.builder().verksamhetstyper(List.of(new VerksamhetstypEntity(expected))).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getHealthcareServiceType());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getVerksamhetstyper().getFirst().getKod(),
+        actual.getHealthcareServiceType());
   }
 
   @Test
   void shouldConvertPhoneNumber() {
-    final var expected = "070-111";
-    var entity = PrivatlakareEntity.builder().telefonnummer(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getPhoneNumber());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getTelefonnummer(), actual.getPhoneNumber());
   }
 
   @Test
   void shouldConvertAddress() {
-    final var expected = "Addr";
-    var entity = PrivatlakareEntity.builder().postadress(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getAddress());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getPostadress(), actual.getAddress());
   }
 
   @Test
   void shouldConvertZipCode() {
-    final var expected = "ZIP";
-    var entity = PrivatlakareEntity.builder().postnummer(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getZipCode());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getPostnummer(), actual.getZipCode());
   }
 
   @Test
   void shouldConvertCity() {
-    final var expected = "CityX";
-    var entity = PrivatlakareEntity.builder().postort(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getCity());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getPostort(), actual.getCity());
   }
 
   @Test
   void shouldConvertMunicipality() {
-    final var expected = "MunicipalX";
-    var entity = PrivatlakareEntity.builder().kommun(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getMunicipality());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getKommun(), actual.getMunicipality());
   }
 
   @Test
   void shouldConvertCounty() {
-    final var expected = "CountyX";
-    var entity = PrivatlakareEntity.builder().lan(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getCounty());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getLan(), actual.getCounty());
   }
 
   @Test
   void shouldConvertPersonalPrescriptionCode() {
-    final var expected = "PPCODE";
-    var entity = PrivatlakareEntity.builder().forskrivarKod(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getPersonalPrescriptionCode());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getForskrivarKod(), actual.getPersonalPrescriptionCode());
   }
 
   @Test
   void shouldConvertSpecialties() {
-    final var expected = new SpecialitetEntity("SNAME", "SCODE");
-    var entity = PrivatlakareEntity.builder().specialiteter(List.of(expected)).build();
-    var actual = converter.convert(entity);
-    assertEquals(1, actual.getSpecialties().size());
-    assertEquals(expected.getKod(), actual.getSpecialties().getFirst().code());
-    assertEquals(expected.getNamn(), actual.getSpecialties().getFirst().name());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(2, actual.getSpecialties().size());
+    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getFirst().getKod(),
+        actual.getSpecialties().getFirst().code());
+    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getFirst().getNamn(),
+        actual.getSpecialties().getFirst().name());
+    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getLast().getKod(),
+        actual.getSpecialties().getLast().code());
+    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getLast().getNamn(),
+        actual.getSpecialties().getLast().name());
   }
 
   @Test
   void shouldConvertLicensedHealthcareProfessions() {
-    final var expected = new LegitimeradYrkesgruppEntity("LNAME", "LCODE");
-    var entity = PrivatlakareEntity.builder().legitimeradeYrkesgrupper(List.of(expected)).build();
-    var actual = converter.convert(entity);
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
     assertEquals(1, actual.getLicensedHealthcareProfessions().size());
-    assertEquals(expected.getKod(), actual.getLicensedHealthcareProfessions().getFirst().code());
-    assertEquals(expected.getNamn(), actual.getLicensedHealthcareProfessions().getFirst().name());
+    assertEquals(DR_KRANSTEGE_ENTITY.getLegitimeradeYrkesgrupper().getFirst().getKod(),
+        actual.getLicensedHealthcareProfessions().getFirst().code());
+    assertEquals(DR_KRANSTEGE_ENTITY.getLegitimeradeYrkesgrupper().getFirst().getNamn(),
+        actual.getLicensedHealthcareProfessions().getFirst().name());
   }
 
   @Test
   void shouldConvertStartDate() {
-    final var expected = LocalDateTime.now().minusDays(2);
-    var entity = PrivatlakareEntity.builder().vardgivareStartdatum(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getStartDate());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getEnhetStartdatum(), actual.getStartDate());
   }
 
   @Test
   void shouldConvertEndDate() {
-    final var expected = LocalDateTime.now().plusDays(2);
-    var entity = PrivatlakareEntity.builder().vardgivareSlutdatum(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getEndDate());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getEnhetSlutDatum(), actual.getEndDate());
   }
 
   @Test
   void shouldConvertHospUpdated() {
-    final var expected = LocalDateTime.now().minusHours(1);
-    var entity = PrivatlakareEntity.builder().senasteHospUppdatering(expected).build();
-    var actual = converter.convert(entity);
-    assertEquals(expected, actual.getHospUpdated());
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getSenasteHospUppdatering(), actual.getHospUpdated());
   }
 }
