@@ -1,8 +1,9 @@
 plugins {
-    alias(libs.plugins.org.springframework.boot)
-    alias(libs.plugins.org.sonarqube)
-    alias(libs.plugins.org.owasp.dependencycheck)
     alias(libs.plugins.com.github.ben.manes.versions)
+    alias(libs.plugins.org.cyclonedx.bom)
+    alias(libs.plugins.org.owasp.dependencycheck)
+    alias(libs.plugins.org.sonarqube)
+    alias(libs.plugins.org.springframework.boot)
     id 'test-report-aggregation'
     id 'application'
 }
