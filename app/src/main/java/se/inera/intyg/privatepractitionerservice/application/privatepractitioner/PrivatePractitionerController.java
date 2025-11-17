@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.RegistrationConfigurationResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.UpdatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.CreateRegistrationService;
@@ -41,6 +43,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.GetHospInformationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.RegistrationConfigurationService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.UpdatePrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.PerformanceLogging;
@@ -51,6 +54,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.logging.Performa
 public class PrivatePractitionerController {
 
   private final CreateRegistrationService createRegistrationService;
+  private final UpdatePrivatePractitionerService updatePrivatePractitionerService;
   private final PrivatePractitionerService privatePractitionerService;
   private final RegistrationConfigurationService registrationConfigurationService;
   private final GetHospInformationService getHospInformationService;
@@ -115,5 +119,13 @@ public class PrivatePractitionerController {
   @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
   public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
     eraseService.erasePrivatePractitioner(careProviderId);
+  }
+
+  @PutMapping
+  @PerformanceLogging(eventAction = "update-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CHANGE)
+  public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(
+      @RequestBody UpdatePrivatePractitionerRequest request) {
+    final var updatedPrivatePractitioner = updatePrivatePractitionerService.update(request);
+    return ResponseEntity.ok(updatedPrivatePractitioner);
   }
 }

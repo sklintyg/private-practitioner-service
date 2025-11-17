@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_POSITION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_TYPE_OF_CARE;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.kranstegeRegistrationRequest;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,7 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldNotThrowIfValidRequest() {
-    createRegistrationRequestValidator.validate(DR_KRANSTEGE_REQUEST);
+    createRegistrationRequestValidator.validate(DR_KRANSTEGE_REGISTATION_REQUEST);
   }
 
   @Test
@@ -454,12 +454,12 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowIfRegistrationAlreadyExists() {
-    when(privatePractitionerRepository.isExists(DR_KRANSTEGE_REQUEST.getPersonId()))
+    when(privatePractitionerRepository.isExists(DR_KRANSTEGE_REGISTATION_REQUEST.getPersonId()))
         .thenReturn(true);
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(DR_KRANSTEGE_REQUEST)
+        () -> createRegistrationRequestValidator.validate(DR_KRANSTEGE_REGISTATION_REQUEST)
     );
 
     assertEquals("Registration already exists", actual.getMessage());

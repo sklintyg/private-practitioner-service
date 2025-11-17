@@ -26,7 +26,8 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.REGISTER_CONFIGURATION_RESPONSE;
 
 import java.util.List;
@@ -47,6 +48,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.GetHospInformationService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.PrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.RegistrationConfigurationService;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.UpdatePrivatePractitionerService;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.ValidatePrivatePractitionerService;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,6 +60,8 @@ class PrivatePractitionerControllerTest {
 
   @Mock
   private CreateRegistrationService createRegistrationService;
+  @Mock
+  private UpdatePrivatePractitionerService updatePrivatePractitionerService;
   @Mock
   private PrivatePractitionerService privatePractitionerService;
   @Mock
@@ -73,11 +77,11 @@ class PrivatePractitionerControllerTest {
 
   @Test
   void shouldRegisterPrivatePractitioner() {
-    when(createRegistrationService.createRegistration(DR_KRANSTEGE_REQUEST))
+    when(createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST))
         .thenReturn(DR_KRANSTEGE_DTO);
 
     final var actual = privatePractitionerController.registerPrivatePractitioner(
-        DR_KRANSTEGE_REQUEST);
+        DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
@@ -179,5 +183,17 @@ class PrivatePractitionerControllerTest {
     privatePractitionerController.erasePrivatePractitioner(DR_KRANSTEGE_HSA_ID);
 
     verify(eraseService).erasePrivatePractitioner(DR_KRANSTEGE_HSA_ID);
+  }
+
+  @Test
+  void shouldUpdatePrivatePractitioner() {
+    when(updatePrivatePractitionerService.update(DR_KRANSTEGE_UPDATE_REQUEST)).thenReturn(DR_KRANSTEGE_DTO);
+
+    final  var actual = privatePractitionerController.updatePrivatePractitioner(DR_KRANSTEGE_UPDATE_REQUEST);
+
+    assertAll(
+        () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
+        () -> assertEquals(DR_KRANSTEGE_DTO, actual.getBody())
+    );
   }
 }

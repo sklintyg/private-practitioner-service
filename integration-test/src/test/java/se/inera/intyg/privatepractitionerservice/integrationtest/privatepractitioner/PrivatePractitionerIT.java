@@ -9,7 +9,7 @@ import static se.inera.intyg.privatepractitionerservice.integrationtest.environm
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,7 +71,7 @@ class PrivatePractitionerIT {
         addToCertifierResponseBuilder().build()
     );
 
-    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REQUEST);
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
     assertNotNull(response.getBody());
