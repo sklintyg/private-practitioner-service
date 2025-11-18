@@ -125,11 +125,13 @@ public class PrivatlakareEntity {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  @Builder.Default
   private List<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
   @OrderBy("namn ASC")
+  @Builder.Default
   private List<SpecialitetEntity> specialiteter = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
