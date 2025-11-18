@@ -61,7 +61,6 @@ public class PrivatePractitionerRepository {
     existingEntity.setEnhetsNamn(privatePractitioner.getCareProviderName());
     existingEntity.setVardgivareNamn(privatePractitioner.getCareProviderName());
     existingEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
-    existingEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
     existingEntity.setForskrivarKod(privatePractitioner.getPersonalPrescriptionCode());
 
     existingEntity.setPostadress(privatePractitioner.getAddress());
