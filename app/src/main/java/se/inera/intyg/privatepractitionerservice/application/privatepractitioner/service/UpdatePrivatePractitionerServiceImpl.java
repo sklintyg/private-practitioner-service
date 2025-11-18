@@ -11,7 +11,6 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.validator.UpdatePrivatePractitionerRequestValidator;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
 @Service
@@ -21,8 +20,8 @@ public class UpdatePrivatePractitionerServiceImpl implements UpdatePrivatePracti
   private final PrivatePractitionerRepository repository;
   private final UpdatePrivatePractitionerRequestValidator validator;
   private final HashUtility hashUtility;
-  private final HospRepository hospRepository;
   private final PrivatePractitionerConverter converter;
+  private final NotifyPrivatePractitionerUpdate notifyPrivatePractitionerUpdate;
 
   @Override
   @Transactional
@@ -34,10 +33,9 @@ public class UpdatePrivatePractitionerServiceImpl implements UpdatePrivatePracti
     final var existingPrivatePractitioner = getExistingPrivatePractitioner(request);
     final var updatedPrivatePractitioner = updateFields(existingPrivatePractitioner, request);
 
-    final var hospPerson = hospRepository.findByPersonId(existingPrivatePractitioner.getPersonId());
-    hospPerson.ifPresent(updatedPrivatePractitioner::updateWithHospInformation);
-
     final var savedPrivatePractitioner = repository.save(updatedPrivatePractitioner);
+
+    notifyPrivatePractitionerUpdate.notify(savedPrivatePractitioner);
 
     return converter.convert(savedPrivatePractitioner);
   }
