@@ -93,7 +93,8 @@ class CreateRegistrationServiceTest {
   void shouldAddPrivatePractitionerToCertifier() {
     final var savePrivatePractitioner = mock(PrivatePractitioner.class);
 
-    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(DR_KRANSTEGE);
+    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
+        DR_KRANSTEGE);
     when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
 
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
@@ -105,7 +106,8 @@ class CreateRegistrationServiceTest {
   void shouldNotifyPrivatePractitionerRegistered() {
     final var savePrivatePractitioner = mock(PrivatePractitioner.class);
 
-    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(DR_KRANSTEGE);
+    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
+        DR_KRANSTEGE);
     when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
 
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
@@ -117,7 +119,8 @@ class CreateRegistrationServiceTest {
   void shouldReturnSavePrivatePractitioner() {
     final var savePrivatePractitioner = mock(PrivatePractitioner.class);
 
-    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(DR_KRANSTEGE);
+    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
+        DR_KRANSTEGE);
     when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
     when(privatePractitionerConverter.convert(savePrivatePractitioner))
         .thenReturn(DR_KRANSTEGE_DTO);

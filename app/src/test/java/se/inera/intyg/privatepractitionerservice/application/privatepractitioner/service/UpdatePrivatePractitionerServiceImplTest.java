@@ -7,9 +7,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE_HOSP_PERSON;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.validator.UpdatePrivatePractitionerRequestValidator;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,6 +38,8 @@ class UpdatePrivatePractitionerServiceImplTest {
   private PrivatePractitionerConverter converter;
   @Mock
   private HashUtility hashUtility;
+  @Mock
+  private HospRepository hospRepository;
   @InjectMocks
   private UpdatePrivatePractitionerServiceImpl service;
 
@@ -59,8 +64,13 @@ class UpdatePrivatePractitionerServiceImplTest {
   void shouldReturnUpdatedPrivatePractitioner() {
     when(repository.findByPersonId(DR_KRANSTEGE_UPDATE_REQUEST.getPersonId()))
         .thenReturn(Optional.of(DR_KRANSTEGE));
+
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
+        Optional.of(DR_KRANSTEGE_HOSP_PERSON));
+
     when(repository.save(any(PrivatePractitioner.class)))
         .thenReturn(DR_KRANSTEGE);
+    
     when(converter.convert(any(PrivatePractitioner.class)))
         .thenReturn(DR_KRANSTEGE_DTO);
 
