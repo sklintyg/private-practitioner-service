@@ -3,12 +3,11 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_POSITION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_TYPE_OF_CARE;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.kranstegeRegistrationRequest;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.kranstegeUpdateRequest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,17 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
 import se.inera.intyg.privatepractitionerservice.infrastructure.codesystem.CodeSystemRepository;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
 @ExtendWith(MockitoExtension.class)
-class CreateRegistrationRequestValidatorTest {
+class UpdatePrivatePractitionerRequestValidatorTest {
 
-  @Mock
-  private PrivatePractitionerRepository privatePractitionerRepository;
   @Mock
   private CodeSystemRepository codeSystemRepository;
 
-  private CreateRegistrationRequestValidator createRegistrationRequestValidator;
+  private UpdatePrivatePractitionerRequestValidator updatePrivatePractitionerRequestValidator;
 
   @BeforeEach
   void setUp() {
@@ -41,24 +37,24 @@ class CreateRegistrationRequestValidatorTest {
 
     PrivatePractitionerValidationHelper validationHelper = new PrivatePractitionerValidationHelper(
         codeSystemRepository);
-    createRegistrationRequestValidator = new CreateRegistrationRequestValidator(
-        privatePractitionerRepository, validationHelper);
+    updatePrivatePractitionerRequestValidator = new UpdatePrivatePractitionerRequestValidator(
+        validationHelper);
   }
 
   @Test
   void shouldNotThrowIfValidRequest() {
-    createRegistrationRequestValidator.validate(DR_KRANSTEGE_REGISTATION_REQUEST);
+    updatePrivatePractitionerRequestValidator.validate(DR_KRANSTEGE_UPDATE_REQUEST);
   }
 
   @Test
   void shouldThrowExceptionIfPersonIdNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .personId(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("PersonId is required", actual.getMessage());
@@ -66,13 +62,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfPersonIdBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .personId("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("PersonId is required", actual.getMessage());
@@ -80,13 +76,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfNameNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .name(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Name is required", actual.getMessage());
@@ -94,13 +90,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfNameBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .name("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Name is required", actual.getMessage());
@@ -108,13 +104,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfPositionNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .position(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Position is required", actual.getMessage());
@@ -122,13 +118,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfPositionBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .position("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Position is required", actual.getMessage());
@@ -136,13 +132,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfPositionDontExist() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .position("xx")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Position 'xx' is invalid", actual.getMessage());
@@ -150,13 +146,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfCareUnitNameNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .careUnitName(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("CareUnitName is required", actual.getMessage());
@@ -164,13 +160,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfCareUnitNameBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .careUnitName("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("CareUnitName is required", actual.getMessage());
@@ -178,13 +174,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfTypeOfCareNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .typeOfCare(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("TypeOfCare is required", actual.getMessage());
@@ -192,13 +188,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfTypeOfCareBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .typeOfCare("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("TypeOfCare is required", actual.getMessage());
@@ -206,13 +202,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfTypeOfCareDontExist() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .typeOfCare("xx")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("TypeOfCare 'xx' is invalid", actual.getMessage());
@@ -220,13 +216,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfHealthcareServiceTypeNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .healthcareServiceType(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("HealthcareServiceType is required", actual.getMessage());
@@ -234,13 +230,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfHealthcareServiceTypeBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .healthcareServiceType("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("HealthcareServiceType is required", actual.getMessage());
@@ -248,13 +244,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfHealthcareServiceTypeDontExist() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .healthcareServiceType("xx")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("HealthcareServiceType 'xx' is invalid", actual.getMessage());
@@ -262,13 +258,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfPhoneNumberNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .phoneNumber(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("PhoneNumber is required", actual.getMessage());
@@ -276,13 +272,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfPhoneNumberBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .phoneNumber("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("PhoneNumber is required", actual.getMessage());
@@ -290,13 +286,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfEmailNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .email(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Email is required", actual.getMessage());
@@ -304,13 +300,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfEmailBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .email("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Email is required", actual.getMessage());
@@ -318,13 +314,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfAddressNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .address(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Address is required", actual.getMessage());
@@ -332,13 +328,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfAddressBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .address("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Address is required", actual.getMessage());
@@ -346,13 +342,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfZipCodeNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .zipCode(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("ZipCode is required", actual.getMessage());
@@ -360,13 +356,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfZipCodeBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .zipCode("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("ZipCode is required", actual.getMessage());
@@ -374,13 +370,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfCityNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .city(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("City is required", actual.getMessage());
@@ -388,13 +384,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfCityBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .city("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("City is required", actual.getMessage());
@@ -402,13 +398,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfMunicipalityNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .municipality(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Municipality is required", actual.getMessage());
@@ -416,13 +412,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfMunicipalityBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .municipality("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("Municipality is required", actual.getMessage());
@@ -430,13 +426,13 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfCountyNull() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .county(null)
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("County is required", actual.getMessage());
@@ -444,28 +440,15 @@ class CreateRegistrationRequestValidatorTest {
 
   @Test
   void shouldThrowExceptionIfCountyBlank() {
-    final var request = kranstegeRegistrationRequest()
+    final var request = kranstegeUpdateRequest()
         .county("   ")
         .build();
 
     final var actual = assertThrows(
         PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(request)
+        () -> updatePrivatePractitionerRequestValidator.validate(request)
     );
 
     assertEquals("County is required", actual.getMessage());
-  }
-
-  @Test
-  void shouldThrowIfRegistrationAlreadyExists() {
-    when(privatePractitionerRepository.isExists(DR_KRANSTEGE_REGISTATION_REQUEST.getPersonId()))
-        .thenReturn(true);
-
-    final var actual = assertThrows(
-        PrivatlakarportalServiceException.class,
-        () -> createRegistrationRequestValidator.validate(DR_KRANSTEGE_REGISTATION_REQUEST)
-    );
-
-    assertEquals("Registration already exists", actual.getMessage());
   }
 }
