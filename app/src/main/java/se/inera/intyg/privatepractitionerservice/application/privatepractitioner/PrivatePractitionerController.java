@@ -121,7 +121,7 @@ public class PrivatePractitionerController {
     eraseService.erasePrivatePractitioner(careProviderId);
   }
 
-  @PutMapping
+  @PutMapping("")
   @PerformanceLogging(eventAction = "update-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CHANGE)
   public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(
       @RequestBody UpdatePrivatePractitionerRequest request) {

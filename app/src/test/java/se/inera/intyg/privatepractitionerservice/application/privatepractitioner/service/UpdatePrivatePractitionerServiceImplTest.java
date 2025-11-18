@@ -1,18 +1,25 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
 
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter.PrivatePractitionerConverter;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.validator.UpdatePrivatePractitionerRequestValidator;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
@@ -24,6 +31,8 @@ class UpdatePrivatePractitionerServiceImplTest {
   private PrivatePractitionerRepository repository;
   @Mock
   private UpdatePrivatePractitionerRequestValidator validator;
+  @Mock
+  private PrivatePractitionerConverter converter;
   @Mock
   private HashUtility hashUtility;
   @InjectMocks
@@ -39,16 +48,28 @@ class UpdatePrivatePractitionerServiceImplTest {
 
   @Test
   void shouldThrowExceptionWhenPrivatePractitionerNotFound() {
+    when(repository.findByPersonId(DR_KRANSTEGE_UPDATE_REQUEST.getPersonId()))
+        .thenReturn(Optional.empty());
+
     assertThrows(PrivatlakarportalServiceException.class,
         () -> service.update(DR_KRANSTEGE_UPDATE_REQUEST));
   }
 
   @Test
-  void shouldReturnSavedPrivatePractitioner() {
-    when(repository.isExists(DR_KRANSTEGE_UPDATE_REQUEST.getPersonId())).thenReturn(true);
+  void shouldReturnUpdatedPrivatePractitioner() {
+    when(repository.findByPersonId(DR_KRANSTEGE_UPDATE_REQUEST.getPersonId()))
+        .thenReturn(Optional.of(DR_KRANSTEGE));
+    when(repository.save(any(PrivatePractitioner.class)))
+        .thenReturn(DR_KRANSTEGE);
+    when(converter.convert(any(PrivatePractitioner.class)))
+        .thenReturn(DR_KRANSTEGE_DTO);
+
     final var result = service.update(DR_KRANSTEGE_UPDATE_REQUEST);
 
-    assertEquals(PrivatePractitionerDTO.builder().build(), result);
+    assertNotNull(result);
+    verify(repository).save(any(PrivatePractitioner.class));
+    verify(converter).convert(any(PrivatePractitioner.class));
+    assertEquals(DR_KRANSTEGE_DTO, result);
   }
 
 }

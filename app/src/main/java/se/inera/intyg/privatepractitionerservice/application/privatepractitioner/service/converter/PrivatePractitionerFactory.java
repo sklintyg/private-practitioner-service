@@ -3,7 +3,6 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.UpdatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 
 @Component
@@ -30,24 +29,4 @@ public class PrivatePractitionerFactory {
         .build();
   }
 
-  public PrivatePractitioner create(
-      UpdatePrivatePractitionerRequest updatePrivatePractitionerRequest) {
-    return PrivatePractitioner.builder()
-        .personId(updatePrivatePractitionerRequest.getPersonId())
-        .name(updatePrivatePractitionerRequest.getName())
-        .position(updatePrivatePractitionerRequest.getPosition())
-        .careProviderName(updatePrivatePractitionerRequest.getCareUnitName())
-        .ownershipType("Privat")
-        .typeOfCare(updatePrivatePractitionerRequest.getTypeOfCare())
-        .healthcareServiceType(updatePrivatePractitionerRequest.getHealthcareServiceType())
-        .workplaceCode(updatePrivatePractitionerRequest.getWorkplaceCode())
-        .phoneNumber(updatePrivatePractitionerRequest.getPhoneNumber())
-        .email(updatePrivatePractitionerRequest.getEmail())
-        .address(updatePrivatePractitionerRequest.getAddress())
-        .zipCode(updatePrivatePractitionerRequest.getZipCode())
-        .city(updatePrivatePractitionerRequest.getCity())
-        .municipality(updatePrivatePractitionerRequest.getMunicipality())
-        .county(updatePrivatePractitionerRequest.getCounty())
-        .build();
-  }
 }
