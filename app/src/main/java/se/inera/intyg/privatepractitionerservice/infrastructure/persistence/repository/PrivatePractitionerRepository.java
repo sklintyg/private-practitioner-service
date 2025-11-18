@@ -1,7 +1,9 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -165,7 +167,7 @@ public class PrivatePractitionerRepository {
             speciality.name(),
             speciality.code()
         ))
-        .toList();
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 
   private List<LegitimeradYrkesgruppEntity> getLegitimeradeYrkesgrupper(
@@ -175,6 +177,6 @@ public class PrivatePractitionerRepository {
             licensedHealtcareProfession.name(),
             licensedHealtcareProfession.code()
         ))
-        .toList();
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 }

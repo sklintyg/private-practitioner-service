@@ -125,12 +125,12 @@ public class PrivatlakareEntity {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
-  private List<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper;
+  private List<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
   @OrderBy("namn ASC")
-  private List<SpecialitetEntity> specialiteter;
+  private List<SpecialitetEntity> specialiteter = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
@@ -182,6 +182,21 @@ public class PrivatlakareEntity {
     } else {
       this.vardformer = new ArrayList<>();
       this.vardformer.add(new VardformEntity(kod));
+    }
+  }
+
+  public void setSpecialiteter(List<SpecialitetEntity> specialiteter) {
+    this.specialiteter.clear();
+    if (specialiteter != null) {
+      this.specialiteter.addAll(specialiteter);
+    }
+  }
+
+  public void setLegitimeradeYrkesgrupper(
+      List<LegitimeradYrkesgruppEntity> legitimeradeYrkesgrupper) {
+    this.legitimeradeYrkesgrupper.clear();
+    if (legitimeradeYrkesgrupper != null) {
+      this.legitimeradeYrkesgrupper.addAll(legitimeradeYrkesgrupper);
     }
   }
 }
