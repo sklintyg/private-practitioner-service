@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -30,21 +31,34 @@ public class PrivatePractitioner {
   String hsaId;
   String personId;
   String name;
+  @Setter
   String careProviderName;
 
+  @Setter
   String position;
+  @Setter
   String careUnitName;
   String ownershipType;
+  @Setter
   String typeOfCare;
+  @Setter
   String healthcareServiceType;
+  @Setter
   String workplaceCode;
 
+  @Setter
   String phoneNumber;
+  @Setter
   String email;
+  @Setter
   String address;
+  @Setter
   String zipCode;
+  @Setter
   String city;
+  @Setter
   String municipality;
+  @Setter
   String county;
 
   String personalPrescriptionCode;
