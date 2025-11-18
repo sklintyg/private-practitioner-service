@@ -13,6 +13,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.RegistrationConfigurationResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.UpdatePrivatePractitionerRequest;
 
 
 @RequiredArgsConstructor
@@ -28,6 +29,21 @@ public class ApiUtil {
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.POST,
+        new HttpEntity<>(request, headers),
+        new ParameterizedTypeReference<>() {
+        },
+        Collections.emptyMap()
+    );
+  }
+
+  public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(
+      UpdatePrivatePractitionerRequest request
+  ) {
+    final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner";
+    final var headers = new HttpHeaders();
+    return this.restTemplate.exchange(
+        requestUrl,
+        HttpMethod.PUT,
         new HttpEntity<>(request, headers),
         new ParameterizedTypeReference<>() {
         },

@@ -10,6 +10,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -118,6 +119,30 @@ class PrivatePractitionerIT {
         () -> assertNotNull(actual.getTypeOfCareCodes(), "TypeOfCare codes should not be null"),
         () -> assertFalse(actual.getTypeOfCareCodes().isEmpty(),
             "TypeOfCare codes should not be empty")
+    );
+  }
+
+  @Test
+  void shallUpdatePrivatePractitioner() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    final var response = api.updatePrivatePractitioner(DR_KRANSTEGE_UPDATE_REQUEST);
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertAll(
+        () -> assertEquals(DR_KRANSTEGE_DTO.getPersonId(), actual.getPersonId()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getHsaId(), actual.getHsaId()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
+        () -> assertNotNull(actual.getRegistrationDate())
     );
   }
 }
