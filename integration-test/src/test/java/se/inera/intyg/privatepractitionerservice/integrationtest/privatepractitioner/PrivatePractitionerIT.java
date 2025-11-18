@@ -10,6 +10,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
 
 import org.junit.jupiter.api.AfterEach;
@@ -26,6 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Containers;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.ApiUtil;
+import se.inera.intyg.privatepractitionerservice.integrationtest.util.TestabilityApiUtil;
 
 @ActiveProfiles({"integration-test", "testability"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -38,6 +40,7 @@ class PrivatePractitionerIT {
   private TestRestTemplate restTemplate;
 
   private ApiUtil api;
+  private TestabilityApiUtil testabilityApi;
   private MockServerClient mockServerClient;
   private IntygProxyServiceMock intygProxyServiceMock;
 
@@ -49,6 +52,7 @@ class PrivatePractitionerIT {
   @BeforeEach
   void setUp() {
     this.api = new ApiUtil(restTemplate, port);
+    this.testabilityApi = new TestabilityApiUtil(restTemplate, port);
     this.mockServerClient = new MockServerClient(
         Containers.mockServerContainer.getHost(),
         Containers.mockServerContainer.getServerPort()
@@ -58,6 +62,7 @@ class PrivatePractitionerIT {
 
   @AfterEach
   void tearDown() throws Exception {
+    testabilityApi.reset();
     mockServerClient.reset();
     Containers.redisContainer.execInContainer("redis-cli", "flushall");
   }
@@ -131,6 +136,8 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.certificationPersonResponse(
         addToCertifierResponseBuilder().build()
     );
+
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
     final var response = api.updatePrivatePractitioner(DR_KRANSTEGE_UPDATE_REQUEST);
     assertEquals(200, response.getStatusCode().value());

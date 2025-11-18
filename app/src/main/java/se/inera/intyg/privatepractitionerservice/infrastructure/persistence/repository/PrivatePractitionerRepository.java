@@ -15,6 +15,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
+import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityResetPrivatePractitionerRequest;
 
 @Repository
 @RequiredArgsConstructor
@@ -53,6 +54,16 @@ public class PrivatePractitionerRepository {
       return updateExisting(privatePractitioner);
     }
     return createNew(privatePractitioner);
+  }
+
+  public void reset(TestabilityResetPrivatePractitionerRequest request) {
+    request.getPersonIds()
+        .forEach(personId -> {
+          final var existingEntity = privatlakareEntityRepository.findByPersonId(personId);
+          if (existingEntity != null) {
+            privatlakareEntityRepository.delete(existingEntity);
+          }
+        });
   }
 
   private PrivatePractitioner updateExisting(PrivatePractitioner privatePractitioner) {
@@ -140,7 +151,6 @@ public class PrivatePractitionerRepository {
     newEntity.setLegitimeradeYrkesgrupper(
         getLegitimeradeYrkesgrupper(privatePractitioner.getLicensedHealthcareProfessions())
     );
-
     final var savedEntity = privatlakareEntityRepository.save(newEntity);
 
 // TODO: Add logic to send email notification about HSA ID generation status
