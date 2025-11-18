@@ -39,7 +39,7 @@ class CreateRegistrationRequestValidatorTest {
         )
         .thenReturn(true);
 
-    PrivatePractitionerValidationHelper validationHelper = new PrivatePractitionerValidationHelper(
+    final var validationHelper = new PrivatePractitionerValidationHelper(
         codeSystemRepository);
     createRegistrationRequestValidator = new CreateRegistrationRequestValidator(
         privatePractitionerRepository, validationHelper);
