@@ -54,7 +54,7 @@ public class UpdatePrivatePractitionerServiceImpl implements UpdatePrivatePracti
       PrivatePractitioner existing,
       UpdatePrivatePractitionerRequest request) {
     existing.setPosition(request.getPosition());
-    existing.setCareProviderName(request.getCareProviderName());
+    existing.setCareProviderName(request.getCareUnitName());
     existing.setCareUnitName(request.getCareUnitName());
     existing.setTypeOfCare(request.getTypeOfCare());
     existing.setHealthcareServiceType(request.getHealthcareServiceType());

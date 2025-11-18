@@ -74,33 +74,6 @@ class UpdatePrivatePractitionerRequestValidatorTest {
     assertEquals("PersonId is required", actual.getMessage());
   }
 
-  @Test
-  void shouldThrowExceptionIfNameNull() {
-    final var request = kranstegeUpdateRequest()
-        .name(null)
-        .build();
-
-    final var actual = assertThrows(
-        PrivatlakarportalServiceException.class,
-        () -> updatePrivatePractitionerRequestValidator.validate(request)
-    );
-
-    assertEquals("Name is required", actual.getMessage());
-  }
-
-  @Test
-  void shouldThrowExceptionIfNameBlank() {
-    final var request = kranstegeUpdateRequest()
-        .name("   ")
-        .build();
-
-    final var actual = assertThrows(
-        PrivatlakarportalServiceException.class,
-        () -> updatePrivatePractitionerRequestValidator.validate(request)
-    );
-
-    assertEquals("Name is required", actual.getMessage());
-  }
 
   @Test
   void shouldThrowExceptionIfPositionNull() {

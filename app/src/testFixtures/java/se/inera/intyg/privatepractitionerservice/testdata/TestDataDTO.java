@@ -122,10 +122,8 @@ public class TestDataDTO {
   public static UpdatePrivatePractitionerRequest.UpdatePrivatePractitionerRequestBuilder kranstegeUpdateRequest() {
     return UpdatePrivatePractitionerRequest.builder()
         .personId(DR_KRANSTEGE_PERSON_ID)
-        .name(DR_KRANSTEGE_NAME)
         .position(DR_KRANSTEGE_POSITION)
         .careUnitName(DR_KRANSTEGE_CARE_UNIT_NAME)
-        .ownershipType(DR_KRANSTEGE_OWNERSHIP_TYPE)
         .typeOfCare(DR_KRANSTEGE_TYPE_OF_CARE)
         .healthcareServiceType(DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE)
         .workplaceCode(DR_KRANSTEGE_WORKPLACE_CODE)

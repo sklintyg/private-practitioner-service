@@ -12,7 +12,6 @@ public class UpdatePrivatePractitionerRequestValidator {
 
   public void validate(UpdatePrivatePractitionerRequest update) {
     validationHelper.validatePersonId(update.getPersonId());
-    validationHelper.validateName(update.getName());
     validationHelper.validatePosition(update.getPosition());
     validationHelper.validateCareUnitName(update.getCareUnitName());
     validationHelper.validateTypeOfCare(update.getTypeOfCare());
