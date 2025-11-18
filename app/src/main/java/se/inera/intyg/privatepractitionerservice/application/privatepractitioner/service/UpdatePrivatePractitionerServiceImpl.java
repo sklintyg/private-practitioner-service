@@ -53,28 +53,20 @@ public class UpdatePrivatePractitionerServiceImpl implements UpdatePrivatePracti
   private PrivatePractitioner updateFields(
       PrivatePractitioner existing,
       UpdatePrivatePractitionerRequest request) {
-    return PrivatePractitioner.builder()
-        .hsaId(existing.getHsaId())
-        .registrationDate(existing.getRegistrationDate())
-        .startDate(existing.getStartDate())
-        .endDate(existing.getEndDate())
-        .hospUpdated(existing.getHospUpdated())
-        .personId(request.getPersonId())
-        .name(request.getName())
-        .position(request.getPosition())
-        .careProviderName(request.getCareUnitName())
-        .careUnitName(request.getCareUnitName())
-        .ownershipType("Privat")
-        .typeOfCare(request.getTypeOfCare())
-        .healthcareServiceType(request.getHealthcareServiceType())
-        .workplaceCode(request.getWorkplaceCode())
-        .phoneNumber(request.getPhoneNumber())
-        .email(request.getEmail())
-        .address(request.getAddress())
-        .zipCode(request.getZipCode())
-        .city(request.getCity())
-        .municipality(request.getMunicipality())
-        .county(request.getCounty())
-        .build();
+    existing.setPosition(request.getPosition());
+    existing.setCareProviderName(request.getCareProviderName());
+    existing.setCareUnitName(request.getCareUnitName());
+    existing.setTypeOfCare(request.getTypeOfCare());
+    existing.setHealthcareServiceType(request.getHealthcareServiceType());
+    existing.setWorkplaceCode(request.getWorkplaceCode());
+    existing.setPhoneNumber(request.getPhoneNumber());
+    existing.setEmail(request.getEmail());
+    existing.setAddress(request.getAddress());
+    existing.setZipCode(request.getZipCode());
+    existing.setCity(request.getCity());
+    existing.setMunicipality(request.getMunicipality());
+    existing.setCounty(request.getCounty());
+
+    return existing;
   }
 }
