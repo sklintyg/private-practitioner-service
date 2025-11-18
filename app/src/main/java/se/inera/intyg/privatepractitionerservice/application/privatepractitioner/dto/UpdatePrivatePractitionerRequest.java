@@ -10,9 +10,11 @@ import lombok.Value;
 @JsonDeserialize(builder = UpdatePrivatePractitionerRequest.UpdatePrivatePractitionerRequestBuilder.class)
 public class UpdatePrivatePractitionerRequest {
 
+  String personId;
+
   String position;
   String careUnitName;
-  String ownershipType;
+  String careProviderName;
   String typeOfCare;
   String healthcareServiceType;
   String workplaceCode;
