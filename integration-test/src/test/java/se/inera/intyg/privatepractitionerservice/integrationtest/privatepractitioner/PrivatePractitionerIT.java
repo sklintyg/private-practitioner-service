@@ -9,7 +9,9 @@ import static se.inera.intyg.privatepractitionerservice.integrationtest.environm
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,6 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Containers;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.ApiUtil;
+import se.inera.intyg.privatepractitionerservice.integrationtest.util.TestabilityApiUtil;
 
 @ActiveProfiles({"integration-test", "testability"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -37,6 +40,7 @@ class PrivatePractitionerIT {
   private TestRestTemplate restTemplate;
 
   private ApiUtil api;
+  private TestabilityApiUtil testabilityApi;
   private MockServerClient mockServerClient;
   private IntygProxyServiceMock intygProxyServiceMock;
 
@@ -48,6 +52,7 @@ class PrivatePractitionerIT {
   @BeforeEach
   void setUp() {
     this.api = new ApiUtil(restTemplate, port);
+    this.testabilityApi = new TestabilityApiUtil(restTemplate, port);
     this.mockServerClient = new MockServerClient(
         Containers.mockServerContainer.getHost(),
         Containers.mockServerContainer.getServerPort()
@@ -57,6 +62,7 @@ class PrivatePractitionerIT {
 
   @AfterEach
   void tearDown() throws Exception {
+    testabilityApi.reset();
     mockServerClient.reset();
     Containers.redisContainer.execInContainer("redis-cli", "flushall");
   }
@@ -71,7 +77,7 @@ class PrivatePractitionerIT {
         addToCertifierResponseBuilder().build()
     );
 
-    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REQUEST);
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
     assertNotNull(response.getBody());
@@ -118,6 +124,32 @@ class PrivatePractitionerIT {
         () -> assertNotNull(actual.getTypeOfCareCodes(), "TypeOfCare codes should not be null"),
         () -> assertFalse(actual.getTypeOfCareCodes().isEmpty(),
             "TypeOfCare codes should not be empty")
+    );
+  }
+
+  @Test
+  void shallUpdatePrivatePractitioner() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+
+    final var response = api.updatePrivatePractitioner(DR_KRANSTEGE_UPDATE_REQUEST);
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertAll(
+        () -> assertEquals(DR_KRANSTEGE_DTO.getPersonId(), actual.getPersonId()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getHsaId(), actual.getHsaId()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
+        () -> assertNotNull(actual.getRegistrationDate())
     );
   }
 }

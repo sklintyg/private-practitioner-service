@@ -1,7 +1,9 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -53,6 +55,16 @@ public class PrivatePractitionerRepository {
     return createNew(privatePractitioner);
   }
 
+  public void reset(List<String> personIds) {
+    personIds
+        .forEach(personId -> {
+          final var existingEntity = privatlakareEntityRepository.findByPersonId(personId);
+          if (existingEntity != null) {
+            privatlakareEntityRepository.delete(existingEntity);
+          }
+        });
+  }
+
   private PrivatePractitioner updateExisting(PrivatePractitioner privatePractitioner) {
     final var existingEntity = privatlakareEntityRepository.findByPersonId(
         privatePractitioner.getPersonId());
@@ -60,7 +72,6 @@ public class PrivatePractitionerRepository {
     existingEntity.setFullstandigtNamn(privatePractitioner.getName());
     existingEntity.setEnhetsNamn(privatePractitioner.getCareProviderName());
     existingEntity.setVardgivareNamn(privatePractitioner.getCareProviderName());
-    existingEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
     existingEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
     existingEntity.setForskrivarKod(privatePractitioner.getPersonalPrescriptionCode());
 
@@ -139,7 +150,6 @@ public class PrivatePractitionerRepository {
     newEntity.setLegitimeradeYrkesgrupper(
         getLegitimeradeYrkesgrupper(privatePractitioner.getLicensedHealthcareProfessions())
     );
-
     final var savedEntity = privatlakareEntityRepository.save(newEntity);
 
 // TODO: Add logic to send email notification about HSA ID generation status
@@ -166,7 +176,7 @@ public class PrivatePractitionerRepository {
             speciality.name(),
             speciality.code()
         ))
-        .toList();
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 
   private List<LegitimeradYrkesgruppEntity> getLegitimeradeYrkesgrupper(
@@ -176,6 +186,6 @@ public class PrivatePractitionerRepository {
             licensedHealtcareProfession.name(),
             licensedHealtcareProfession.code()
         ))
-        .toList();
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 }

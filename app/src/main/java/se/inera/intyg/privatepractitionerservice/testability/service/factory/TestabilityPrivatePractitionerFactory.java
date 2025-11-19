@@ -1,19 +1,21 @@
-package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter;
+package se.inera.intyg.privatepractitionerservice.testability.service.factory;
 
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest;
 
 @Component
-public class PrivatePractitionerFactory {
+public class TestabilityPrivatePractitionerFactory {
 
-  public PrivatePractitioner create(CreateRegistrationRequest createRegistrationRequest) {
+  public PrivatePractitioner create(
+      TestabilityCreateRegistrationRequest createRegistrationRequest) {
     return PrivatePractitioner.builder()
         .personId(createRegistrationRequest.getPersonId())
         .name(createRegistrationRequest.getName())
         .position(createRegistrationRequest.getPosition())
         .careProviderName(createRegistrationRequest.getCareUnitName())
+        .careUnitName(createRegistrationRequest.getCareUnitName())
         .ownershipType("Privat")
         .typeOfCare(createRegistrationRequest.getTypeOfCare())
         .healthcareServiceType(createRegistrationRequest.getHealthcareServiceType())
@@ -26,6 +28,7 @@ public class PrivatePractitionerFactory {
         .municipality(createRegistrationRequest.getMunicipality())
         .county(createRegistrationRequest.getCounty())
         .registrationDate(LocalDateTime.now())
+        .startDate(LocalDateTime.now())
         .build();
   }
 
