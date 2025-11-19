@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
@@ -82,13 +81,12 @@ class UpdatePrivatePractitionerServiceTest {
 
   @Test
   void shouldNotifyPrivatePractitionerUpdate() {
-    final var updatedPrivatePractitioner = mock(PrivatePractitioner.class);
 
     when(repository.findByPersonId(DR_KRANSTEGE_UPDATE_REQUEST.getPersonId()))
         .thenReturn(Optional.of(DR_KRANSTEGE));
 
     when(repository.save(any(PrivatePractitioner.class)))
-        .thenReturn(updatedPrivatePractitioner);
+        .thenReturn(DR_KRANSTEGE);
 
     service.update(DR_KRANSTEGE_UPDATE_REQUEST);
 
