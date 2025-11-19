@@ -8,6 +8,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
@@ -23,10 +25,11 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.validator.UpdatePrivatePractitionerRequestValidator;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
 @ExtendWith(MockitoExtension.class)
-class UpdatePrivatePractitionerServiceImplTest {
+class UpdatePrivatePractitionerServiceTest {
 
   @Mock
   private PrivatePractitionerRepository repository;
@@ -37,9 +40,9 @@ class UpdatePrivatePractitionerServiceImplTest {
   @Mock
   private HashUtility hashUtility;
   @Mock
-  private NotifyPrivatePractitionerUpdate notifyPrivatePractitionerUpdate;
+  private MonitoringLogService monitoringLogService;
   @InjectMocks
-  private UpdatePrivatePractitionerServiceImpl service;
+  private UpdatePrivatePractitionerService service;
 
   @Test
   void shouldThrowExceptionWhenValidationFails() {
@@ -89,7 +92,7 @@ class UpdatePrivatePractitionerServiceImplTest {
 
     service.update(DR_KRANSTEGE_UPDATE_REQUEST);
 
-    verify(notifyPrivatePractitionerUpdate).notify(updatedPrivatePractitioner);
+    verify(monitoringLogService).logUserDetailsChanged(DR_KRANSTEGE_PERSON_ID, DR_KRANSTEGE_HSA_ID);
   }
 
 }
