@@ -25,7 +25,7 @@ public class TestabilityPrivatePractitionerController {
 
   private final TestabilityPrivatePractitionerService testabilityPrivatePractitionerService;
 
-  @PostMapping("")
+  @PostMapping("/privatepractitioner")
   public ResponseEntity<PrivatePractitionerDTO> registerPrivatePractitioner(
       @RequestBody TestabilityCreateRegistrationRequest createRegistrationRequest) {
     log.info("Testability API - Registering private practitioner: {}",
@@ -36,7 +36,7 @@ public class TestabilityPrivatePractitionerController {
     return ResponseEntity.ok(privatePractitionerDTO);
   }
 
-  @DeleteMapping("")
+  @DeleteMapping("/privatepractitioner")
   public void reset(
       @RequestBody List<String> testabilityPrivatePractitionerRequest) {
     testabilityPrivatePractitionerService.reset(testabilityPrivatePractitionerRequest);

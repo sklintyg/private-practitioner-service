@@ -28,7 +28,7 @@ public class TestabilityApiUtil {
 
   public void addPrivatePractitioner(
       TestabilityCreateRegistrationRequest request) {
-    final var requestUrl = "http://localhost:%s/testability/".formatted(port);
+    final var requestUrl = "http://localhost:%s/testability/privatepractitioner".formatted(port);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -51,7 +51,7 @@ public class TestabilityApiUtil {
       return;
     }
 
-    final var requestUrl = "http://localhost:%s/testability/".formatted(port);
+    final var requestUrl = "http://localhost:%s/testability/privatepractitioner".formatted(port);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
