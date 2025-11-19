@@ -14,7 +14,6 @@ public class UpdatePrivatePractitionerRequest {
 
   String position;
   String careUnitName;
-  String ownershipType;
   String typeOfCare;
   String healthcareServiceType;
   String workplaceCode;
