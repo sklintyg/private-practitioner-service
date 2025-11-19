@@ -15,7 +15,6 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
-import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityResetPrivatePractitionerRequest;
 
 @Repository
 @RequiredArgsConstructor
@@ -56,8 +55,8 @@ public class PrivatePractitionerRepository {
     return createNew(privatePractitioner);
   }
 
-  public void reset(TestabilityResetPrivatePractitionerRequest request) {
-    request.getPersonIds()
+  public void reset(List<String> request) {
+    request
         .forEach(personId -> {
           final var existingEntity = privatlakareEntityRepository.findByPersonId(personId);
           if (existingEntity != null) {

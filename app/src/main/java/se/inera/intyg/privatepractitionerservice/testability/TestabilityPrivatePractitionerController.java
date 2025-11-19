@@ -2,6 +2,7 @@ package se.inera.intyg.privatepractitionerservice.testability;
 
 import static se.inera.intyg.privatepractitionerservice.testability.common.TestabilityConstants.TESTABILITY_PROFILE;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest;
-import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityResetPrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.testability.service.TestabilityPrivatePractitionerService;
 
 @Slf4j
@@ -38,7 +38,7 @@ public class TestabilityPrivatePractitionerController {
 
   @DeleteMapping("")
   public void reset(
-      @RequestBody TestabilityResetPrivatePractitionerRequest testabilityPrivatePractitionerRequest) {
+      @RequestBody List<String> testabilityPrivatePractitionerRequest) {
     testabilityPrivatePractitionerService.reset(testabilityPrivatePractitionerRequest);
   }
 }

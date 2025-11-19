@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest;
-import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityResetPrivatePractitionerRequest;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,9 +24,9 @@ public class TestabilityApiUtil {
 
   private final TestRestTemplate restTemplate;
   private final int port;
-  private List<String> privatePractitionerPersonIds = new ArrayList<>();
+  private final List<String> privatePractitionerPersonIds = new ArrayList<>();
 
-  public ResponseEntity<PrivatePractitionerDTO> addPrivatePractitioner(
+  public void addPrivatePractitioner(
       TestabilityCreateRegistrationRequest request) {
     final var requestUrl = "http://localhost:%s/testability/".formatted(port);
     final var headers = new HttpHeaders();
@@ -45,7 +44,6 @@ public class TestabilityApiUtil {
     if (privatePractitionerPersonId(response.getBody()) != null) {
       privatePractitionerPersonIds.add(privatePractitionerPersonId(response.getBody()));
     }
-    return response;
   }
 
   public void reset() {
@@ -57,14 +55,10 @@ public class TestabilityApiUtil {
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    final var request = TestabilityResetPrivatePractitionerRequest.builder()
-        .personIds(privatePractitionerPersonIds)
-        .build();
-
     final ResponseEntity<Void> response = this.restTemplate.exchange(
         requestUrl,
         HttpMethod.DELETE,
-        new HttpEntity<>(request, headers),
+        new HttpEntity<>(privatePractitionerPersonIds, headers),
         new ParameterizedTypeReference<>() {
         },
         Collections.emptyMap()

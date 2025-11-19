@@ -187,9 +187,11 @@ class PrivatePractitionerControllerTest {
 
   @Test
   void shouldUpdatePrivatePractitioner() {
-    when(updatePrivatePractitionerService.update(DR_KRANSTEGE_UPDATE_REQUEST)).thenReturn(DR_KRANSTEGE_DTO);
+    when(updatePrivatePractitionerService.update(DR_KRANSTEGE_UPDATE_REQUEST)).thenReturn(
+        DR_KRANSTEGE_DTO);
 
-    final  var actual = privatePractitionerController.updatePrivatePractitioner(DR_KRANSTEGE_UPDATE_REQUEST);
+    final var actual = privatePractitionerController.updatePrivatePractitioner(
+        DR_KRANSTEGE_UPDATE_REQUEST);
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
