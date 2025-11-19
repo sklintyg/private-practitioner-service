@@ -55,8 +55,8 @@ public class PrivatePractitionerRepository {
     return createNew(privatePractitioner);
   }
 
-  public void reset(List<String> request) {
-    request
+  public void reset(List<String> personIds) {
+    personIds
         .forEach(personId -> {
           final var existingEntity = privatlakareEntityRepository.findByPersonId(personId);
           if (existingEntity != null) {

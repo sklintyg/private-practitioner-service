@@ -33,8 +33,8 @@ public class TestabilityPrivatePractitionerService {
     return privatePractitionerConverter.convert(savedPrivatePractitioner);
   }
 
-  public void reset(List<String> request) {
-    privatePractitionerRepository.reset(request);
+  public void reset(List<String> personIds) {
+    privatePractitionerRepository.reset(personIds);
   }
 }
 
