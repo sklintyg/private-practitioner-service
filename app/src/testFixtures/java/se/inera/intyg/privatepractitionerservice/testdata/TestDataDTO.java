@@ -5,8 +5,10 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_CITY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_COUNTY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_FIRST_NAME;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LAST_NAME;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_MUNICIPALITY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_NAME;
@@ -41,6 +43,8 @@ import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPS
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.HospCredentialsForPersonBuilder;
+import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest;
+import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest.GetPersonIntegrationRequestBuilder;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest.TestabilityCreateRegistrationRequestBuilder;
 
@@ -48,6 +52,26 @@ public class TestDataDTO {
 
   public static final CreateRegistrationRequest DR_KRANSTEGE_REGISTATION_REQUEST = kranstegeRegistrationRequest().build();
   public static final TestabilityCreateRegistrationRequest DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST = kranstegeTestabilityRegistrationRequest().build();
+
+  public static final GetPersonIntegrationRequest DR_KRANSTEGE_PU_REQUEST = kranstegePURequest().build();
+  public static final PersonSvarDTO DR_KRANSTEGE_PU_RESPONSE = kranstegePUResponse().build();
+
+  private static GetPersonIntegrationRequestBuilder kranstegePURequest() {
+    return GetPersonIntegrationRequest.builder()
+        .personId(DR_KRANSTEGE_PERSON_ID);
+  }
+
+  private static PersonSvarDTOBuilder kranstegePUResponse() {
+    return PersonSvarDTO.builder()
+        .person(
+            PersonDTO.builder()
+                .namn(DR_KRANSTEGE_FIRST_NAME)
+                .efternamn(DR_KRANSTEGE_LAST_NAME)
+                .personnummer(DR_KRANSTEGE_PERSON_ID)
+                .build()
+        )
+        .status(StatusDTO.FOUND);
+  }
 
   private static TestabilityCreateRegistrationRequestBuilder kranstegeTestabilityRegistrationRequest() {
     return TestabilityCreateRegistrationRequest.builder()

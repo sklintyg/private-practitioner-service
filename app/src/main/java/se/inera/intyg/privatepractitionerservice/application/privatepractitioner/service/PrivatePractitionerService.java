@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter.PrivatePractitionerConverter;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
+import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationService;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class PrivatePractitionerService {
 
   private final PrivatePractitionerRepository privatePractitionerRepository;
   private final PrivatePractitionerConverter privatePractitionerConverter;
+  private final GetPersonIntegrationService updatePrivatePractitionerFromPuService;
 
   public PrivatePractitionerDTO getPrivatePractitioner(String personOrHsaId) {
     if (personOrHsaId == null) {
