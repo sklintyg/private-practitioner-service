@@ -1,4 +1,4 @@
-package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client;
+package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest;
-import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.GetPersonFromIntygProxyService;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.PersonFromIntygProxyServiceClient;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonSvarDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.StatusDTO;
