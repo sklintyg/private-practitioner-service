@@ -1,15 +1,12 @@
 package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationResponse;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationService;
-import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.GetPersonFromIntygProxyService;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.converter.PersonSvarConverter;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonIntegrationService implements GetPersonIntegrationService {
@@ -19,8 +16,20 @@ public class PersonIntegrationService implements GetPersonIntegrationService {
 
   @Override
   public GetPersonIntegrationResponse getPerson(GetPersonIntegrationRequest personRequest) {
+    validateRequest(personRequest);
+
     final var personSvarDTO = getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
-    return null;
+    return GetPersonIntegrationResponse.builder()
+        .person(personSvarConverter.convertPerson(personSvarDTO.getPerson()))
+        .status(personSvarConverter.convertStatus(personSvarDTO.getStatus()))
+        .build();
+  }
+
+  private void validateRequest(GetPersonIntegrationRequest personRequest) {
+    if (personRequest == null || personRequest.getPersonId() == null || personRequest.getPersonId()
+        .isEmpty()) {
+      throw new IllegalArgumentException("Valid personRequest was not provided: " + personRequest);
+    }
   }
 }
