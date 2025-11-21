@@ -38,7 +38,7 @@ public class PersonIntegrationService implements GetPersonIntegrationService {
   }
 
   private void validateRequest(GetPersonIntegrationRequest personRequest) {
-    if (personRequest == null || personRequest.getPersonId() == null || personRequest.getPersonId()
+    if (personRequest == null || personRequest.personId() == null || personRequest.personId()
         .isEmpty()) {
       throw new IllegalArgumentException("Valid personRequest was not provided: " + personRequest);
     }

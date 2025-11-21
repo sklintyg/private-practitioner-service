@@ -28,7 +28,7 @@ class GetPersonFromIntygProxyServiceTest {
 
   @Test
   void shouldReturnPersonFromIntygProxyService() {
-    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
     final var expectedResponse = getPersonResponse();
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
@@ -41,7 +41,7 @@ class GetPersonFromIntygProxyServiceTest {
 
   @Test
   void shouldReturnPersonWithCorrectPersonId() {
-    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
     final var expectedResponse = getPersonResponse();
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
@@ -54,7 +54,7 @@ class GetPersonFromIntygProxyServiceTest {
 
   @Test
   void shouldReturnPersonWithCorrectName() {
-    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
     final var expectedResponse = getPersonResponse();
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
@@ -67,7 +67,7 @@ class GetPersonFromIntygProxyServiceTest {
 
   @Test
   void shouldReturnPersonWithCorrectLastName() {
-    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
     final var expectedResponse = getPersonResponse();
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
@@ -80,7 +80,7 @@ class GetPersonFromIntygProxyServiceTest {
 
   @Test
   void shouldReturnStatusNotFoundWhenPersonDoesNotExist() {
-    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
     final var expectedResponse = new PersonSvarDTO(null, StatusDTO.NOT_FOUND);
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
@@ -93,7 +93,7 @@ class GetPersonFromIntygProxyServiceTest {
 
   @Test
   void shouldReturnStatusErrorWhenServiceFails() {
-    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
     final var expectedResponse = new PersonSvarDTO(null, StatusDTO.ERROR);
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
@@ -106,7 +106,7 @@ class GetPersonFromIntygProxyServiceTest {
 
   @Test
   void shouldReturnStatusFoundWhenPersonExists() {
-    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
     final var expectedResponse = new PersonSvarDTO(null, StatusDTO.FOUND);
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);

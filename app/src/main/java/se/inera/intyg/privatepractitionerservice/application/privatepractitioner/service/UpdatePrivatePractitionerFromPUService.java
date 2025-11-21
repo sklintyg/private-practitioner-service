@@ -21,9 +21,7 @@ public class UpdatePrivatePractitionerFromPUService {
   public PrivatePractitioner updateFromPu(PrivatePractitioner practitioner) {
     final GetPersonIntegrationResponse response;
     try {
-      final var request = GetPersonIntegrationRequest.builder()
-          .personId(practitioner.getPersonId())
-          .build();
+      final var request = new GetPersonIntegrationRequest(practitioner.getPersonId());
 
       response = getPersonIntegrationService.getPerson(request);
     } catch (Exception e) {

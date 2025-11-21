@@ -73,7 +73,7 @@ class PersonFromIntygProxyServiceClientTest {
     doReturn(expectedResponse).when(responseSpec).body(PersonSvarDTO.class);
 
     final var actualResponse = personFromIntygProxyServiceClient.get(
-        GetPersonIntegrationRequest.builder().personId(PERSON_ID).build());
+        new GetPersonIntegrationRequest(PERSON_ID));
 
     assertEquals(expectedResponse, actualResponse);
   }
