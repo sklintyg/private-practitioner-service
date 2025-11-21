@@ -63,6 +63,8 @@ public class PrivatePractitionerRepository {
             privatlakareEntityRepository.delete(existingEntity);
           }
         });
+    privatlakareIdEntityRepository.deleteAll();
+    privatlakareIdEntityRepository.resetIdSequence();
   }
 
   private PrivatePractitioner updateExisting(PrivatePractitioner privatePractitioner) {
