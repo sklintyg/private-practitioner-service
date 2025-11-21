@@ -10,7 +10,7 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.p
 public class PersonSvarConverter {
 
   private static final String SPACE = " ";
-  public static final String EMPTY = "";
+  private static final String EMPTY = "";
 
   public Status convertStatus(StatusDTO statusDTO) {
     return switch (statusDTO) {
