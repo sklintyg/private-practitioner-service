@@ -41,6 +41,8 @@ class PrivatePractitionerServiceTest {
   private PrivatePractitionerRepository privatePractitionerRepository;
   @Mock
   private PrivatePractitionerConverter privatePractitionerConverter;
+  @Mock
+  private UpdatePrivatePractitionerFromPUService updatePrivatePractitionerFromPUService;
   @InjectMocks
   private PrivatePractitionerService privatePractitionerService;
 
@@ -69,6 +71,8 @@ class PrivatePractitionerServiceTest {
     when(privatePractitionerRepository.findByPersonId(personId)).thenReturn(
         Optional.of(privatePractitioner)
     );
+    when(updatePrivatePractitionerFromPUService.updateFromPu(privatePractitioner)).thenReturn(
+        privatePractitioner);
     when(privatePractitionerConverter.convert(privatePractitioner)).thenReturn(expected);
 
     final var actual = privatePractitionerService.getPrivatePractitioner(personId);

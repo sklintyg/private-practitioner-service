@@ -1,23 +1,4 @@
-/*
- * Copyright (C) 2025 Inera AB (http://www.inera.se)
- *
- * This file is part of sklintyg (https://github.com/sklintyg).
- *
- * sklintyg is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sklintyg is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client;
+package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,31 +22,31 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClient.RequestBodyUriSpec;
 import org.springframework.web.client.RestClient.ResponseSpec;
-import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
-import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonRequestDTO;
-import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO;
+import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonDTO;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonSvarDTO;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.StatusDTO;
 
 @ExtendWith(MockitoExtension.class)
-class HospCredentialsForPersonClientTest {
-
-  private static final GetCredentialsForPersonRequestDTO GET_CREDENTIALS_FOR_PERSON_REQUEST_DTO =
-      GetCredentialsForPersonRequestDTO.builder()
-          .personId("personId")
-          .build();
+class PersonFromIntygProxyServiceClientTest {
 
   @Mock
   private RestClient restClient;
 
   @InjectMocks
-  private HospCredentialsForPersonClient credentialsForPersonClient;
+  private PersonFromIntygProxyServiceClient personFromIntygProxyServiceClient;
 
   private RequestBodyUriSpec requestBodyUriSpec;
   private ResponseSpec responseSpec;
 
+  private static final String PERSON_ID = "197705232382";
+  public static final String KRANSTEGE_FIRST_NAME = "Frida";
+  public static final String KRANSTEGE_LAST_NAME = "Kranstege";
+
   @BeforeEach
   void setUp() {
-    final var uri = "/api/from/configuration";
-    ReflectionTestUtils.setField(credentialsForPersonClient, "credentialsForPersonEndpoint", uri);
+    final var uri = "/api/from/person";
+    ReflectionTestUtils.setField(personFromIntygProxyServiceClient, "getPuPath", uri);
 
     requestBodyUriSpec = mock(RequestBodyUriSpec.class);
     responseSpec = mock(ResponseSpec.class);
@@ -75,7 +56,7 @@ class HospCredentialsForPersonClientTest {
 
     when(restClient.post()).thenReturn(requestBodyUriSpec);
     when(requestBodyUriSpec.uri(uri)).thenReturn(requestBodyUriSpec);
-    when(requestBodyUriSpec.body(any(GetCredentialsForPersonRequestDTO.class))).thenReturn(
+    when(requestBodyUriSpec.body(any(GetPersonIntegrationRequest.class))).thenReturn(
         requestBodyUriSpec);
     when(requestBodyUriSpec.header(LOG_TRACE_ID_HEADER, "traceId")).thenReturn(requestBodyUriSpec);
     when(requestBodyUriSpec.header(LOG_SESSION_ID_HEADER, "sessionId")).thenReturn(
@@ -84,17 +65,24 @@ class HospCredentialsForPersonClientTest {
     when(requestBodyUriSpec.retrieve()).thenReturn(responseSpec);
   }
 
+
   @Test
-  void shallReturnGetCitizenCertificatesResponse() {
-    final var expectedResponse = GetCredentialsForPersonResponseDTO.builder()
-        .credentials(new HospCredentialsForPerson())
-        .build();
+  void shouldReturnGetPersonResponse() {
+    final var expectedResponse = getPersonSvarDTO();
 
-    doReturn(expectedResponse).when(responseSpec).body(GetCredentialsForPersonResponseDTO.class);
+    doReturn(expectedResponse).when(responseSpec).body(PersonSvarDTO.class);
 
-    final var actualResponse = credentialsForPersonClient.get(
-        GET_CREDENTIALS_FOR_PERSON_REQUEST_DTO);
+    final var actualResponse = personFromIntygProxyServiceClient.get(
+        new GetPersonIntegrationRequest(PERSON_ID));
 
     assertEquals(expectedResponse, actualResponse);
+  }
+
+  private static PersonDTO getPersonDTO() {
+    return new PersonDTO(PERSON_ID, KRANSTEGE_FIRST_NAME, KRANSTEGE_LAST_NAME);
+  }
+
+  private static PersonSvarDTO getPersonSvarDTO() {
+    return new PersonSvarDTO(getPersonDTO(), StatusDTO.FOUND);
   }
 }

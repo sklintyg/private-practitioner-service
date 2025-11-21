@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.addToCertifierResponseBuilder;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeCredentialsBuilder;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePerson;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonWithSameName;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
@@ -151,5 +154,51 @@ class PrivatePractitionerIT {
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
         () -> assertNotNull(actual.getRegistrationDate())
     );
+  }
+
+  @Test
+  void shallUpdateNameFromPUWhenNameHasChanged() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+
+    intygProxyServiceMock.personResponse(fridaKranstegePerson());
+
+    final var response = api.getPrivatePractitioner(DR_KRANSTEGE_PERSON_ID);
+
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertEquals("Frida Andersson", actual.getName());
+  }
+
+  @Test
+  void shallNotUpdateNameFromPUWhenNameHasNotChanged() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+
+    intygProxyServiceMock.personResponse(
+        fridaKranstegePersonWithSameName()
+    );
+
+    final var response = api.getPrivatePractitioner(DR_KRANSTEGE_PERSON_ID);
+
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertEquals("Frida Kranstege", actual.getName());
   }
 }
