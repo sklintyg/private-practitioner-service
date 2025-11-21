@@ -19,9 +19,13 @@ public class HospPerson {
   private String personalPrescriptionCode;
   private List<LicensedHealtcareProfession> licensedHealthcareProfessions;
   private List<Speciality> specialities;
+  @Builder.Default
   private List<String> specialityNames = new ArrayList<>();
+  @Builder.Default
   private List<String> specialityCodes = new ArrayList<>();
+  @Builder.Default
   private List<String> hsaTitles = new ArrayList<>();
+  @Builder.Default
   private List<String> titleCodes = new ArrayList<>();
   @With
   private LocalDateTime hospUpdated;

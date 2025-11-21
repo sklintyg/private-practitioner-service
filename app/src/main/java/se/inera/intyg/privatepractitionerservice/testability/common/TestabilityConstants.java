@@ -7,4 +7,5 @@ public class TestabilityConstants {
   }
 
   public static final String TESTABILITY_PROFILE = "testability";
+  public static final String TESTABILITY_INIT_DATA_PROFILE = "testability-init-data";
 }

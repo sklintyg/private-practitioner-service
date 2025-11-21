@@ -32,12 +32,17 @@ import lombok.NoArgsConstructor;
 public class HospCredentialsForPerson {
 
   private String personalIdentityNumber;
+  @Builder.Default
   private List<HealthCareProfessionalLicence> healthCareProfessionalLicence = new ArrayList<>();
   private String personalPrescriptionCode;
+  @Builder.Default
   private List<HCPSpecialityCodes> healthCareProfessionalLicenceSpeciality = new ArrayList<>();
+  @Builder.Default
   private List<NursePrescriptionRight> nursePrescriptionRight = new ArrayList<>();
   private String healthcareProfessionalLicenseIdentityNumber;
+  @Builder.Default
   private List<String> educationCode = new ArrayList<>();
+  @Builder.Default
   private List<Restriction> restrictions = new ArrayList<>();
   private Boolean feignedPerson;
 
