@@ -1,4 +1,4 @@
-package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config;
+package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ public class IntygProxyServiceRestClientConfig {
   @Value("${integration.intygproxyservice.baseurl}")
   private String intygProxyServiceBaseUrl;
 
-  @Bean(name = "hsaIntygProxyServiceRestClient")
+  @Bean(name = "intygProxyServiceRestClient")
   public RestClient ipsRestClient() {
     return RestClient.create(intygProxyServiceBaseUrl);
   }

@@ -5,10 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.LOG_SESSION_ID_HEADER;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.LOG_TRACE_ID_HEADER;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.SESSION_ID_KEY;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.TRACE_ID_KEY;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.LOG_SESSION_ID_HEADER;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.LOG_TRACE_ID_HEADER;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.SESSION_ID_KEY;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.TRACE_ID_KEY;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

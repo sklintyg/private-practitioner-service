@@ -1,9 +1,9 @@
 package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client;
 
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.LOG_SESSION_ID_HEADER;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.LOG_TRACE_ID_HEADER;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.SESSION_ID_KEY;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.TRACE_ID_KEY;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.LOG_SESSION_ID_HEADER;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.LOG_TRACE_ID_HEADER;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.SESSION_ID_KEY;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.TRACE_ID_KEY;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.p
 public class PersonFromIntygProxyServiceClient {
 
 
-  @Qualifier("hsaIntygProxyServiceRestClient")
+  @Qualifier("intygProxyServiceRestClient")
   private RestClient ipsRestClient;
 
   @Autowired
@@ -28,13 +28,13 @@ public class PersonFromIntygProxyServiceClient {
   }
 
   @Value("${integration.intygproxyservice.person.endpoint}")
-  private String personUppgifterEndpoint;
+  private String getPuPath;
 
 
   public PersonSvarDTO get(GetPersonIntegrationRequest getPersonIntegrationRequest) {
     return ipsRestClient
         .post()
-        .uri(personUppgifterEndpoint)
+        .uri(getPuPath)
         .body(getPersonIntegrationRequest)
         .header(LOG_TRACE_ID_HEADER, MDC.get(TRACE_ID_KEY))
         .header(LOG_SESSION_ID_HEADER, MDC.get(SESSION_ID_KEY))
