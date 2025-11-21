@@ -10,7 +10,7 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.p
 public class PersonSvarConverter {
 
   private static final String SPACE = " ";
-  private static final String EMPTY = "";
+  public static final String EMPTY = "";
 
   public Status convertStatus(StatusDTO statusDTO) {
     return switch (statusDTO) {
@@ -22,19 +22,20 @@ public class PersonSvarConverter {
 
   public Person convertPerson(PersonDTO personDTO) {
     return Person.builder()
-        .personId(personDTO.getPersonnummer())
+        .personId(personDTO.personnummer())
         .name(buildPersonName(personDTO))
         .build();
   }
 
   private String buildPersonName(PersonDTO personDTO) {
-    return personDTO.getFornamn()
-        + SPACE
-        + includeMiddleName(personDTO.getMellannamn())
-        + personDTO.getEfternamn();
+
+    return personDTO.fornamn() + getEfternamn(personDTO);
   }
 
-  private String includeMiddleName(String middleName) {
-    return middleName != null ? middleName + SPACE : EMPTY;
+  private String getEfternamn(PersonDTO personDTO) {
+    if (personDTO.efternamn() != null && !personDTO.efternamn().isEmpty()) {
+      return SPACE + personDTO.efternamn();
+    }
+    return EMPTY;
   }
 }

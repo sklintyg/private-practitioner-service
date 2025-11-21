@@ -1,7 +1,5 @@
 package se.inera.intyg.privatepractitionerservice.integrationtest.environment;
 
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_FIRST_NAME;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LAST_NAME;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PRESCRIPTION_CODE;
@@ -22,9 +20,7 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.h
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetHospCertificationPersonResponseDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetHospCertificationPersonResponseDTO.GetHospCertificationPersonResponseDTOBuilder;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonDTO;
-import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonDTO.PersonDTOBuilder;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonSvarDTO;
-import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonSvarDTO.PersonSvarDTOBuilder;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.StatusDTO;
 
 @RequiredArgsConstructor
@@ -131,23 +127,11 @@ public class IntygProxyServiceMock {
         );
   }
 
-  public static PersonSvarDTOBuilder fridaKranstegePersonBuilder() {
-    return PersonSvarDTO.builder()
-        .status(StatusDTO.FOUND)
-        .person(
-            PersonDTO.builder()
-                .personnummer(DR_KRANSTEGE_PERSON_ID)
-                .fornamn("Frida")
-                .mellannamn(null)
-                .efternamn("Kranstege")
-                .build()
-        );
+  public static PersonSvarDTO fridaKranstegePerson() {
+    return new PersonSvarDTO(new PersonDTO("197705232382", "Frida", "Andersson"), StatusDTO.FOUND);
   }
 
-  public static PersonDTOBuilder fridaKranstegePersonDetailsBuilder() {
-    return PersonDTO.builder()
-        .personnummer(DR_KRANSTEGE_PERSON_ID)
-        .fornamn(DR_KRANSTEGE_FIRST_NAME)
-        .efternamn(DR_KRANSTEGE_LAST_NAME);
+  public static PersonSvarDTO fridaKranstegePersonWithSameName() {
+    return new PersonSvarDTO(new PersonDTO("197705232382", "Frida", "Kranstege"), StatusDTO.FOUND);
   }
 }

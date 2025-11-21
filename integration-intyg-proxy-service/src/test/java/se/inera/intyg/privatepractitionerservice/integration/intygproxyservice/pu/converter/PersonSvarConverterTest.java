@@ -14,6 +14,10 @@ class PersonSvarConverterTest {
 
   private PersonSvarConverter converter;
 
+  private static final String PERSON_ID = "197705232382";
+  public static final String KRANSTEGE_FIRST_NAME = "Frida";
+  public static final String KRANSTEGE_LAST_NAME = "Kranstege";
+
   @BeforeEach
   void setUp() {
     converter = new PersonSvarConverter();
@@ -52,48 +56,34 @@ class PersonSvarConverterTest {
 
     @Test
     void shouldConvertPersonWithAllNameParts() {
-      final var personDTO = PersonDTO.builder()
-          .personnummer("197705232382")
-          .fornamn("Frida")
-          .mellannamn("Stege")
-          .efternamn("Kranstege")
-          .build();
-      final var result = converter.convertPerson(personDTO);
-      assertEquals("Frida Stege Kranstege", result.getName());
-    }
-
-    @Test
-    void shouldConvertPersonWithoutMiddleName() {
-      final var personDTO = PersonDTO.builder()
-          .personnummer("197705232382")
-          .fornamn("Frida")
-          .mellannamn(null)
-          .efternamn("Kranstege")
-          .build();
+      final var personDTO = getPersonDTO();
       final var result = converter.convertPerson(personDTO);
       assertEquals("Frida Kranstege", result.getName());
     }
 
     @Test
-    void shouldConvertPersonId() {
-      final var personDTO = PersonDTO.builder()
-          .personnummer("197705232382")
-          .fornamn("Frida")
-          .efternamn("Kranstege")
-          .build();
+    void shouldConvertPersonWithMissingLastName() {
+      final var personDTO = new PersonDTO(PERSON_ID, KRANSTEGE_FIRST_NAME, null);
       final var result = converter.convertPerson(personDTO);
-      assertEquals("197705232382", result.getPersonId());
+      assertEquals(KRANSTEGE_FIRST_NAME, result.getName());
+    }
+
+    @Test
+    void shouldConvertPersonId() {
+      final var personDTO = getPersonDTO();
+      final var result = converter.convertPerson(personDTO);
+      assertEquals(PERSON_ID, result.getPersonId());
     }
 
     @Test
     void shouldReturnPersonObject() {
-      final var personDTO = PersonDTO.builder()
-          .personnummer("197705232382")
-          .fornamn("Frida")
-          .efternamn("Kranstege")
-          .build();
+      final var personDTO = getPersonDTO();
       final var result = converter.convertPerson(personDTO);
       assertEquals(Person.class, result.getClass());
+    }
+
+    private static PersonDTO getPersonDTO() {
+      return new PersonDTO(PERSON_ID, KRANSTEGE_FIRST_NAME, KRANSTEGE_LAST_NAME);
     }
   }
 }

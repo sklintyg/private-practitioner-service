@@ -31,7 +31,10 @@ class PersonIntegrationServiceTest {
   private PersonIntegrationService personIntegrationService;
 
   private static final String PERSON_ID = "197705232382";
-  private static final String PERSON_NAME = "Frida Kranstege";
+  public static final String KRANSTEGE_FIRST_NAME = "Frida";
+  public static final String KRANSTEGE_LAST_NAME = "Kranstege";
+  private static final String KRANSTEGE_FULL_NAME =
+      KRANSTEGE_FIRST_NAME + " " + KRANSTEGE_LAST_NAME;
 
   @Nested
   class ErrorHandlingTest {
@@ -44,7 +47,7 @@ class PersonIntegrationServiceTest {
     }
 
     @Test
-    void shouldThrowIlligalArgumentExceptionIfPersonRequestContainsNullPersonId() {
+    void shouldThrowIllegalArgumentExceptionIfPersonRequestContainsNullPersonId() {
       final var personRequest = GetPersonIntegrationRequest.builder().personId(null).build();
       assertThrows(IllegalArgumentException.class,
           () -> personIntegrationService.getPerson(personRequest)
@@ -52,7 +55,7 @@ class PersonIntegrationServiceTest {
     }
 
     @Test
-    void shouldThrowIlligalArgumentExceptionIfPersonRequestContainsEmptyPersonId() {
+    void shouldThrowIllegalArgumentExceptionIfPersonRequestContainsEmptyPersonId() {
       final var personRequest = GetPersonIntegrationRequest.builder().personId("").build();
       assertThrows(IllegalArgumentException.class,
           () -> personIntegrationService.getPerson(personRequest)
@@ -65,6 +68,32 @@ class PersonIntegrationServiceTest {
       when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenThrow(
           RuntimeException.class);
       assertThrows(RuntimeException.class,
+          () -> personIntegrationService.getPerson(personRequest)
+      );
+    }
+
+    @Test
+    void shouldThrowIllegalStateExceptionIfPersonNotFound() {
+      final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+      final var personSvarDTO = new PersonSvarDTO(null, StatusDTO.NOT_FOUND);
+
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
+          personSvarDTO);
+
+      assertThrows(IllegalStateException.class,
+          () -> personIntegrationService.getPerson(personRequest)
+      );
+    }
+
+    @Test
+    void shouldThrowIllegalStateExceptionIfErrorStatusReturnedFromPU() {
+      final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+      final var personSvarDTO = new PersonSvarDTO(null, StatusDTO.ERROR);
+
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
+          personSvarDTO);
+
+      assertThrows(IllegalStateException.class,
           () -> personIntegrationService.getPerson(personRequest)
       );
     }
@@ -94,7 +123,7 @@ class PersonIntegrationServiceTest {
 
       when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
           personSvarDTO);
-      when(personSvarConverter.convertStatus(personSvarDTO.getStatus())).thenReturn(expectedStatus);
+      when(personSvarConverter.convertStatus(personSvarDTO.status())).thenReturn(expectedStatus);
 
       final var actual = personIntegrationService.getPerson(personRequest);
 
@@ -109,7 +138,7 @@ class PersonIntegrationServiceTest {
 
       when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
           personSvarDTO);
-      when(personSvarConverter.convertPerson(personSvarDTO.getPerson())).thenReturn(expectedPerson);
+      when(personSvarConverter.convertPerson(personSvarDTO.person())).thenReturn(expectedPerson);
 
       final var actual = personIntegrationService.getPerson(personRequest);
 
@@ -120,20 +149,17 @@ class PersonIntegrationServiceTest {
 
   private static Person getPerson() {
     return Person.builder()
-        .name(PERSON_NAME)
+        .name(KRANSTEGE_FULL_NAME)
         .personId(PERSON_ID)
         .build();
   }
 
   private static PersonSvarDTO getPersonResponse() {
-    return PersonSvarDTO.builder()
-        .person(
-            PersonDTO.builder()
-                .personnummer(PERSON_ID)
-                .build()
-        )
-        .status(StatusDTO.FOUND)
-        .build();
+    return new PersonSvarDTO(getPersonDTO(), StatusDTO.FOUND);
+  }
+
+  private static PersonDTO getPersonDTO() {
+    return new PersonDTO(PERSON_ID, KRANSTEGE_FIRST_NAME, KRANSTEGE_LAST_NAME);
   }
 
 }

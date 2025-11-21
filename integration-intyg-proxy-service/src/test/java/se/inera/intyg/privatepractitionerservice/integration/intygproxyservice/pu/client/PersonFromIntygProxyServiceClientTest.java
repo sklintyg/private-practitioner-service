@@ -25,6 +25,7 @@ import org.springframework.web.client.RestClient.ResponseSpec;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonSvarDTO;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.StatusDTO;
 
 @ExtendWith(MockitoExtension.class)
 class PersonFromIntygProxyServiceClientTest {
@@ -38,10 +39,14 @@ class PersonFromIntygProxyServiceClientTest {
   private RequestBodyUriSpec requestBodyUriSpec;
   private ResponseSpec responseSpec;
 
+  private static final String PERSON_ID = "197705232382";
+  public static final String KRANSTEGE_FIRST_NAME = "Frida";
+  public static final String KRANSTEGE_LAST_NAME = "Kranstege";
+
   @BeforeEach
   void setUp() {
     final var uri = "/api/from/person";
-    ReflectionTestUtils.setField(personFromIntygProxyServiceClient, "personUppgifterEndpoint", uri);
+    ReflectionTestUtils.setField(personFromIntygProxyServiceClient, "getPuPath", uri);
 
     requestBodyUriSpec = mock(RequestBodyUriSpec.class);
     responseSpec = mock(ResponseSpec.class);
@@ -63,15 +68,21 @@ class PersonFromIntygProxyServiceClientTest {
 
   @Test
   void shouldReturnGetPersonResponse() {
-    final var expectedResponse = PersonSvarDTO.builder()
-        .person(PersonDTO.builder().build())
-        .build();
+    final var expectedResponse = getPersonSvarDTO();
 
     doReturn(expectedResponse).when(responseSpec).body(PersonSvarDTO.class);
 
     final var actualResponse = personFromIntygProxyServiceClient.get(
-        GetPersonIntegrationRequest.builder().personId("197705232382").build());
+        GetPersonIntegrationRequest.builder().personId(PERSON_ID).build());
 
     assertEquals(expectedResponse, actualResponse);
+  }
+
+  private static PersonDTO getPersonDTO() {
+    return new PersonDTO(PERSON_ID, KRANSTEGE_FIRST_NAME, KRANSTEGE_LAST_NAME);
+  }
+
+  private static PersonSvarDTO getPersonSvarDTO() {
+    return new PersonSvarDTO(getPersonDTO(), StatusDTO.FOUND);
   }
 }

@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.addToCertifierResponseBuilder;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeCredentialsBuilder;
-import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonBuilder;
-import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonDetailsBuilder;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePerson;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonWithSameName;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
@@ -168,24 +168,14 @@ class PrivatePractitionerIT {
 
     testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
-    intygProxyServiceMock.personResponse(
-        fridaKranstegePersonBuilder()
-            .person(
-                fridaKranstegePersonDetailsBuilder()
-                    .namn("Frida")
-                    .mellannamn("Eivor")
-                    .efternamn("Andersson")
-                    .build()
-            )
-            .build()
-    );
+    intygProxyServiceMock.personResponse(fridaKranstegePerson());
 
     final var response = api.getPrivatePractitioner(DR_KRANSTEGE_PERSON_ID);
 
     assertEquals(200, response.getStatusCode().value());
     assertNotNull(response.getBody());
     final var actual = response.getBody();
-    assertEquals("Frida Eivor Andersson", actual.getName());
+    assertEquals("Frida Andersson", actual.getName());
   }
 
   @Test
@@ -201,7 +191,7 @@ class PrivatePractitionerIT {
     testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
     intygProxyServiceMock.personResponse(
-        fridaKranstegePersonBuilder().build()
+        fridaKranstegePersonWithSameName()
     );
 
     final var response = api.getPrivatePractitioner(DR_KRANSTEGE_PERSON_ID);

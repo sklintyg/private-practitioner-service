@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest;
+import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationResponse;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationService;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.model.Status;
 
@@ -18,11 +19,16 @@ public class UpdatePrivatePractitionerFromPUService {
   private final PrivatePractitionerRepository privatePractitionerRepository;
 
   public PrivatePractitioner updateFromPu(PrivatePractitioner practitioner) {
-    final var request = GetPersonIntegrationRequest.builder()
-        .personId(practitioner.getPersonId())
-        .build();
+    final GetPersonIntegrationResponse response;
+    try {
+      final var request = GetPersonIntegrationRequest.builder()
+          .personId(practitioner.getPersonId())
+          .build();
 
-    final var response = getPersonIntegrationService.getPerson(request);
+      response = getPersonIntegrationService.getPerson(request);
+    } catch (Exception e) {
+      return practitioner;
+    }
 
     if (response.getStatus() != Status.FOUND) {
       return practitioner;

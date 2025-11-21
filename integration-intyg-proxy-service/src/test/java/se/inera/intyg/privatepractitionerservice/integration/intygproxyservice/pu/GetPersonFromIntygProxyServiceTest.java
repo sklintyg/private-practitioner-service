@@ -23,7 +23,8 @@ class GetPersonFromIntygProxyServiceTest {
   GetPersonFromIntygProxyService getPersonFromIntygProxyService;
 
   private static final String PERSON_ID = "197705232382";
-  private static final String PERSON_NAME = "Frida Kranstege";
+  private static final String KRANSTEGE_NAME = "Frida";
+  public static final String KRANSTEGE_LAST_NAME = "Kranstege";
 
   @Test
   void shouldReturnPersonFromIntygProxyService() {
@@ -48,77 +49,76 @@ class GetPersonFromIntygProxyServiceTest {
     final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
         personRequest);
 
-    assertEquals(PERSON_ID, actualResponse.getPerson().getPersonnummer());
+    assertEquals(PERSON_ID, actualResponse.person().personnummer());
   }
 
   @Test
   void shouldReturnPersonWithCorrectName() {
     final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
     final var expectedResponse = getPersonResponse();
-    expectedResponse.getPerson().setNamn(PERSON_NAME);
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
     final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
         personRequest);
 
-    assertEquals(PERSON_NAME, actualResponse.getPerson().getNamn());
+    assertEquals(KRANSTEGE_NAME, actualResponse.person().fornamn());
+  }
+
+  @Test
+  void shouldReturnPersonWithCorrectLastName() {
+    final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
+    final var expectedResponse = getPersonResponse();
+
+    when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
+
+    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
+        personRequest);
+
+    assertEquals(KRANSTEGE_LAST_NAME, actualResponse.person().efternamn());
   }
 
   @Test
   void shouldReturnStatusNotFoundWhenPersonDoesNotExist() {
     final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
-    final var expectedResponse = PersonSvarDTO.builder()
-        .status(StatusDTO.NOT_FOUND)
-        .build();
+    final var expectedResponse = new PersonSvarDTO(null, StatusDTO.NOT_FOUND);
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
     final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
         personRequest);
 
-    assertEquals(expectedResponse.getStatus(), actualResponse.getStatus());
+    assertEquals(expectedResponse.status(), actualResponse.status());
   }
 
   @Test
   void shouldReturnStatusErrorWhenServiceFails() {
     final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
-    final var expectedResponse = PersonSvarDTO.builder()
-        .status(StatusDTO.ERROR)
-        .build();
+    final var expectedResponse = new PersonSvarDTO(null, StatusDTO.ERROR);
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
     final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
         personRequest);
 
-    assertEquals(expectedResponse.getStatus(), actualResponse.getStatus());
+    assertEquals(expectedResponse.status(), actualResponse.status());
   }
 
   @Test
   void shouldReturnStatusFoundWhenPersonExists() {
     final var personRequest = GetPersonIntegrationRequest.builder().personId(PERSON_ID).build();
-    final var expectedResponse = PersonSvarDTO.builder()
-        .status(StatusDTO.FOUND)
-        .build();
+    final var expectedResponse = new PersonSvarDTO(null, StatusDTO.FOUND);
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
     final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
         personRequest);
 
-    assertEquals(expectedResponse.getStatus(), actualResponse.getStatus());
+    assertEquals(expectedResponse.status(), actualResponse.status());
   }
 
 
   private static PersonSvarDTO getPersonResponse() {
-    return PersonSvarDTO.builder()
-        .person(
-            PersonDTO.builder()
-                .personnummer(PERSON_ID)
-                .build()
-        )
-        .status(StatusDTO.FOUND)
-        .build();
+    return new PersonSvarDTO(new PersonDTO(PERSON_ID, KRANSTEGE_NAME, KRANSTEGE_LAST_NAME), null);
   }
 }
