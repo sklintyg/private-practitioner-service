@@ -29,7 +29,14 @@ public class PersonSvarConverter {
 
   private String buildPersonName(PersonDTO personDTO) {
 
-    return personDTO.fornamn() + getEfternamn(personDTO);
+    return getFornamn(personDTO) + getEfternamn(personDTO);
+  }
+
+  private String getFornamn(PersonDTO personDTO) {
+    if (personDTO.fornamn() != null && !personDTO.fornamn().isEmpty()) {
+      return personDTO.fornamn();
+    }
+    return EMPTY;
   }
 
   private String getEfternamn(PersonDTO personDTO) {
