@@ -28,9 +28,8 @@ notifications.
 - **Spring Boot 3.x**
 - **Gradle** - Build automation
 - **MySQL** - Primary database (H2 for development)
-- **Redis** - Caching layer
+- **Redis** - Distributed locks
 - **Liquibase** - Database migration management
-- **ActiveMQ** - Message queue integration
 - **Docker** - Containerization support
 
 ## Prerequisites
@@ -126,9 +125,18 @@ Webcert instance:
 1. Both services must be running
 2. Test data must be consistent across both services
 
-### Test User
+### Test Users
 
-**Frida Kranstege (Privatläkare, Godkänd)** - Available in both PP and WC test data
+| PNR           | name                | case                                                            | route             | action                           |
+|---------------|---------------------|-----------------------------------------------------------------|-------------------|----------------------------------|
+| 191212121212  | Tolvan Tolvanson    | Har inget avtal, inget pp-konto och inga hosp-uppgifter         | /info-inget-avtal | No actions available             |
+| 197705232382  | Frida Kranstege     | Har inget avtal, pp-konto och hosp-uppgifter                    | /info             | Can only manage pp-account       |
+| 199608112380  | Petra Privat        | Har avtal, hosp-uppgifter men inte pp-konto                     | /register         | Can only register for pp-account |
+| 195212222318  | Foris Dorisson1     | Har avtal, pp-konto men inte hosp-uppgifter                     | /info             | Can only manage pp-account       |
+| 197309069289  | Nina Maria Greger   | Har avtal, pp-konto och hosp-uppgifter, inte läkarlegitimation  | /info             | Can only manage pp-account       |
+| 195711092642  | Amanda Tigersson    | Har avtal, pp-konto och hosp-uppgifter, återkallad legitimation | /info             | Can only manage pp-account       |
+| 199001092387  | Maj Pärsson         | Har avtal, pp-konto och hosp-uppgifter, läkarlegitimation       | /search           | Can do all actions               |
+
 
 ### Configuration Steps
 
@@ -251,8 +259,6 @@ The service includes:
 
 The service implements:
 
-- Integration with Swedish eID infrastructure
-- HSA credential validation
 - Secure SMTP email delivery
 - Redis authentication
 
