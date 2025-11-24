@@ -26,14 +26,21 @@ public class ApiUtil {
       CreateRegistrationRequest request) {
     final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner";
     final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
+    final var response = this.restTemplate.exchange(
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
+        new ParameterizedTypeReference<PrivatePractitionerDTO>() {
         },
         Collections.emptyMap()
     );
+
+    if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+      final var body = response.getBody();
+      TestabilityApiUtil.addPrivatePractitionerPersonId(body.getPersonId());
+    }
+
+    return response;
   }
 
   public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(

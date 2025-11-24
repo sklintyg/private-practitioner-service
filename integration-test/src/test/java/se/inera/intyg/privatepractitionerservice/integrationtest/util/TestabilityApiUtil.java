@@ -24,7 +24,7 @@ public class TestabilityApiUtil {
 
   private final TestRestTemplate restTemplate;
   private final int port;
-  private final List<String> privatePractitionerPersonIds = new ArrayList<>();
+  private static final List<String> privatePractitionerPersonIds = new ArrayList<>();
 
   public void addPrivatePractitioner(
       TestabilityCreateRegistrationRequest request) {
@@ -44,6 +44,10 @@ public class TestabilityApiUtil {
     if (privatePractitionerPersonId(response.getBody()) != null) {
       privatePractitionerPersonIds.add(privatePractitionerPersonId(response.getBody()));
     }
+  }
+
+  public static void addPrivatePractitionerPersonId(String personId) {
+    privatePractitionerPersonIds.add(personId);
   }
 
   public void reset() {
@@ -72,5 +76,6 @@ public class TestabilityApiUtil {
           )
       );
     }
+    privatePractitionerPersonIds.clear();
   }
 }

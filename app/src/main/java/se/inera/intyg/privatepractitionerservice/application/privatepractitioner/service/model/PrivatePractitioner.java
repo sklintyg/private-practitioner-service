@@ -78,8 +78,10 @@ public class PrivatePractitioner {
       throw new IllegalArgumentException("Personal identity number does not match!");
     }
     personalPrescriptionCode = hosp.getPersonalPrescriptionCode();
-    specialties = hosp.getSpecialities().stream().toList();
-    licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions().stream().toList();
+    specialties = hosp.getSpecialities() == null ? List.of()
+        : hosp.getSpecialities().stream().toList();
+    licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions() == null ? List.of()
+        : hosp.getLicensedHealthcareProfessions().stream().toList();
     hospUpdated = hosp.getHospUpdated();
   }
 

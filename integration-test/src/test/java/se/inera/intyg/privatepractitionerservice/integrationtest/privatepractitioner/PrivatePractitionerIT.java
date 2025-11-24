@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.addToCertifierResponseBuilder;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeCredentialsBuilder;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeHospBuilder;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
@@ -13,6 +15,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
 
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,9 +27,12 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Containers;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.ApiUtil;
+import se.inera.intyg.privatepractitionerservice.integrationtest.util.MailHogUtil;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.TestabilityApiUtil;
 
 @ActiveProfiles({"integration-test", "testability"})
@@ -43,6 +49,7 @@ class PrivatePractitionerIT {
   private TestabilityApiUtil testabilityApi;
   private MockServerClient mockServerClient;
   private IntygProxyServiceMock intygProxyServiceMock;
+  private MailHogUtil mailHogUtil;
 
   @BeforeAll
   static void beforeAll() {
@@ -58,17 +65,23 @@ class PrivatePractitionerIT {
         Containers.mockServerContainer.getServerPort()
     );
     this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient);
+    this.mailHogUtil = new MailHogUtil(
+        restTemplate,
+        new CustomObjectMapper(),
+        Containers.mailHogContainer.getMappedPort(8025)
+    );
   }
 
   @AfterEach
   void tearDown() throws Exception {
     testabilityApi.reset();
     mockServerClient.reset();
+    mailHogUtil.reset();
     Containers.redisContainer.execInContainer("redis-cli", "flushall");
   }
 
   @Test
-  void shallRegisterPrivatePractitioner() {
+  void shallSendRegistrationEmailWhenInHospAndIsLicencedPhysician() {
     intygProxyServiceMock.credentialsForPersonResponse(
         fridaKranstegeCredentialsBuilder().build()
     );
@@ -80,16 +93,50 @@ class PrivatePractitionerIT {
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
-    assertNotNull(response.getBody());
-    final var actual = response.getBody();
-    assertAll(
-        () -> assertEquals(DR_KRANSTEGE_DTO.getPersonId(), actual.getPersonId()),
-        () -> assertEquals(DR_KRANSTEGE_DTO.getHsaId(), actual.getHsaId()),
-        () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
-        () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
-        () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
-        () -> assertNotNull(actual.getRegistrationDate())
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, "Webcert är klar att användas",
+        "Dina uppgifter har hämtats från Socialstyrelsen och du kan nu börja använda Webcert.");
+  }
+
+  @Test
+  void shallSendRegistrationEmailWhenInHospAndNotLicencedPhysician() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder()
+            .credentials(
+                fridaKranstegeHospBuilder()
+                    .healthCareProfessionalLicence(List.of())
+                    .build()
+            )
+            .build()
     );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
+
+    assertEquals(200, response.getStatusCode().value());
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, "Registrering för Webcert",
+        "Dina uppgifter har tyvärr fortfarande inte kunnat hämtats från Socialstyrelsen. Du bör kontakta Socialstyrelsen för att verifiera att dina legitimationsuppgifter är korrekta.");
+  }
+
+  @Test
+  void shallSendRegistrationEmailWhenNotInHosp() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder()
+            .credentials(HospCredentialsForPerson.builder().build())
+            .build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
+
+    assertEquals(200, response.getStatusCode().value());
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, "Registrering för Webcert",
+        "Dina uppgifter har tyvärr fortfarande inte kunnat hämtats från Socialstyrelsen. Du bör kontakta Socialstyrelsen för att verifiera att dina legitimationsuppgifter är korrekta.");
   }
 
   @Test
