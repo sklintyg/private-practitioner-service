@@ -40,7 +40,7 @@ class PersonIntegrationServiceTest {
   class ErrorHandlingTest {
 
     @Test
-    void shouldThrowIlligalArgumentExceptionIfPersonRequestIsNull() {
+    void shouldThrowIllegalArgumentExceptionIfPersonRequestIsNull() {
       assertThrows(IllegalArgumentException.class,
           () -> personIntegrationService.getPerson(null)
       );
@@ -89,6 +89,19 @@ class PersonIntegrationServiceTest {
     void shouldThrowIllegalStateExceptionIfErrorStatusReturnedFromPU() {
       final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
       final var personSvarDTO = new PersonSvarDTO(null, StatusDTO.ERROR);
+
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
+          personSvarDTO);
+
+      assertThrows(IllegalStateException.class,
+          () -> personIntegrationService.getPerson(personRequest)
+      );
+    }
+
+    @Test
+    void shouldThrowIllegalStateExceptionIfNoPersonReturnedFromPU() {
+      final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
+      final var personSvarDTO = new PersonSvarDTO(null, StatusDTO.NOT_FOUND);
 
       when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
           personSvarDTO);

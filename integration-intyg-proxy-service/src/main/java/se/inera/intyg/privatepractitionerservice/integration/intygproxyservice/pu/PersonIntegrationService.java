@@ -29,7 +29,8 @@ public class PersonIntegrationService implements GetPersonIntegrationService {
   }
 
   private static void validateResponse(PersonSvarDTO personSvarDTO) {
-    if (personSvarDTO.status() == StatusDTO.NOT_FOUND) {
+    if (personSvarDTO == null || personSvarDTO.person() == null
+        || personSvarDTO.status() == StatusDTO.NOT_FOUND) {
       throw new IllegalStateException("Person not found in PU");
     }
     if (personSvarDTO.status() == StatusDTO.ERROR) {

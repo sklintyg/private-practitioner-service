@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationRequest;
 import se.inera.intyg.privatepractitionerservice.integration.api.pu.GetPersonIntegrationResponse;
@@ -28,6 +29,9 @@ class UpdatePrivatePractitionerFromPUServiceTest {
 
   @Mock
   private PrivatePractitionerRepository privatePractitionerRepository;
+
+  @Mock
+  private HashUtility hashUtility;
 
   @InjectMocks
   private UpdatePrivatePractitionerFromPUService updatePrivatePractitionerFromPUService;
@@ -221,6 +225,16 @@ class UpdatePrivatePractitionerFromPUServiceTest {
     final var result = updatePrivatePractitionerFromPUService.updateFromPu(practitioner);
 
     assertEquals(updatedPractitioner, result);
+  }
+
+  @Test
+  void shouldReturnPractitionerWhenGetPersonIntegrationServiceThrows() {
+    when(getPersonIntegrationService.getPerson(any(GetPersonIntegrationRequest.class)))
+        .thenThrow(IllegalStateException.class);
+
+    final var actual = updatePrivatePractitionerFromPUService.updateFromPu(practitioner);
+
+    assertEquals(practitioner, actual);
   }
 }
 

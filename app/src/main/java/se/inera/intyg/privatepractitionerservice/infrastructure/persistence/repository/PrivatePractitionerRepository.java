@@ -55,6 +55,12 @@ public class PrivatePractitionerRepository {
     return createNew(privatePractitioner);
   }
 
+  /**
+   * Resets (deletes) private practitioner entities for the given person IDs. Used in testability
+   * scenarios.
+   *
+   * @param personIds the person IDs to reset
+   */
   public void reset(List<String> personIds) {
     personIds
         .forEach(personId -> {
