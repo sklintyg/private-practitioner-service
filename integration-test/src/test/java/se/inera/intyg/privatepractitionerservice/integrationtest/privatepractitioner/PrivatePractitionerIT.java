@@ -145,7 +145,7 @@ class PrivatePractitionerIT {
     final var actual = response.getBody();
     assertAll(
         () -> assertEquals(DR_KRANSTEGE_DTO.getPersonId(), actual.getPersonId()),
-        () -> assertEquals(DR_KRANSTEGE_DTO.getHsaId(), actual.getHsaId()),
+        () -> assertEquals("SE165565594230-WEBCERT00001", actual.getHsaId()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
