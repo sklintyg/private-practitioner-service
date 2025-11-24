@@ -30,6 +30,7 @@ public class PrivatePractitioner {
 
   String hsaId;
   String personId;
+  @Setter
   String name;
   @Setter
   String careProviderName;
