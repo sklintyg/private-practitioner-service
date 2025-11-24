@@ -14,6 +14,10 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_BODY;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_SUBJECT;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_PENDING_MAIL_BODY;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_PENDING_MAIL_SUBJECT;
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -93,8 +97,8 @@ class PrivatePractitionerIT {
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
-    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, "Webcert är klar att användas",
-        "Dina uppgifter har hämtats från Socialstyrelsen och du kan nu börja använda Webcert.");
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_APPROVED_MAIL_SUBJECT,
+        REGISTRATION_APPROVED_MAIL_BODY);
   }
 
   @Test
@@ -116,8 +120,8 @@ class PrivatePractitionerIT {
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
-    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, "Registrering för Webcert",
-        "Dina uppgifter har tyvärr fortfarande inte kunnat hämtats från Socialstyrelsen. Du bör kontakta Socialstyrelsen för att verifiera att dina legitimationsuppgifter är korrekta.");
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT,
+        REGISTRATION_PENDING_MAIL_BODY);
   }
 
   @Test
@@ -135,8 +139,8 @@ class PrivatePractitionerIT {
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
-    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, "Registrering för Webcert",
-        "Dina uppgifter har tyvärr fortfarande inte kunnat hämtats från Socialstyrelsen. Du bör kontakta Socialstyrelsen för att verifiera att dina legitimationsuppgifter är korrekta.");
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT,
+        REGISTRATION_PENDING_MAIL_BODY);
   }
 
   @Test
