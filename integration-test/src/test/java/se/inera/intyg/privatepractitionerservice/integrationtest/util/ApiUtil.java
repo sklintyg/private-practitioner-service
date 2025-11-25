@@ -85,4 +85,19 @@ public class ApiUtil {
         Collections.emptyMap()
     );
   }
+
+  public ResponseEntity<PrivatePractitionerDTO> getPrivatePractitioner(String personOrHsaId) {
+    final var requestUrl =
+        "http://localhost:" + port + "/internalapi/privatepractitioner?personOrHsaId="
+            + personOrHsaId;
+    final var headers = new HttpHeaders();
+    return this.restTemplate.exchange(
+        requestUrl,
+        HttpMethod.GET,
+        new HttpEntity<>(null, headers),
+        new ParameterizedTypeReference<>() {
+        },
+        Collections.emptyMap()
+    );
+  }
 }

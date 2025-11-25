@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.LOG_SESSION_ID_HEADER;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.LOG_TRACE_ID_HEADER;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.SESSION_ID_KEY;
-import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.config.IntygProxyServiceRestClientConfig.TRACE_ID_KEY;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.LOG_SESSION_ID_HEADER;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.LOG_TRACE_ID_HEADER;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.SESSION_ID_KEY;
+import static se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.config.IntygProxyServiceRestClientConfig.TRACE_ID_KEY;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;

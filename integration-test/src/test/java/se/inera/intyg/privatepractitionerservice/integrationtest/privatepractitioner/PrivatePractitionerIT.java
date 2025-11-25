@@ -8,6 +8,9 @@ import static se.inera.intyg.privatepractitionerservice.integrationtest.environm
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeCredentialsBuilder;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeHospBuilder;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePerson;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonWithSameName;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
@@ -82,6 +85,31 @@ class PrivatePractitionerIT {
     mockServerClient.reset();
     mailHogUtil.reset();
     Containers.redisContainer.execInContainer("redis-cli", "flushall");
+  }
+
+  @Test
+  void shallRegisterPrivatePractitioner() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
+
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertAll(
+        () -> assertEquals(DR_KRANSTEGE_DTO.getPersonId(), actual.getPersonId()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getHsaId(), actual.getHsaId()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
+        () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
+        () -> assertNotNull(actual.getRegistrationDate())
+    );
   }
 
   @Test
@@ -202,5 +230,51 @@ class PrivatePractitionerIT {
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
         () -> assertNotNull(actual.getRegistrationDate())
     );
+  }
+
+  @Test
+  void shallUpdateNameFromPUWhenNameHasChanged() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+
+    intygProxyServiceMock.personResponse(fridaKranstegePerson());
+
+    final var response = api.getPrivatePractitioner(DR_KRANSTEGE_PERSON_ID);
+
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertEquals("Frida Andersson", actual.getName());
+  }
+
+  @Test
+  void shallNotUpdateNameFromPUWhenNameHasNotChanged() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+
+    intygProxyServiceMock.personResponse(
+        fridaKranstegePersonWithSameName()
+    );
+
+    final var response = api.getPrivatePractitioner(DR_KRANSTEGE_PERSON_ID);
+
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertEquals("Frida Kranstege", actual.getName());
   }
 }

@@ -20,6 +20,9 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.h
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO.GetCredentialsForPersonResponseDTOBuilder;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetHospCertificationPersonResponseDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetHospCertificationPersonResponseDTO.GetHospCertificationPersonResponseDTOBuilder;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonDTO;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonSvarDTO;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.StatusDTO;
 
 @RequiredArgsConstructor
 public class IntygProxyServiceMock {
@@ -48,6 +51,24 @@ public class IntygProxyServiceMock {
   public void certificationPersonResponse(GetHospCertificationPersonResponseDTO response) {
     try {
       mockServerClient.when(HttpRequest.request("/api/v1/certificationPerson"))
+          .respond(
+              HttpResponse
+                  .response(
+                      new ObjectMapper().writeValueAsString(
+                          response
+                      )
+                  )
+                  .withStatusCode(200)
+                  .withContentType(MediaType.APPLICATION_JSON)
+          );
+    } catch (Exception ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
+
+  public void personResponse(PersonSvarDTO response) {
+    try {
+      mockServerClient.when(HttpRequest.request("/api/v1/person"))
           .respond(
               HttpResponse
                   .response(
@@ -108,5 +129,13 @@ public class IntygProxyServiceMock {
                 .resultText("Successfully added to certifier")
                 .build()
         );
+  }
+
+  public static PersonSvarDTO fridaKranstegePerson() {
+    return new PersonSvarDTO(new PersonDTO("197705232382", "Frida", "Andersson"), StatusDTO.FOUND);
+  }
+
+  public static PersonSvarDTO fridaKranstegePersonWithSameName() {
+    return new PersonSvarDTO(new PersonDTO("197705232382", "Frida", "Kranstege"), StatusDTO.FOUND);
   }
 }

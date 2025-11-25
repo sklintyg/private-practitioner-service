@@ -31,6 +31,7 @@ public class PrivatePractitionerService {
 
   private final PrivatePractitionerRepository privatePractitionerRepository;
   private final PrivatePractitionerConverter privatePractitionerConverter;
+  private final UpdatePrivatePractitionerFromPUService updatePrivatePractitionerFromPUService;
 
   public PrivatePractitionerDTO getPrivatePractitioner(String personOrHsaId) {
     if (personOrHsaId == null) {
@@ -38,6 +39,7 @@ public class PrivatePractitionerService {
     }
 
     return privatePractitionerRepository.findByPersonId(personOrHsaId)
+        .map(updatePrivatePractitionerFromPUService::updateFromPu)
         .map(privatePractitionerConverter::convert)
         .orElseGet(() -> privatePractitionerRepository.findByHsaId(personOrHsaId)
             .map(privatePractitionerConverter::convert)
