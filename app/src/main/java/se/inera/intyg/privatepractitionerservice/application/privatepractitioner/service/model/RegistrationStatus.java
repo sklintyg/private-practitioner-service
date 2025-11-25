@@ -22,8 +22,6 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
  * Created by pebe on 2015-08-25.
  */
 public enum RegistrationStatus {
-  NOT_STARTED,
-
   // Om användaren inte fanns i HSA:s HOSP visar systemet information om att verifiering har påbörats. HSA lagrar
   // användarens personnummer så att information om denne inkluderas nästa gång information hämtas från HOSP.
   // Användningsfallet avslutas.

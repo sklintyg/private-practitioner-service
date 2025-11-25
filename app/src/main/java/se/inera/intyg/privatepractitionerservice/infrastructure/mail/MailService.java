@@ -141,7 +141,7 @@ public class MailService {
   private String messageSubjectFromRegistrationStatus(RegistrationStatus status) {
     return switch (status) {
       case AUTHORIZED -> approvedSubject;
-      case NOT_AUTHORIZED, NOT_STARTED -> notApprovedSubject;
+      case NOT_AUTHORIZED -> notApprovedSubject;
       case WAITING_FOR_HOSP -> awaitingHospSubject;
     };
   }
@@ -149,7 +149,7 @@ public class MailService {
   private String messageBodyFromRegistrationStatus(RegistrationStatus status) {
     return switch (status) {
       case AUTHORIZED -> approvedBody;
-      case NOT_AUTHORIZED, NOT_STARTED -> notApprovedBody;
+      case NOT_AUTHORIZED -> notApprovedBody;
       case WAITING_FOR_HOSP -> awaitingHospBody;
     };
   }

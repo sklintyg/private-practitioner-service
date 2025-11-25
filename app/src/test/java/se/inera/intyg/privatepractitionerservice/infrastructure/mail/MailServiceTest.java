@@ -136,16 +136,6 @@ class MailServiceTest {
     }
 
     @Test
-    void shouldSendWithSubjectPendingWhenNotStarted() throws MessagingException {
-      mailService.sendRegistrationStatusEmail(RegistrationStatus.NOT_STARTED,
-          DR_KRANSTEGE_EMAIL);
-
-      final var captor = ArgumentCaptor.forClass(String.class);
-      verify(message).setSubject(captor.capture(), eq("UTF-8"));
-      assertEquals(REGISTRATION_PENDING_MAIL_SUBJECT, captor.getValue());
-    }
-
-    @Test
     void shouldSendWithSubjectPendingWhenWaitingForHosp() throws MessagingException {
       mailService.sendRegistrationStatusEmail(RegistrationStatus.WAITING_FOR_HOSP,
           DR_KRANSTEGE_EMAIL);
