@@ -9,7 +9,9 @@ public final class TestDataConstants {
   public static final String DR_KRANSTEGE_PERSON_ID = "197705232382";
   public static final String DR_KRANSTEGE_HSA_ID = "SE165565594230-WEBCERTBOOT5";
   public static final String DR_KRANSTEGE_NAME = "Frida Kranstege";
-  public static final String DR_KRANSTEGE_POSITION = "202010";
+  public static final String DR_KRANSTEGE_FIRST_NAME = "Frida";
+  public static final String DR_KRANSTEGE_LAST_NAME = "Kranstege";
+  public static final String DR_KRANSTEGE_POSITION = "201010";
   public static final String DR_KRANSTEGE_CARE_UNIT_NAME = "Kranstegs nukelärmedicin";
   public static final String DR_KRANSTEGE_OWNERSHIP_TYPE = "Privat";
   public static final String DR_KRANSTEGE_TYPE_OF_CARE = "01";
