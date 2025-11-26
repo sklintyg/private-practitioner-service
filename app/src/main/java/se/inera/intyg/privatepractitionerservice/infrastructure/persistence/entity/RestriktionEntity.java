@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "RESTRIKTION")
-public class RestrictionEntity {
+public class RestriktionEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class RestrictionEntity {
   @Column(name = "NAMN", nullable = false)
   private String namn;
 
-  public RestrictionEntity(String kod, String namn) {
+  public RestriktionEntity(String kod, String namn) {
     this.kod = kod;
     this.namn = namn;
   }

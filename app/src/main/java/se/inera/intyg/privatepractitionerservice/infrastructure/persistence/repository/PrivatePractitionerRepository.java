@@ -15,7 +15,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.conv
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestrictionEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestriktionEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 
 @Repository
@@ -104,7 +104,7 @@ public class PrivatePractitionerRepository {
         getSpecialiteter(privatePractitioner.getSpecialties())
     );
 
-    existingEntity.setRestrictions(
+    existingEntity.setRestriktioner(
         getRestrictions(privatePractitioner.getRestrictions())
     );
 
@@ -193,11 +193,11 @@ public class PrivatePractitionerRepository {
         .collect(Collectors.toCollection(ArrayList::new));
   }
 
-  private List<RestrictionEntity> getRestrictions(List<Restriction> restrictions) {
+  private List<RestriktionEntity> getRestrictions(List<Restriction> restrictions) {
     return restrictions.stream()
         .map(
-            restriction -> new RestrictionEntity(restriction.restrictionCode(),
-                restriction.restrictionName()))
+            restriction -> new RestriktionEntity(restriction.code(),
+                restriction.name()))
         .collect(Collectors.toCollection(ArrayList::new));
   }
 

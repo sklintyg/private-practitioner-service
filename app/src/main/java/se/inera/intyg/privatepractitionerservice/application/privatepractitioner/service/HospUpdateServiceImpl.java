@@ -50,7 +50,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.HospUppdateringEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestrictionEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestriktionEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospUppdateringEntityRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
@@ -210,12 +210,17 @@ public class HospUpdateServiceImpl implements HospUpdateService {
       if (privatlakareEntity.getSpecialiteter() != null) {
         privatlakareEntity.getSpecialiteter().clear();
       }
+      if (privatlakareEntity.getRestriktioner() != null) {
+        privatlakareEntity.getRestriktioner().clear();
+      }
       privatlakareEntity.setForskrivarKod(null);
 
       monitoringService.logHospWaiting(privatlakareEntity.getPersonId(),
           privatlakareEntity.getHsaId());
       return RegistrationStatus.WAITING_FOR_HOSP;
     } else {
+
+      updateRestriktioner(privatlakareEntity, hospPersonResponse);
 
       List<SpecialitetEntity> specialiteter = getSpecialiteter(privatlakareEntity,
           hospPersonResponse);
@@ -348,9 +353,8 @@ public class HospUpdateServiceImpl implements HospUpdateService {
     return specialiteter;
   }
 
-  private List<RestrictionEntity> getRestrictions(PrivatlakareEntity privatlakareEntity,
-      HospPerson hospPersonResponse) {
-    List<RestrictionEntity> restrictions = new ArrayList<>();
+  private List<RestriktionEntity> getRestriktioner(HospPerson hospPersonResponse) {
+    List<RestriktionEntity> restrictions = new ArrayList<>();
     if (hospPersonResponse.getRestrictions().size() != hospPersonResponse.getRestrictionNames()
         .size()) {
       LOG.error("getHospPerson getRestrictionCodes count "
@@ -362,12 +366,24 @@ public class HospUpdateServiceImpl implements HospUpdateService {
           "Inconsistent data from HSA");
     } else {
       for (int i = 0; i < hospPersonResponse.getRestrictionCodes().size(); i++) {
-        restrictions.add(new RestrictionEntity(
+        restrictions.add(new RestriktionEntity(
             hospPersonResponse.getRestrictionNames().get(i),
             hospPersonResponse.getRestrictionCodes().get(i)));
       }
     }
     return restrictions;
+  }
+
+  private void updateRestriktioner(PrivatlakareEntity privatlakareEntity,
+      HospPerson hospPersonResponse) {
+    List<RestriktionEntity> restriktioner = getRestriktioner(
+        hospPersonResponse);
+    if (privatlakareEntity.getRestriktioner() != null) {
+      privatlakareEntity.getRestriktioner().clear();
+      privatlakareEntity.getRestriktioner().addAll(restriktioner);
+    } else {
+      privatlakareEntity.setRestriktioner(restriktioner);
+    }
   }
 
   private List<LegitimeradYrkesgruppEntity> getLegitimeradeYrkesgrupper(

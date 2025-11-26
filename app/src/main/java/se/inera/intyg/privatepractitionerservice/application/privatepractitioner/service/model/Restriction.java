@@ -1,13 +1,13 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model;
 
-public record Restriction(String restrictionCode, String restrictionName,
+public record Restriction(String code, String name,
                           String healthCareProfessionalLicenceCode) {
 
 
   public static final String REVOKED_LICENSE = "001";
 
   public boolean isRestrictedPhysician() {
-    return !healthCareProfessionalLicenceCode.equals("LK") || restrictionCode.equals(
+    return !healthCareProfessionalLicenceCode.equals("LK") || code.equals(
         REVOKED_LICENSE);
   }
 }

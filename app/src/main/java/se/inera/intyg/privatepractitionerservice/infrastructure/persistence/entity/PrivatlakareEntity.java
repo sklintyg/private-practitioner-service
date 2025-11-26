@@ -137,7 +137,7 @@ public class PrivatlakareEntity {
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
   @OrderBy("kod ASC")
-  private List<RestrictionEntity> restrictions;
+  private List<RestriktionEntity> restriktioner;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
