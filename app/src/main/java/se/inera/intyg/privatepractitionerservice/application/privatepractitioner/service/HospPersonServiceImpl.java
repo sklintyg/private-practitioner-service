@@ -30,6 +30,7 @@ import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospServic
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 
 @Service
@@ -79,8 +80,22 @@ public class HospPersonServiceImpl implements HospPersonService {
     }
     hospPerson.setSpecialityNames(specialityNames);
     hospPerson.setSpecialityCodes(specialityCodes);
+    setRestrictions(response, hospPerson);
 
     return hospPerson;
+  }
+
+  private static void setRestrictions(HospCredentialsForPerson response, HospPerson hospPerson) {
+    List<String> restrictionNames = new ArrayList<>();
+    List<String> restrictionCodes = new ArrayList<>();
+    if (!response.getRestrictionDTOS().isEmpty()) {
+      for (RestrictionDTO restriction : response.getRestrictionDTOS()) {
+        restrictionNames.add(restriction.getRestrictionName());
+        restrictionCodes.add(restriction.getRestrictionCode());
+      }
+    }
+    hospPerson.setRestrictionNames(restrictionNames);
+    hospPerson.setRestrictionCodes(restrictionCodes);
   }
 
   @Override

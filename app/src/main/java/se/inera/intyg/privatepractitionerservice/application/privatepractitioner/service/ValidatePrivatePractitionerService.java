@@ -5,12 +5,14 @@ import static se.inera.intyg.privatepractitionerservice.application.privatepract
 import static se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResultCode.OK;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ValidatePrivatePractitionerService {
@@ -37,6 +39,20 @@ public class ValidatePrivatePractitionerService {
           privatePractitionerRepository.save(privatePractitioner);
         }
     );
+
+    if (privatePractitioner.isRestrictedPhysician()) {
+      log.info(
+          "Private practitioner with HSA-ID '{}' is restricted in HOSP and is not authorized to use webcert.",
+          privatePractitioner.getHsaId()
+      );
+      return ValidatePrivatePractitionerResponse.builder()
+          .resultCode(NOT_AUTHORIZED_IN_HOSP)
+          .resultText(
+              "Private practitioner with personId '%s' is has revoked license in HOSP and is not authorized to use webcert."
+                  .formatted(hashUtility.hash(personId))
+          )
+          .build();
+    }
 
     if (privatePractitioner.isLicensedPhysician()) {
       if (privatePractitioner.isFirstLogin()) {

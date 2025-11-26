@@ -50,6 +50,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.HospUppdateringEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestrictionEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospUppdateringEntityRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
@@ -345,6 +346,28 @@ public class HospUpdateServiceImpl implements HospUpdateService {
       }
     }
     return specialiteter;
+  }
+
+  private List<RestrictionEntity> getRestrictions(PrivatlakareEntity privatlakareEntity,
+      HospPerson hospPersonResponse) {
+    List<RestrictionEntity> restrictions = new ArrayList<>();
+    if (hospPersonResponse.getRestrictions().size() != hospPersonResponse.getRestrictionNames()
+        .size()) {
+      LOG.error("getHospPerson getRestrictionCodes count "
+          + hospPersonResponse.getRestrictionCodes().size()
+          + "doesn't match getRestrictionNames count '{}' != '{}'"
+          + hospPersonResponse.getRestrictionNames().size());
+      throw new PrivatlakarportalServiceException(
+          PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM,
+          "Inconsistent data from HSA");
+    } else {
+      for (int i = 0; i < hospPersonResponse.getRestrictionCodes().size(); i++) {
+        restrictions.add(new RestrictionEntity(
+            hospPersonResponse.getRestrictionNames().get(i),
+            hospPersonResponse.getRestrictionCodes().get(i)));
+      }
+    }
+    return restrictions;
   }
 
   private List<LegitimeradYrkesgruppEntity> getLegitimeradeYrkesgrupper(
