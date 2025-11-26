@@ -352,7 +352,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
   }
 
   private List<RestriktionEntity> getRestriktioner(HospPerson hospPersonResponse) {
-    List<RestriktionEntity> restrictions = new ArrayList<>();
+    List<RestriktionEntity> restriktioner = new ArrayList<>();
     if (hospPersonResponse.getRestrictions().size() != hospPersonResponse.getRestrictionNames()
         .size()) {
       LOG.error("getHospPerson getRestrictionCodes count "
@@ -364,12 +364,12 @@ public class HospUpdateServiceImpl implements HospUpdateService {
           "Inconsistent data from HSA");
     } else {
       for (int i = 0; i < hospPersonResponse.getRestrictionCodes().size(); i++) {
-        restrictions.add(new RestriktionEntity(
+        restriktioner.add(new RestriktionEntity(
             hospPersonResponse.getRestrictionNames().get(i),
             hospPersonResponse.getRestrictionCodes().get(i)));
       }
     }
-    return restrictions;
+    return restriktioner;
   }
 
   private void updateRestriktioner(PrivatlakareEntity privatlakareEntity,
