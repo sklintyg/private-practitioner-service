@@ -136,6 +136,11 @@ public class PrivatlakareEntity {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  @OrderBy("kod ASC")
+  private List<RestrictionEntity> restrictions;
+
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
   private List<VerksamhetstypEntity> verksamhetstyper;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
