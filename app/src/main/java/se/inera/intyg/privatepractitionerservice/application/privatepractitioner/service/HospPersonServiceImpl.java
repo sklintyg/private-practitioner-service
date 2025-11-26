@@ -88,8 +88,8 @@ public class HospPersonServiceImpl implements HospPersonService {
   private static void setRestrictions(HospCredentialsForPerson response, HospPerson hospPerson) {
     List<String> restrictionNames = new ArrayList<>();
     List<String> restrictionCodes = new ArrayList<>();
-    if (!response.getRestrictionDTOS().isEmpty()) {
-      for (RestrictionDTO restriction : response.getRestrictionDTOS()) {
+    if (!response.getRestrictions().isEmpty()) {
+      for (RestrictionDTO restriction : response.getRestrictions()) {
         restrictionNames.add(restriction.getRestrictionName());
         restrictionCodes.add(restriction.getRestrictionCode());
       }

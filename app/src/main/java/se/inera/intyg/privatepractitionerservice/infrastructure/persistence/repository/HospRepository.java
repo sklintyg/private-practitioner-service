@@ -69,8 +69,8 @@ public class HospRepository {
                         .toList()
             )
             .restrictions(
-                response.getRestrictionDTOS() == null ? List.of() :
-                    response.getRestrictionDTOS().stream()
+                response.getRestrictions() == null ? List.of() :
+                    response.getRestrictions().stream()
                         .map(restriction -> new Restriction(
                             restriction.getRestrictionCode(),
                             restriction.getRestrictionName(),
