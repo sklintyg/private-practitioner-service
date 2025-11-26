@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
@@ -64,6 +65,16 @@ public class HospRepository {
                         .map(code -> new Speciality(
                             code.getSpecialityCode(),
                             code.getSpecialityName()
+                        ))
+                        .toList()
+            )
+            .restrictions(
+                response.getRestrictionDTOS() == null ? List.of() :
+                    response.getRestrictionDTOS().stream()
+                        .map(restriction -> new Restriction(
+                            restriction.getRestrictionCode(),
+                            restriction.getRestrictionName(),
+                            restriction.getHealthCareProfessionalLicenceCode()
                         ))
                         .toList()
             )
