@@ -34,11 +34,11 @@
   ],
   "restriktioner": [
     {
-      "kod": "LK;002",
+      "kod": "002",
       "namn": "Treårig prövotid"
     },
     {
-      "kod": "LK;003",
+      "kod": "003",
       "namn": "Begränsad förskrivningsrätt"
     }
   ],
