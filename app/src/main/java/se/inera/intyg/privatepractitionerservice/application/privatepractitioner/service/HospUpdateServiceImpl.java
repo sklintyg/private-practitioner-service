@@ -210,9 +210,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
       if (privatlakareEntity.getSpecialiteter() != null) {
         privatlakareEntity.getSpecialiteter().clear();
       }
-      if (privatlakareEntity.getRestriktioner() != null) {
-        privatlakareEntity.getRestriktioner().clear();
-      }
+
       privatlakareEntity.setForskrivarKod(null);
 
       monitoringService.logHospWaiting(privatlakareEntity.getPersonId(),
@@ -376,6 +374,9 @@ public class HospUpdateServiceImpl implements HospUpdateService {
 
   private void updateRestriktioner(PrivatlakareEntity privatlakareEntity,
       HospPerson hospPersonResponse) {
+    if (privatlakareEntity.getRestriktioner() != null) {
+      privatlakareEntity.getRestriktioner().clear();
+    }
     List<RestriktionEntity> restriktioner = getRestriktioner(
         hospPersonResponse);
     if (privatlakareEntity.getRestriktioner() != null) {
