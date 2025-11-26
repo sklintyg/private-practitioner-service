@@ -102,7 +102,7 @@ public class PrivatePractitioner {
   }
 
   public boolean isRestrictedPhysician() {
-    return !restrictions.isEmpty();
+    return restrictions.stream().anyMatch(Restriction::isRestrictedPhysician);
   }
 
   public RegistrationStatus getRegistrationStatus() {

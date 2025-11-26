@@ -7,7 +7,6 @@ public record Restriction(String code, String name,
   public static final String REVOKED_LICENSE = "001";
 
   public boolean isRestrictedPhysician() {
-    return !healthCareProfessionalLicenceCode.equals("LK") || code.equals(
-        REVOKED_LICENSE);
+    return code.equals(REVOKED_LICENSE) && healthCareProfessionalLicenceCode.equals("LK");
   }
 }
