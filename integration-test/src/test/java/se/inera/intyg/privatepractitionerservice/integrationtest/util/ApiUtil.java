@@ -14,6 +14,8 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.RegistrationConfigurationResponse;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.UpdatePrivatePractitionerRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResponse;
 
 
 @RequiredArgsConstructor
@@ -73,6 +75,21 @@ public class ApiUtil {
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(null, headers),
+        new ParameterizedTypeReference<>() {
+        },
+        Collections.emptyMap()
+    );
+  }
+
+  public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
+      ValidatePrivatePractitionerRequest request) {
+    final var requestUrl =
+        "http://localhost:" + port + "/internalapi/privatepractitioner/validate";
+    final var headers = new HttpHeaders();
+    return this.restTemplate.exchange(
+        requestUrl,
+        HttpMethod.POST,
+        new HttpEntity<>(request, headers),
         new ParameterizedTypeReference<>() {
         },
         Collections.emptyMap()

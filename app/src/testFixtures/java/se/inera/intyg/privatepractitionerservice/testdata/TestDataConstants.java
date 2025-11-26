@@ -3,6 +3,7 @@ package se.inera.intyg.privatepractitionerservice.testdata;
 import java.util.List;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 
 public final class TestDataConstants {
 
@@ -33,6 +34,14 @@ public final class TestDataConstants {
       List.of(
           new LicensedHealtcareProfession("LK", "Läkare")
       );
+
+  public static final List<RestrictionDTO> DR_KRANSTEGE_RESTRICTIONS = List.of(
+      RestrictionDTO.builder()
+          .restrictionCode("001")
+          .restrictionName("Återkallad legitimation")
+          .healthCareProfessionalLicenceCode("LK")
+          .build()
+  );
 
   public static final String HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE = "11";
   public static final String HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE = "Medicinsk verksamhet";

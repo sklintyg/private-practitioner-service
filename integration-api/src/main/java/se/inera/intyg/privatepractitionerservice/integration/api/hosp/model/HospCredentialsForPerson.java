@@ -47,6 +47,9 @@ public class HospCredentialsForPerson {
   private Boolean feignedPerson;
 
   @Data
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class RestrictionDTO {
 
     private String healthCareProfessionalLicenceCode;
