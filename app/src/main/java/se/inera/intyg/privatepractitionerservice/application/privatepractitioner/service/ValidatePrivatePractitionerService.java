@@ -42,13 +42,13 @@ public class ValidatePrivatePractitionerService {
 
     if (privatePractitioner.isRestrictedPhysician()) {
       log.info(
-          "Private practitioner with HSA-ID '{}' is restricted in HOSP and is not authorized to use webcert.",
+          "Private practitioner with HSA-ID '{}' has revoked license in HOSP and is not authorized to use webcert.",
           privatePractitioner.getHsaId()
       );
       return ValidatePrivatePractitionerResponse.builder()
           .resultCode(NOT_AUTHORIZED_IN_HOSP)
           .resultText(
-              "Private practitioner with personId '%s' is has revoked license in HOSP and is not authorized to use webcert."
+              "Private practitioner with personId '%s' has revoked license in HOSP and is not authorized to use webcert."
                   .formatted(hashUtility.hash(personId))
           )
           .build();
