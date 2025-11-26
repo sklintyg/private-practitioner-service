@@ -46,3 +46,9 @@ Content-Type: application/json
   "municipality": "Kommun",
   "county": "Län"
 }
+
+### TESTABILITY
+DELETE http://localhost:18070/testability/privatepractitioner
+Content-Type: application/json
+
+["199001092387"]

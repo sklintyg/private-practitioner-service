@@ -1,0 +1,52 @@
+{
+  "personId": "195711092642",
+  "hsaId": "SE165565594230-WEBCERTBOOT9",
+  "fullstandigtNamn": "Amanda Tigersson",
+  "forskrivarKod": "2570342",
+  "godkandAnvandare": true,
+  "enhetsId": "SE165565594230-WEBCERTBOOT9",
+  "enhetsNamn": "Tigersson vård",
+  "arbetsplatsKod": "999",
+  "agarform": "Privat",
+  "postadress": "Bryggaregatan TESTvägen Bryggaregat, Bryggaregatan TESTvägen Bryggaregat",
+  "postnummer": "65340",
+  "postort": "KARLSTAD",
+  "telefonnummer": "444666999",
+  "epost": "Amanda@Tigersson.com",
+  "enhetStartdatum": null,
+  "enhetSlutDatum": null,
+  "lan": "KARLSTAD",
+  "kommun": "VÄRMLAND",
+  "vardgivareId": "SE165565594230-WEBCERTBOOT9",
+  "vardgivareNamn": "Tigersson Vårdgivare",
+  "vardgivareStartdatum": null,
+  "vardgivareSlutdatum": null,
+  "legitimeradeYrkesgrupper": [
+    {
+      "kod": "LK",
+      "namn": "Läkare"
+    }
+  ],
+  "restriktioner": [
+    {
+      "kod": "LK;001",
+      "namn": "Återkallad legitimation"
+    }
+  ],
+  "befattningar": [
+    {
+      "kod": "202010"
+    }
+  ],
+  "verksamhetstyper": [
+    {
+      "kod": "11"
+    }
+  ],
+  "vardformer": [
+    {
+      "kod": "01"
+    }
+  ],
+  "registreringsdatum": "2020-01-01T00:00:00.000"
+}

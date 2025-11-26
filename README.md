@@ -15,11 +15,9 @@ notifications.
 - **Private Practitioner Registration**: Handles registration workflow for private practitioners
 - **HSA Integration**: Fetches and validates practitioner credentials from Socialstyrelsen (Swedish
   National Board of Health and Welfare)
-- **Subscription Management**: Manages practitioner subscriptions and access rights
 - **Email Notifications**: Sends status notifications (approved, rejected, pending, removed)
 - **Scheduled HSA Updates**: Automatic credential updates via scheduled jobs
-- **Internal API**: Provides endpoints for integration with Webcert
-- **Redis Caching**: Implements caching for improved performance
+- **Internal API**: Provides endpoints for integration with Webcert, Rehabstöd and Customer Termination
 - **Database Management**: Uses Liquibase for database migrations
 
 ## Technology Stack
@@ -28,9 +26,8 @@ notifications.
 - **Spring Boot 3.x**
 - **Gradle** - Build automation
 - **MySQL** - Primary database (H2 for development)
-- **Redis** - Caching layer
+- **Redis** - Distributed locks
 - **Liquibase** - Database migration management
-- **ActiveMQ** - Message queue integration
 - **Docker** - Containerization support
 
 ## Prerequisites
@@ -80,19 +77,18 @@ configuration properties:
 #### Database Configuration
 
 ```properties
-db.server=localhost
-db.port=3306
-db.name=privatlakarportal
-db.username=<your-username>
-db.password=<your-password>
+database.name=privatlakarportal
+database.server=<db-host>
+database.password=<username>
+database.username=<password>
 ```
 
 #### Redis Configuration
 
 ```properties
-redis.host=127.0.0.1
-redis.port=6379
-redis.password=redis
+spring.data.redis.host=<redis-host>
+spring.data.redis.password=<password>
+spring.data.redis.port=6379
 ```
 
 #### Mail Configuration
@@ -106,8 +102,7 @@ mail.admin=<admin-email>
 
 #### API Ports
 
-- Main application: Default Spring Boot port (8080)
-- Internal API: `internal.api.port=8081`
+- Internal API: `server.port=8081`
 
 ### Development Setup
 
@@ -126,27 +121,33 @@ Webcert instance:
 1. Both services must be running
 2. Test data must be consistent across both services
 
-### Test User
+### Test Users
 
-**Frida Kranstege (Privatläkare, Godkänd)** - Available in both PP and WC test data
+| PNR           | name                | case                                                            | route             | action                           |
+|---------------|---------------------|-----------------------------------------------------------------|-------------------|----------------------------------|
+| 191212121212  | Tolvan Tolvanson    | Har inget avtal, inget pp-konto och inga hosp-uppgifter         | /info-inget-avtal | No actions available             |
+| 197705232382  | Frida Kranstege     | Har inget avtal, men har pp-konto och hosp-uppgifter            | /info             | Can only manage pp-account       |
+| 199608112380  | Petra Privat        | Har avtal, hosp-uppgifter men inte pp-konto                     | /register         | Can only register for pp-account |
+| 195212222318  | Foris Dorisson1     | Har avtal, pp-konto men inte hosp-uppgifter                     | /info             | Can only manage pp-account       |
+| 197309069289  | Nina Maria Greger   | Har avtal, pp-konto och hosp-uppgifter, inte läkarlegitimation  | /info             | Can only manage pp-account       |
+| 195711092642  | Amanda Tigersson    | Har avtal, pp-konto och hosp-uppgifter, återkallad legitimation | /info             | Can only manage pp-account       |
+| 199001092387  | Maj Pärsson         | Har avtal, pp-konto och hosp-uppgifter, läkarlegitimation       | /search           | Can do all actions               |
+
 
 ### Configuration Steps
 
-1. Start the Private Practitioner Service (default ports: 8060 for main, 8160 for internal API)
+1. Start the Private Practitioner Service (default ports: 18070)
 
 2. Configure Webcert by setting these properties in `webcert/webcert-dev.properties`:
 
 ```properties
-privatepractitioner.base.url=http://localhost:8060/services
-privatepractitioner.portal.registration.url=http://localhost:8060
-privatepractitioner.internalapi.base.url=http://localhost:8160/internalapi
+privatepractitionerservice.base.url=http://localhost:18070/internalapi/privatepractitioner
 ```
-
-3. Start Webcert
+3. Start Webcert with spring profile `private-practitioner-service-active`
 
 4. Access Webcert at `https://wc.localtest.me/welcome.html`
 
-5. Log in as "Frida Kranstege (Privatläkare, Godkänd)"
+5. Log in as "Maj Pärsson (Privatläkare, Godkänd)"
 
 6. User validation will be performed against the local Private Practitioner Service
 
@@ -178,16 +179,12 @@ private-practitioner-service/
 
 ## API Documentation
 
-The service exposes two main API interfaces:
+The service exposes an internal API interface:
 
-### Public API (Port 8060)
+### Internal API (Port 18070)
 
+- `/internalapi/*` - Internal endpoints for Webcert, Rehabstöd and Customer Termation integrations
 - Registration endpoints
-- Public-facing services
-
-### Internal API (Port 8160)
-
-- `/internalapi/*` - Internal endpoints for Webcert integration
 - Practitioner information retrieval
 - Status and health checks
 
@@ -251,8 +248,6 @@ The service includes:
 
 The service implements:
 
-- Integration with Swedish eID infrastructure
-- HSA credential validation
 - Secure SMTP email delivery
 - Redis authentication
 

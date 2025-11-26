@@ -7,26 +7,26 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 public final class TestDataConstants {
 
   public static final String DR_KRANSTEGE_PERSON_ID = "197705232382";
-  public static final String DR_KRANSTEGE_HSA_ID = "SE165565594230-WEBCERT00001";
+  public static final String DR_KRANSTEGE_HSA_ID = "SE165565594230-WEBCERTBOOT5";
   public static final String DR_KRANSTEGE_NAME = "Frida Kranstege";
   public static final String DR_KRANSTEGE_FIRST_NAME = "Frida";
   public static final String DR_KRANSTEGE_LAST_NAME = "Kranstege";
   public static final String DR_KRANSTEGE_POSITION = "201010";
-  public static final String DR_KRANSTEGE_CARE_UNIT_NAME = "Kransteges specialistmottagning";
+  public static final String DR_KRANSTEGE_CARE_UNIT_NAME = "Kranstegs nukelärmedicin";
   public static final String DR_KRANSTEGE_OWNERSHIP_TYPE = "Privat";
   public static final String DR_KRANSTEGE_TYPE_OF_CARE = "01";
-  public static final String DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE = "15";
+  public static final String DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE = "11";
   public static final String DR_KRANSTEGE_WORKPLACE_CODE = "555";
-  public static final String DR_KRANSTEGE_PHONE_NUMBER = "0123-456789";
-  public static final String DR_KRANSTEGE_EMAIL = "frida@kranstege.se";
-  public static final String DR_KRANSTEGE_ADDRESS = "Addressgatan 1";
-  public static final String DR_KRANSTEGE_ZIP_CODE = "12345";
-  public static final String DR_KRANSTEGE_CITY = "Stad";
-  public static final String DR_KRANSTEGE_MUNICIPALITY = "Kommun";
-  public static final String DR_KRANSTEGE_COUNTY = "Län";
-  public static final String DR_KRANSTEGE_PRESCRIPTION_CODE = "12345";
+  public static final String DR_KRANSTEGE_PHONE_NUMBER = "444666555";
+  public static final String DR_KRANSTEGE_EMAIL = "Frida@Kranstege.se";
+  public static final String DR_KRANSTEGE_ADDRESS = "RIDDARGATAN 3";
+  public static final String DR_KRANSTEGE_ZIP_CODE = "11435";
+  public static final String DR_KRANSTEGE_CITY = "STOCKHOLM";
+  public static final String DR_KRANSTEGE_MUNICIPALITY = "STOCKHOLM";
+  public static final String DR_KRANSTEGE_COUNTY = "STOCKHOLM";
+  public static final String DR_KRANSTEGE_PRESCRIPTION_CODE = "1234568";
   public static final List<Speciality> DR_KRANSTEGE_SPECIALITIES = List.of(
-      new Speciality("32", "Klinisk fysiologi"),
+      new Speciality("3299", "Klinisk fysiologi"),
       new Speciality("74", "Nukleärmedicin")
   );
   public static final List<LicensedHealtcareProfession> DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS =

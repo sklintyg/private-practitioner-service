@@ -21,9 +21,9 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
@@ -33,13 +33,13 @@ import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Hosp
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 
 @Service
+@RequiredArgsConstructor
 public class HospPersonServiceImpl implements HospPersonService {
 
   private static final Logger LOG = LoggerFactory.getLogger(HospPersonServiceImpl.class);
   private static final String OK = "OK";
 
-  @Autowired
-  private HospService hospService;
+  private final HospService hospService;
 
   @Override
   public HospPerson getHospPerson(String personId) {
@@ -60,8 +60,7 @@ public class HospPersonServiceImpl implements HospPersonService {
 
     List<String> hsaTitles = new ArrayList<>();
     List<String> titleCodes = new ArrayList<>();
-    if (response.getHealthCareProfessionalLicence() != null
-        && response.getHealthCareProfessionalLicence().size() > 0) {
+    if (!response.getHealthCareProfessionalLicence().isEmpty()) {
       for (HealthCareProfessionalLicence licence : response.getHealthCareProfessionalLicence()) {
         hsaTitles.add(licence.getHealthCareProfessionalLicenceName());
         titleCodes.add(licence.getHealthCareProfessionalLicenceCode());
@@ -72,8 +71,7 @@ public class HospPersonServiceImpl implements HospPersonService {
 
     List<String> specialityNames = new ArrayList<>();
     List<String> specialityCodes = new ArrayList<>();
-    if (response.getHealthCareProfessionalLicenceSpeciality() != null
-        && response.getHealthCareProfessionalLicenceSpeciality().size() > 0) {
+    if (!response.getHealthCareProfessionalLicenceSpeciality().isEmpty()) {
       for (HCPSpecialityCodes codes : response.getHealthCareProfessionalLicenceSpeciality()) {
         specialityNames.add(codes.getSpecialityName());
         specialityCodes.add(codes.getSpecialityCode());
