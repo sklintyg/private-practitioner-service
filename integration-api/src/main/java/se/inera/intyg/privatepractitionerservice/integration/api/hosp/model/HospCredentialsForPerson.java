@@ -43,7 +43,7 @@ public class HospCredentialsForPerson {
   @Builder.Default
   private List<String> educationCode = new ArrayList<>();
   @Builder.Default
-  private List<RestrictionDTO> restrictionDTOS = new ArrayList<>();
+  private List<RestrictionDTO> restrictions = new ArrayList<>();
   private Boolean feignedPerson;
 
   @Data
