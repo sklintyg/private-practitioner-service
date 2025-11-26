@@ -20,6 +20,8 @@ public class HospPerson {
   @Builder.Default
   private List<LicensedHealtcareProfession> licensedHealthcareProfessions = new ArrayList<>();
   @Builder.Default
+  private List<Restriction> restrictions = new ArrayList<>();
+  @Builder.Default
   private List<Speciality> specialities = new ArrayList<>();
   @Builder.Default
   private List<String> specialityNames = new ArrayList<>();
