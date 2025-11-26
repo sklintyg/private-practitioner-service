@@ -78,7 +78,7 @@ public class PrivatePractitionerRepository {
         privatePractitioner.getPersonId());
 
     existingEntity.setFullstandigtNamn(privatePractitioner.getName());
-    existingEntity.setEnhetsNamn(privatePractitioner.getCareProviderName());
+    existingEntity.setEnhetsNamn(privatePractitioner.getCareUnitName());
     existingEntity.setVardgivareNamn(privatePractitioner.getCareProviderName());
     existingEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
     existingEntity.setForskrivarKod(privatePractitioner.getPersonalPrescriptionCode());
