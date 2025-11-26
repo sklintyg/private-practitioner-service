@@ -147,4 +147,19 @@ class ValidatePrivatePractitionerServiceTest {
     final var actual = validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID);
     assertEquals(NOT_AUTHORIZED_IN_HOSP, actual.getResultCode());
   }
+
+  @Test
+  void shouldReturnOKIfPrivatePractitionerHasRestrictionsButIsNotRestrictedPhysician() {
+    final var drKranstegeRestricted = kranstegeBuilder()
+        .restrictions(List.of(new Restriction[]{
+            new Restriction("002", "Treårig prövotid", "LK")
+        }))
+        .build();
+
+    when(privatePractitionerRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(Optional.of(drKranstegeRestricted));
+
+    final var actual = validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID);
+    assertEquals(OK, actual.getResultCode());
+  }
 }
