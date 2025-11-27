@@ -355,10 +355,10 @@ public class HospUpdateServiceImpl implements HospUpdateService {
     List<RestriktionEntity> restriktioner = new ArrayList<>();
     if (hospPersonResponse.getRestrictions().size() != hospPersonResponse.getRestrictionNames()
         .size()) {
-      LOG.error("getHospPerson getRestrictionCodes count "
-          + hospPersonResponse.getRestrictionCodes().size()
-          + "doesn't match getRestrictionNames count '{}' != '{}'"
-          + hospPersonResponse.getRestrictionNames().size());
+      LOG.error(
+          "getHospPerson getRestrictionCodes count {} doesn't match getRestrictionNames count {}",
+          hospPersonResponse.getRestrictionCodes().size(),
+          hospPersonResponse.getRestrictionNames().size());
       throw new PrivatlakarportalServiceException(
           PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM,
           "Inconsistent data from HSA");
@@ -392,10 +392,8 @@ public class HospUpdateServiceImpl implements HospUpdateService {
       HospPerson hospPersonResponse) {
     final ArrayList<LegitimeradYrkesgruppEntity> legitimeradYrkesgrupperEntity = new ArrayList<>();
     if (hospPersonResponse.getHsaTitles().size() != hospPersonResponse.getTitleCodes().size()) {
-      LOG.error("getHospPerson getHsaTitles count "
-          + hospPersonResponse.getHsaTitles().size()
-          + "doesn't match getTitleCodes count '{}' != '{}'"
-          + hospPersonResponse.getTitleCodes().size());
+      LOG.error("getHospPerson getHsaTitles count {} doesn't match getTitleCodes count {}",
+          hospPersonResponse.getHsaTitles().size(), hospPersonResponse.getTitleCodes().size());
       throw new PrivatlakarportalServiceException(
           PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM,
           "Inconsistent data from HSA");
