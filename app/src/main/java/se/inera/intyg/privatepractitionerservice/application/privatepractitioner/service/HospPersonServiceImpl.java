@@ -19,18 +19,16 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
-import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
-import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
-import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
-import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 
 @Service
@@ -47,55 +45,57 @@ public class HospPersonServiceImpl implements HospPersonService {
 
     LOG.debug("Getting hospPerson from HSA for '{}'", personId);
 
-    HospCredentialsForPerson response = hospService.getHospCredentialsForPersonResponseType(
-        personId);
+    final var response = hospService.getHospCredentialsForPersonResponseType(personId);
 
     if (response == null || response.getPersonalIdentityNumber() == null) {
       LOG.debug("Response did not contain any hospPerson for '{}'", personId);
       return null;
     }
-    HospPerson hospPerson = new HospPerson();
 
-    hospPerson.setPersonalIdentityNumber(response.getPersonalIdentityNumber());
-    hospPerson.setPersonalPrescriptionCode(response.getPersonalPrescriptionCode());
-
-    List<String> hsaTitles = new ArrayList<>();
-    List<String> titleCodes = new ArrayList<>();
-    if (!response.getHealthCareProfessionalLicence().isEmpty()) {
-      for (HealthCareProfessionalLicence licence : response.getHealthCareProfessionalLicence()) {
-        hsaTitles.add(licence.getHealthCareProfessionalLicenceName());
-        titleCodes.add(licence.getHealthCareProfessionalLicenceCode());
-      }
+    final List<LicensedHealtcareProfession> licensedHealthcareProfessions;
+    if (response.getHealthCareProfessionalLicence() != null) {
+      licensedHealthcareProfessions = response.getHealthCareProfessionalLicence().stream()
+          .map(licence -> new LicensedHealtcareProfession(
+              licence.getHealthCareProfessionalLicenceCode(),
+              licence.getHealthCareProfessionalLicenceName()
+          ))
+          .toList();
+    } else {
+      licensedHealthcareProfessions = List.of();
     }
-    hospPerson.setHsaTitles(hsaTitles);
-    hospPerson.setTitleCodes(titleCodes);
 
-    List<String> specialityNames = new ArrayList<>();
-    List<String> specialityCodes = new ArrayList<>();
-    if (!response.getHealthCareProfessionalLicenceSpeciality().isEmpty()) {
-      for (HCPSpecialityCodes codes : response.getHealthCareProfessionalLicenceSpeciality()) {
-        specialityNames.add(codes.getSpecialityName());
-        specialityCodes.add(codes.getSpecialityCode());
-      }
+    final List<Speciality> specialities;
+    if (response.getHealthCareProfessionalLicenceSpeciality() != null) {
+      specialities = response.getHealthCareProfessionalLicenceSpeciality().stream()
+          .map(code -> new Speciality(
+              code.getSpecialityCode(),
+              code.getSpecialityName()
+          ))
+          .toList();
+    } else {
+      specialities = List.of();
     }
-    hospPerson.setSpecialityNames(specialityNames);
-    hospPerson.setSpecialityCodes(specialityCodes);
-    setRestrictions(response, hospPerson);
 
-    return hospPerson;
-  }
-
-  private static void setRestrictions(HospCredentialsForPerson response, HospPerson hospPerson) {
-    List<String> restrictionNames = new ArrayList<>();
-    List<String> restrictionCodes = new ArrayList<>();
-    if (!response.getRestrictions().isEmpty()) {
-      for (RestrictionDTO restriction : response.getRestrictions()) {
-        restrictionNames.add(restriction.getRestrictionName());
-        restrictionCodes.add(restriction.getRestrictionCode());
-      }
+    final List<Restriction> restrictions;
+    if (response.getRestrictions() != null) {
+      restrictions = response.getRestrictions().stream()
+          .map(restriction -> new Restriction(
+              restriction.getRestrictionCode(),
+              restriction.getRestrictionName(),
+              restriction.getHealthCareProfessionalLicenceCode()
+          ))
+          .toList();
+    } else {
+      restrictions = List.of();
     }
-    hospPerson.setRestrictionNames(restrictionNames);
-    hospPerson.setRestrictionCodes(restrictionCodes);
+
+    return HospPerson.builder()
+        .personalIdentityNumber(response.getPersonalIdentityNumber())
+        .personalPrescriptionCode(response.getPersonalPrescriptionCode())
+        .licensedHealthcareProfessions(licensedHealthcareProfessions)
+        .specialities(specialities)
+        .restrictions(restrictions)
+        .build();
   }
 
   @Override

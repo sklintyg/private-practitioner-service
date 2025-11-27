@@ -22,19 +22,7 @@ public class HospPerson {
   @Builder.Default
   private List<Restriction> restrictions = new ArrayList<>();
   @Builder.Default
-  private List<String> restrictionCodes = new ArrayList<>();
-  @Builder.Default
-  private List<String> restrictionNames = new ArrayList<>();
-  @Builder.Default
   private List<Speciality> specialities = new ArrayList<>();
-  @Builder.Default
-  private List<String> specialityNames = new ArrayList<>();
-  @Builder.Default
-  private List<String> specialityCodes = new ArrayList<>();
-  @Builder.Default
-  private List<String> hsaTitles = new ArrayList<>();
-  @Builder.Default
-  private List<String> titleCodes = new ArrayList<>();
   @With
   private LocalDateTime hospUpdated;
 }
