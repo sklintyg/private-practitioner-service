@@ -44,16 +44,6 @@ public class GetHospInformationService {
                         )
                         .toList()
                 )
-                .restrictions(
-                    hosp.getRestrictions().stream()
-                        .map(
-                            restriction -> new CodeDTO(
-                                restriction.code(),
-                                restriction.name()
-                            )
-                        )
-                        .toList()
-                )
                 .build()
         )
         .orElseGet(

@@ -186,7 +186,6 @@ public class TestDataDTO {
                     speciality.name()
                 ))
                 .toList()
-        )
-        .restrictions(List.of());
+        );
   }
 }

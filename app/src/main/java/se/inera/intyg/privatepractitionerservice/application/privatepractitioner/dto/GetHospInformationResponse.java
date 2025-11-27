@@ -16,7 +16,6 @@ public class GetHospInformationResponse {
   String personalPrescriptionCode;
   List<CodeDTO> licensedHealthcareProfessions;
   List<CodeDTO> specialities;
-  List<CodeDTO> restrictions;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class GetHospInformationResponseBuilder {
