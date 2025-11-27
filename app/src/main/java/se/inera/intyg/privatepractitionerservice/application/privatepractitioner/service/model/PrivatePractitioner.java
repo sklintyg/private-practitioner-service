@@ -76,8 +76,6 @@ public class PrivatePractitioner {
   LocalDateTime registrationDate;
   LocalDateTime hospUpdated;
 
-  public static final String REVOKED_LICENSE = "001";
-
   public void updateWithHospInformation(HospPerson hosp) {
     if (!hosp.getPersonalIdentityNumber().equalsIgnoreCase(this.personId)) {
       throw new IllegalArgumentException("Personal identity number does not match!");
