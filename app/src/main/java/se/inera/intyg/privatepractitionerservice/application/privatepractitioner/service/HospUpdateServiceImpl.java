@@ -26,9 +26,8 @@ import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -56,9 +55,9 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
  * Created by pebe on 2015-09-03.
  */
 @Service
+@Slf4j
 public class HospUpdateServiceImpl implements HospUpdateService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(HospUpdateServiceImpl.class);
   private static final String JOB_NAME = "hospupdate.cron";
 
   private static final long MINUTES_PER_DAY = 1440;
@@ -107,11 +106,11 @@ public class HospUpdateServiceImpl implements HospUpdateService {
             .build()
     ) {
       String skipUpdate = System.getProperty("scheduled.update.skip", "false");
-      LOG.debug("scheduled.update.skip = " + skipUpdate);
+      log.debug("scheduled.update.skip = " + skipUpdate);
       if ("true".equalsIgnoreCase(skipUpdate)) {
-        LOG.info("Skipping scheduled updateHospInformation");
+        log.info("Skipping scheduled updateHospInformation");
       } else {
-        LOG.info("Starting scheduled updateHospInformation");
+        log.info("Starting scheduled updateHospInformation");
         updateHospInformation();
       }
     }
@@ -130,7 +129,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
     try {
       hsaHospLastUpdate = hospPersonService.getHospLastUpdate();
     } catch (Exception e) {
-      LOG.error("Failed to getHospLastUpdate from HSA with exception {}", e.getMessage(), e);
+      log.error("Failed to getHospLastUpdate from HSA with exception {}", e.getMessage(), e);
       return;
     }
 
@@ -138,7 +137,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
     if (hospUppdateringEntity == null
         || hospUppdateringEntity.getSenasteHospUppdatering().isBefore(hsaHospLastUpdate)) {
 
-      LOG.info("Hospinformation has been updated in HSA since our last update");
+      log.info("Hospinformation has been updated in HSA since our last update");
 
       // Save hosp update time in database
       if (hospUppdateringEntity == null) {
@@ -163,7 +162,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
             handleWaitingForHosp(now, privatlakareEntity, status);
           }
         } catch (HospUpdateFailedToContactHsaException e) {
-          LOG.error("Failed to contact HSA with error '{}'", e.getMessage(), e);
+          log.error("Failed to contact HSA with error '{}'", e.getMessage(), e);
         }
       }
       lastUpdate = now;
@@ -180,11 +179,11 @@ public class HospUpdateServiceImpl implements HospUpdateService {
       try {
         if (!hospPersonService.addToCertifier(privatlakareEntity.getPersonId(),
             privatlakareEntity.getHsaId())) {
-          LOG.error(
+          log.error(
               "Failed to call handleCertifier in HSA, this call will be retried at next hosp update cycle.");
         }
       } catch (Exception e) {
-        LOG.error(
+        log.error(
             "Failed to call handleCertifier in HSA with error {}, this call will be retried at next hosp update cycle.",
             e.getMessage(), e);
         throw new HospUpdateFailedToContactHsaException(e);
@@ -195,7 +194,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
     try {
       hospPersonResponse = hospPersonService.getHospPerson(privatlakareEntity.getPersonId());
     } catch (Exception e) {
-      LOG.error(
+      log.error(
           "Failed to call getHospPerson in HSA, this call will be retried at next hosp update cycle.");
       throw new HospUpdateFailedToContactHsaException(e);
     }
@@ -245,7 +244,7 @@ public class HospUpdateServiceImpl implements HospUpdateService {
       if (privatlakareEntity.getSenasteHospUppdatering() == null
           || privatlakareEntity.getSenasteHospUppdatering().isBefore(hospLastUpdate)) {
 
-        LOG.debug(
+        log.debug(
             "Hosp has been updated since last login for privlakare '{}'. Updating hosp information",
             privatlakareEntity.getPersonId());
 
@@ -254,12 +253,12 @@ public class HospUpdateServiceImpl implements HospUpdateService {
           privatlakareEntity.setSenasteHospUppdatering(hospLastUpdate);
           privatlakareEntityRepository.save(privatlakareEntity);
         } catch (HospUpdateFailedToContactHsaException e) {
-          LOG.error("Failed to update hosp information for privatlakare '{}' due to {}",
+          log.error("Failed to update hosp information for privatlakare '{}' due to {}",
               privatlakareEntity.getPersonId(), e.getMessage(), e);
         }
       }
     } catch (Exception e) {
-      LOG.error(
+      log.error(
           "Failed to getHospLastUpdate from HSA in checkForUpdatedHospInformation for privatlakare '{}' due to {}",
           privatlakareEntity.getPersonId(), e.getMessage(), e);
     }
@@ -280,21 +279,21 @@ public class HospUpdateServiceImpl implements HospUpdateService {
           "Inte kunnat verifiera läkarbehörighet på minst "
               + (mailInterval * numberOfEmails) / MINUTES_PER_DAY + " dagar")) {
         // Remove registration as this is the third attempt without success
-        LOG.info("Removing {} from registration repo", privatlakareEntity.getPersonId());
+        log.info("Removing {} from registration repo", privatlakareEntity.getPersonId());
         privatlakareEntityRepository.delete(privatlakareEntity);
         mailService.sendRegistrationRemovedEmail(privatlakareEntity);
         monitoringService.logRegistrationRemoved(privatlakareEntity.getPersonId(),
             privatlakareEntity.getHsaId());
       } else {
         // Try again later and only remove privatlakare if they are removed in HSA as well
-        LOG.warn("Could not contact HSA to remove privatlakare from certifier");
+        log.warn("Could not contact HSA to remove privatlakare from certifier");
         return;
       }
     } else {
       for (int i = 1; i < numberOfEmails; i++) {
         if (isTimeToNotifyAboutAwaitingHospStatus(privatlakareEntity.getRegistreringsdatum(), i,
             now)) {
-          LOG.info("Sending AWAITING_HOSP mail to {}", privatlakareEntity.getPersonId());
+          log.info("Sending AWAITING_HOSP mail to {}", privatlakareEntity.getPersonId());
           mailService.sendRegistrationStatusEmail(status, privatlakareEntity.getEpost());
           return; // Only ever send one email
         }
