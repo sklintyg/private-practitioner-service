@@ -256,4 +256,26 @@
 		</addColumn>
 	</changeSet>
 
+	<changeSet id="6" author="dj">
+		<!-- Restriktion -->
+		<createTable tableName="RESTRIKTION">
+			<column name="ID" type="bigint" autoIncrement="true">
+				<constraints unique="true" nullable="false"/>
+			</column>
+			<column name="PRIVATLAKARE_ID" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="KOD" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="NAMN" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint baseColumnNames="PRIVATLAKARE_ID"
+				baseTableName="RESTRIKTION" constraintName="RESTRIKTION_PRIVATLAKARE"
+				referencedColumnNames="PRIVATLAKARE_ID" referencedTableName="PRIVATLAKARE"/>
+	</changeSet>
+
 </databaseChangeLog>

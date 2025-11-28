@@ -44,7 +44,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import se.inera.intyg.privatepractitionerservice.application.exception.HospUpdateFailedToContactHsaException;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcHelper;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
@@ -135,16 +137,14 @@ class HospUpdateServiceImplTest {
     when(hospPersonService.getHospPerson(PERSON_ID)).thenThrow(
         new IllegalStateException("Could not send message"));
     HospPerson hospPersonResponse2 = createGetHospPersonResponse();
-    hospPersonResponse2.getTitleCodes().add("DT");
-    hospPersonResponse2.getHsaTitles().add("Dietist");
-    hospPersonResponse2.getSpecialityCodes().add("12");
-    hospPersonResponse2.getSpecialityNames().add("Specialitet");
+    hospPersonResponse2.getLicensedHealthcareProfessions()
+        .add(new LicensedHealtcareProfession("DT", "Dietist"));
+    hospPersonResponse2.getSpecialities().add(new Speciality("12", "Specialitet"));
     when(hospPersonService.getHospPerson(PERSON_ID2)).thenReturn(hospPersonResponse2);
     HospPerson hospPersonResponse3 = createGetHospPersonResponse();
-    hospPersonResponse3.getTitleCodes().add("LK");
-    hospPersonResponse3.getHsaTitles().add("Läkare");
-    hospPersonResponse3.getSpecialityCodes().add("12");
-    hospPersonResponse3.getSpecialityNames().add("Specialitet");
+    hospPersonResponse3.getLicensedHealthcareProfessions()
+        .add(new LicensedHealtcareProfession("LK", "Läkare"));
+    hospPersonResponse3.getSpecialities().add(new Speciality("12", "Specialitet"));
     when(hospPersonService.getHospPerson(PERSON_ID3)).thenReturn(hospPersonResponse3);
 
     hospUpdateService.scheduledUpdateHospInformation();
@@ -179,10 +179,9 @@ class HospUpdateServiceImplTest {
 
     // privatlakare1 får nu läkarbehörighet men har fått GODKAND_ANVANDARE false innan
     HospPerson hospPersonResponse1 = createGetHospPersonResponse();
-    hospPersonResponse1.getTitleCodes().add("LK");
-    hospPersonResponse1.getHsaTitles().add("Läkare");
-    hospPersonResponse1.getSpecialityCodes().add("12");
-    hospPersonResponse1.getSpecialityNames().add("Specialitet");
+    hospPersonResponse1.getLicensedHealthcareProfessions()
+        .add(new LicensedHealtcareProfession("LK", "Läkare"));
+    hospPersonResponse1.getSpecialities().add(new Speciality("12", "Specialitet"));
     when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse1);
 
     hospUpdateService.scheduledUpdateHospInformation();
@@ -276,8 +275,8 @@ class HospUpdateServiceImplTest {
     privatlakareEntity.setPersonId(PERSON_ID);
 
     HospPerson hospPersonResponse = createGetHospPersonResponse();
-    hospPersonResponse.getTitleCodes().add("LK");
-    hospPersonResponse.getHsaTitles().add("Läkare");
+    hospPersonResponse.getLicensedHealthcareProfessions()
+        .add(new LicensedHealtcareProfession("LK", "Läkare"));
     when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse);
 
     RegistrationStatus response = hospUpdateService.updateHospInformation(privatlakareEntity, true);
@@ -295,8 +294,8 @@ class HospUpdateServiceImplTest {
     privatlakareEntity.setPersonId(PERSON_ID);
 
     HospPerson hospPersonResponse = createGetHospPersonResponse();
-    hospPersonResponse.getTitleCodes().add("LK");
-    hospPersonResponse.getHsaTitles().add("Läkare");
+    hospPersonResponse.getLicensedHealthcareProfessions()
+        .add(new LicensedHealtcareProfession("LK", "Läkare"));
     when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse);
 
     RegistrationStatus response = hospUpdateService.updateHospInformation(privatlakareEntity, true);
@@ -333,10 +332,9 @@ class HospUpdateServiceImplTest {
         LocalDate.parse("2015-09-05").atStartOfDay());
 
     HospPerson hospPersonResponse = createGetHospPersonResponse();
-    hospPersonResponse.getTitleCodes().add("DT");
-    hospPersonResponse.getHsaTitles().add("Dietist");
-    hospPersonResponse.getSpecialityCodes().add("12");
-    hospPersonResponse.getSpecialityNames().add("Specialitet");
+    hospPersonResponse.getLicensedHealthcareProfessions()
+        .add(new LicensedHealtcareProfession("DT", "Dietist"));
+    hospPersonResponse.getSpecialities().add(new Speciality("12", "Specialitet"));
     when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse);
 
     hospUpdateService.checkForUpdatedHospInformation(privatlakareEntity);
@@ -583,14 +581,11 @@ class HospUpdateServiceImplTest {
   }
 
   private HospPerson createGetHospPersonResponse() {
-    HospPerson hospPerson = new HospPerson();
-
-    hospPerson.setSpecialityCodes(new ArrayList<>());
-    hospPerson.setSpecialityNames(new ArrayList<>());
-    hospPerson.setTitleCodes(new ArrayList<>());
-    hospPerson.setHsaTitles(new ArrayList<>());
-    hospPerson.setPersonalPrescriptionCode(PERSONAL_PRESCRIPTION_CODE);
-
-    return hospPerson;
+    return HospPerson.builder()
+        .personalPrescriptionCode(PERSONAL_PRESCRIPTION_CODE)
+        .licensedHealthcareProfessions(new ArrayList<>())
+        .specialities(new ArrayList<>())
+        .restrictions(new ArrayList<>())
+        .build();
   }
 }

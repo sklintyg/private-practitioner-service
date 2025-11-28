@@ -43,11 +43,14 @@ public class HospCredentialsForPerson {
   @Builder.Default
   private List<String> educationCode = new ArrayList<>();
   @Builder.Default
-  private List<Restriction> restrictions = new ArrayList<>();
+  private List<RestrictionDTO> restrictions = new ArrayList<>();
   private Boolean feignedPerson;
 
   @Data
-  public static class Restriction {
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class RestrictionDTO {
 
     private String healthCareProfessionalLicenceCode;
     private String restrictionCode;

@@ -14,6 +14,7 @@ import org.mockserver.model.MediaType;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.HospCredentialsForPersonBuilder;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO.GetCredentialsForPersonResponseDTOBuilder;
@@ -83,37 +84,57 @@ public class IntygProxyServiceMock {
     }
   }
 
+  public void lastUpdate() {
+    try {
+      mockServerClient.when(HttpRequest.request("/api/v1/lastUpdate"))
+          .respond(
+              HttpResponse
+                  .response(
+                      "{\"lastUpdate\":\"2024-01-01T12:00:00\"}"
+                  )
+                  .withStatusCode(200)
+                  .withContentType(MediaType.APPLICATION_JSON)
+          );
+    } catch (Exception ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
+
   public static GetCredentialsForPersonResponseDTOBuilder fridaKranstegeCredentialsBuilder() {
     return GetCredentialsForPersonResponseDTO.builder()
         .credentials(
-            HospCredentialsForPerson.builder()
-                .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
-                .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
-                .healthCareProfessionalLicence(
-                    DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS.stream()
-                        .map(licensedHealtcareProfession ->
-                            HealthCareProfessionalLicence.builder()
-                                .healthCareProfessionalLicenceCode(
-                                    licensedHealtcareProfession.code()
-                                )
-                                .healthCareProfessionalLicenceName(
-                                    licensedHealtcareProfession.name()
-                                )
-                                .build()
-                        )
-                        .toList()
-                )
-                .healthCareProfessionalLicenceSpeciality(
-                    DR_KRANSTEGE_SPECIALITIES.stream()
-                        .map(speciality ->
-                            HCPSpecialityCodes.builder()
-                                .specialityCode(speciality.code())
-                                .specialityName(speciality.name())
-                                .build()
-                        )
-                        .toList()
-                )
+            fridaKranstegeHospCredentials()
                 .build()
+        );
+  }
+
+  public static HospCredentialsForPersonBuilder fridaKranstegeHospCredentials() {
+    return HospCredentialsForPerson.builder()
+        .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
+        .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
+        .healthCareProfessionalLicence(
+            DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS.stream()
+                .map(licensedHealtcareProfession ->
+                    HealthCareProfessionalLicence.builder()
+                        .healthCareProfessionalLicenceCode(
+                            licensedHealtcareProfession.code()
+                        )
+                        .healthCareProfessionalLicenceName(
+                            licensedHealtcareProfession.name()
+                        )
+                        .build()
+                )
+                .toList()
+        )
+        .healthCareProfessionalLicenceSpeciality(
+            DR_KRANSTEGE_SPECIALITIES.stream()
+                .map(speciality ->
+                    HCPSpecialityCodes.builder()
+                        .specialityCode(speciality.code())
+                        .specialityName(speciality.name())
+                        .build()
+                )
+                .toList()
         );
   }
 
