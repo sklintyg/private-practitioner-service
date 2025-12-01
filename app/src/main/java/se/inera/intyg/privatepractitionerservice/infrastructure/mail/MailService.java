@@ -117,9 +117,13 @@ public class MailService {
 
   @Async
   public void sendRegistrationRemovedEmail(PrivatlakareEntity privatlakareEntity) {
+    sendRegistrationRemovedEmail(privatlakareEntity.getEpost());
+  }
+
+  public void sendRegistrationRemovedEmail(String email) {
     try {
-      log.info("Sending registration removed email to {}", privatlakareEntity.getEpost());
-      final var message = message(privatlakareEntity.getEpost(), registrationRemovedSubject,
+      log.info("Sending registration removed email to {}", email);
+      final var message = message(email, registrationRemovedSubject,
           registrationRemovedBody);
       message.saveChanges();
       mailSender.send(message);

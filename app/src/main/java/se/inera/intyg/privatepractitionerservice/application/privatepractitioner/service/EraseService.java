@@ -18,8 +18,58 @@
  */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
-public interface EraseService {
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalErrorCodeEnum;
+import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 
-  void erasePrivatePractitioner(String careProviderId);
+@Service
+@RequiredArgsConstructor
+public class EraseService {
 
+  private static final Logger LOG = LoggerFactory.getLogger(EraseService.class);
+
+  @Value("${erase.private.practitioner:true}")
+  private boolean erasePrivatePractitioner;
+
+  private final PrivatePractitionerRepository privatePractitionerRepository;
+  private final HospRepository hospRepository;
+  private final MonitoringLogService monitoringLogService;
+
+  @Transactional
+  public void erasePrivatePractitioner(String careProviderId) {
+    final var privatePractitioner = privatePractitionerRepository.findByHsaId(careProviderId);
+
+    if (privatePractitioner.isEmpty()) {
+      LOG.warn("Could not find private practitioner with hsa-id {}. Nothing was erased.",
+          careProviderId);
+      return;
+    }
+
+    if (!erasePrivatePractitioner) {
+      LOG.warn(
+          "Erase private practitioner is inactivated via configuration. Private practitioner with hsa-id {} was not erased.",
+          careProviderId);
+      return;
+    }
+
+    if (hospRepository.removeFromCertifier(privatePractitioner.get(),
+        "Avslutat konto i Webcert.")) {
+      privatePractitionerRepository.remove(privatePractitioner.get());
+      monitoringLogService.logUserErased(privatePractitioner.get().getPersonId(), careProviderId);
+      LOG.info("Erased private practitioner with hsa-id {}.", careProviderId);
+    } else {
+      LOG.error("Failure unregistering private practitioner {} in certifier branch.",
+          privatePractitioner.get().getHsaId());
+      throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR,
+          "Failure unregistering private practitioner in certifier branch.");
+    }
+  }
 }

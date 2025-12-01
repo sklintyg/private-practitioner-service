@@ -1,10 +1,12 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
@@ -13,12 +15,14 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.k
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeHospPersonBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.HospUppdateringEntity;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 
@@ -29,6 +33,8 @@ class HospRepositoryTest {
   private HospService hospService;
   @Mock
   private HashUtility hashUtility;
+  @Mock
+  private HospUppdateringEntityRepository hospUppdateringEntityRepository;
   @InjectMocks
   private HospRepository hospRepository;
 
@@ -103,5 +109,79 @@ class HospRepositoryTest {
     assertTrue(actual.isEmpty(), "Expected empty when no hosp update is needed");
   }
 
+  @Test
+  void shouldReturnTrueWhenHospUpdateIsEmpty() {
+    when(hospService.getHospLastUpdate()).thenReturn(LocalDateTime.now());
+    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(Optional.empty());
 
+    final var actual = hospRepository.needUpdateFromHosp();
+    assertTrue(actual, "Expected true when stored hosp update is empty");
+  }
+
+  @Test
+  void shouldReturnFalseWhenLastHospUpdateIsNull() {
+    when(hospService.getHospLastUpdate()).thenReturn(null);
+
+    final var actual = hospRepository.needUpdateFromHosp();
+    assertFalse(actual, "Expected false when hosp last update is null");
+  }
+
+  @Test
+  void shouldReturnTrueWhenHospLastUpdateIsAfterHospUpdate() {
+    when(hospService.getHospLastUpdate()).thenReturn(LocalDateTime.now());
+    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(
+        Optional.of(new HospUppdateringEntity(LocalDateTime.now().minusDays(1)))
+    );
+
+    final var actual = hospRepository.needUpdateFromHosp();
+    assertTrue(actual, "Expected true when hosp last update is after stored hosp update");
+  }
+
+  @Test
+  void shouldReturnFalseWhenHospLastUpdateIsBeforeHospUpdate() {
+    when(hospService.getHospLastUpdate()).thenReturn(LocalDateTime.now().minusDays(1));
+    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(
+        Optional.of(new HospUppdateringEntity(LocalDateTime.now()))
+    );
+
+    final var actual = hospRepository.needUpdateFromHosp();
+    assertFalse(actual, "Expected false when hosp last update is before stored hosp update");
+  }
+
+  @Test
+  void shouldUpdateHospUpdatedWhenUpdateHasBeenStoredBefore() {
+    final var hospLastUpdate = LocalDateTime.now();
+    when(hospService.getHospLastUpdate()).thenReturn(hospLastUpdate);
+    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(
+        Optional.of(new HospUppdateringEntity(LocalDateTime.now().minusDays(1)))
+    );
+
+    hospRepository.hospUpdated();
+
+    verify(hospUppdateringEntityRepository).save(
+        new HospUppdateringEntity(hospLastUpdate)
+    );
+  }
+
+  @Test
+  void shouldUpdateHospUpdatedWhenNotUpdateHasBeenStoredBefore() {
+    final var hospLastUpdate = LocalDateTime.now();
+    when(hospService.getHospLastUpdate()).thenReturn(hospLastUpdate);
+    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(Optional.empty());
+
+    hospRepository.hospUpdated();
+
+    verify(hospUppdateringEntityRepository).save(
+        new HospUppdateringEntity(hospLastUpdate)
+    );
+  }
+
+  @Test
+  void shouldNotUpdateHospUpdatedWhenHospLastUpdateIsNull() {
+    when(hospService.getHospLastUpdate()).thenReturn(null);
+
+    hospRepository.hospUpdated();
+
+    verifyNoInteractions(hospUppdateringEntityRepository);
+  }
 }

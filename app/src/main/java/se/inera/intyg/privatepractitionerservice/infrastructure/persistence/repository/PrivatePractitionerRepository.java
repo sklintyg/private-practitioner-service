@@ -1,16 +1,21 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.EmailNotifications;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.PrivatlakareEntityConverter;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.EpostEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
@@ -18,23 +23,22 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class PrivatePractitionerRepository {
 
   private final PrivatlakareEntityRepository privatlakareEntityRepository;
   private final PrivatlakareIdEntityRepository privatlakareIdEntityRepository;
   private final PrivatlakareEntityConverter privatlakareEntityConverter;
+  private final EpostEntityRepository epostEntityRepository;
+  private final HashUtility hashUtility;
 
   public Optional<PrivatePractitioner> findByPersonId(String personId) {
-    return Optional.ofNullable(
-            privatlakareEntityRepository.findByPersonId(personId)
-        )
+    return privatlakareEntityRepository.findByPersonId(personId)
         .map(privatlakareEntityConverter::convert);
   }
 
   public Optional<PrivatePractitioner> findByHsaId(String hsaId) {
-    return Optional.ofNullable(
-            privatlakareEntityRepository.findByHsaId(hsaId)
-        )
+    return privatlakareEntityRepository.findByHsaId(hsaId)
         .map(privatlakareEntityConverter::convert);
   }
 
@@ -45,14 +49,13 @@ public class PrivatePractitionerRepository {
   }
 
   public boolean isExists(String personId) {
-    return privatlakareEntityRepository.findByPersonId(personId) != null;
+    return privatlakareEntityRepository.findByPersonId(personId).isPresent();
   }
 
   public PrivatePractitioner save(PrivatePractitioner privatePractitioner) {
-    if (privatlakareEntityRepository.findByPersonId(privatePractitioner.getPersonId()) != null) {
-      return updateExisting(privatePractitioner);
-    }
-    return createNew(privatePractitioner);
+    return privatlakareEntityRepository.findByPersonId(privatePractitioner.getPersonId())
+        .map(existingEntity -> updateExisting(existingEntity, privatePractitioner))
+        .orElseGet(() -> createNew(privatePractitioner));
   }
 
   /**
@@ -63,20 +66,17 @@ public class PrivatePractitionerRepository {
    */
   public void reset(List<String> personIds) {
     personIds
-        .forEach(personId -> {
-          final var existingEntity = privatlakareEntityRepository.findByPersonId(personId);
-          if (existingEntity != null) {
-            privatlakareEntityRepository.delete(existingEntity);
-          }
-        });
+        .forEach(personId ->
+            privatlakareEntityRepository.findByPersonId(personId)
+                .ifPresent(existingEntity -> privatlakareEntityRepository.delete(existingEntity)
+                )
+        );
     privatlakareIdEntityRepository.deleteAll();
     privatlakareIdEntityRepository.resetIdSequence();
   }
 
-  private PrivatePractitioner updateExisting(PrivatePractitioner privatePractitioner) {
-    final var existingEntity = privatlakareEntityRepository.findByPersonId(
-        privatePractitioner.getPersonId());
-
+  private PrivatePractitioner updateExisting(PrivatlakareEntity existingEntity,
+      PrivatePractitioner privatePractitioner) {
     existingEntity.setFullstandigtNamn(privatePractitioner.getName());
     existingEntity.setEnhetsNamn(privatePractitioner.getCareProviderName());
     existingEntity.setVardgivareNamn(privatePractitioner.getCareProviderName());
@@ -195,5 +195,52 @@ public class PrivatePractitionerRepository {
             licensedHealtcareProfession.code()
         ))
         .collect(Collectors.toCollection(ArrayList::new));
+  }
+
+  public List<PrivatePractitioner> findPrivatePractitionersNeedingHospUpdate() {
+    return privatlakareEntityRepository.findNeverHadLakarBehorighet().stream()
+        .map(privatlakareEntityConverter::convert)
+        .toList();
+  }
+
+  public void remove(PrivatePractitioner privatePractitioner) {
+    privatlakareEntityRepository.findByPersonId(privatePractitioner.getPersonId())
+        .ifPresentOrElse(
+            privatlakareEntityRepository::delete,
+            () -> log.warn("Tried to remove non-existing private practitioner with personId '{}'",
+                hashUtility.hash(privatePractitioner.getPersonId()))
+        );
+  }
+
+  public EmailNotifications getEmailNotifications(String personId) {
+    return privatlakareEntityRepository.findByPersonId(personId)
+        .map(entity -> {
+              final var emailEntities = epostEntityRepository.findByPrivatlakareId(
+                  entity.getPrivatlakareId());
+              final var notificationDates = emailEntities.stream()
+                  .map(EpostEntity::getSkickadDatum)
+                  .toList();
+              return EmailNotifications.builder()
+                  .notificationDates(notificationDates)
+                  .build();
+            }
+        )
+        .orElse(EmailNotifications.builder().build());
+  }
+
+  public void addEmailNotification(String personId, LocalDateTime sent) {
+    privatlakareEntityRepository.findByPersonId(personId)
+        .ifPresentOrElse(
+            entity -> epostEntityRepository.save(
+                EpostEntity.builder()
+                    .privatlakareId(entity.getPrivatlakareId())
+                    .skickadDatum(sent)
+                    .build()
+            ),
+            () -> log.warn(
+                "Tried to add email notification to non-existing private practitioner with personId '{}'",
+                hashUtility.hash(personId)
+            )
+        );
   }
 }

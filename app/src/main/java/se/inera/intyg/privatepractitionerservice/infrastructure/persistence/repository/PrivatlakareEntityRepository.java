@@ -20,6 +20,7 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.rep
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,10 +34,10 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 public interface PrivatlakareEntityRepository extends JpaRepository<PrivatlakareEntity, String> {
 
   @Query("SELECT p from PrivatlakareEntity p WHERE p.hsaId = :hsaId")
-  PrivatlakareEntity findByHsaId(@Param("hsaId") String hsaId);
+  Optional<PrivatlakareEntity> findByHsaId(@Param("hsaId") String hsaId);
 
   @Query("SELECT p from PrivatlakareEntity p WHERE p.personId = :personId")
-  PrivatlakareEntity findByPersonId(@Param("personId") String personId);
+  Optional<PrivatlakareEntity> findByPersonId(@Param("personId") String personId);
 
   @Query("SELECT p FROM PrivatlakareEntity p WHERE "
       + "p.privatlakareId NOT IN (SELECT p2.privatlakareId FROM PrivatlakareEntity p2 JOIN p2.legitimeradeYrkesgrupper ly WHERE ly.namn = 'Läkare')")

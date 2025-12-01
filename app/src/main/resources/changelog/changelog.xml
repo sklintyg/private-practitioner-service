@@ -256,4 +256,26 @@
 		</addColumn>
 	</changeSet>
 
+	<changeSet id="6" author="mww">
+		<createTable tableName="EPOST">
+			<column name="ID" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" unique="true" nullable="false"/>
+			</column>
+			<column name="PRIVATLAKARE_ID" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="EPOST_TYP" type="varchar(50)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="SKICKAD_DATUM" type="datetime">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint baseColumnNames="PRIVATLAKARE_ID"
+				baseTableName="EPOST" constraintName="EPOST_PRIVATLAKARE_FK"
+				referencedColumnNames="PRIVATLAKARE_ID" referencedTableName="PRIVATLAKARE"/>
+	</changeSet>
+
+
 </databaseChangeLog>
