@@ -32,18 +32,38 @@ public class HospPersonConverter {
             .personalPrescriptionCode(hospCredentialsForPerson.getPersonalPrescriptionCode())
             .licensedHealthcareProfessions(convertHealthcareProfessions(hospCredentialsForPerson))
             .specialities(convertSpecialities(hospCredentialsForPerson))
-            .restrictions(
-                hospCredentialsForPerson.getRestrictions() == null ? List.of() :
-                    hospCredentialsForPerson.getRestrictions().stream()
-                        .map(restriction -> new Restriction(
-                            restriction.getRestrictionCode(),
-                            restriction.getRestrictionName(),
-                            restriction.getHealthCareProfessionalLicenceCode()
-                        ))
-                        .toList()
-            )
+            .restrictions(convertRestrictions(hospCredentialsForPerson))
             .build()
     );
+  }
+
+  private List<Restriction> convertRestrictions(
+      HospCredentialsForPerson hospCredentialsForPerson) {
+    if (hospCredentialsForPerson.getRestrictions() == null) {
+      log.info(
+          "Null Restrictions value received from hosp for personId '{}'",
+          hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
+      );
+      return List.of();
+    }
+
+    return hospCredentialsForPerson.getRestrictions().stream()
+        .filter(restrictionDTO -> {
+          if (restrictionDTO == null || !restrictionDTO.isValid()) {
+            log.info(
+                "Invalid restriction type returned from hosp for personId '{}'",
+                hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
+            );
+            return false;
+          }
+          return true;
+        })
+        .map(restriction -> new Restriction(
+            restriction.getRestrictionCode(),
+            restriction.getRestrictionName(),
+            restriction.getHealthCareProfessionalLicenceCode()
+        ))
+        .toList();
   }
 
   private List<LicensedHealtcareProfession> convertHealthcareProfessions(

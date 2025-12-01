@@ -4,6 +4,7 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.con
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.kranstegeHospCredentialsBuilder;
@@ -21,6 +22,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtil
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 
 @ExtendWith(MockitoExtension.class)
 class HospPersonConverterTest {
@@ -165,6 +167,48 @@ class HospPersonConverterTest {
 
       assertTrue(actual.getSpecialities().isEmpty(),
           "Expected non physician specialities to be filtered out");
+    }
+  }
+
+  @Nested
+  class RestrictionConverterTest {
+
+    @Test
+    void shouldConvertRestrictions() {
+      final var actual = hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS);
+
+      assertEquals(DR_KRANSTEGE_RESTRICTIONS, actual.orElseThrow().getRestrictions());
+    }
+
+    @Test
+    void shouldReturnEmptyListIfRestrictionsIsNull() {
+      final var hospCredentials = kranstegeHospCredentialsBuilder().restrictions(null).build();
+
+      final var actual = hospPersonConverter.convert(hospCredentials).orElseThrow();
+
+      assertTrue(actual.getRestrictions().isEmpty(),
+          "Expected empty restrictions when RestrictionsDTO is null");
+
+    }
+
+    @Test
+    void shouldFilterOutNonValidRestrictions() {
+      final var hospCredentials = kranstegeHospCredentialsBuilder()
+          .restrictions(
+              List.of(
+                  RestrictionDTO.builder()
+                      .restrictionName("")
+                      .restrictionCode(null)
+                      .healthCareProfessionalLicenceCode("")
+                      .build()
+              )
+          )
+          .build();
+
+      final var actual = hospPersonConverter.convert(hospCredentials).orElseThrow();
+
+      assertTrue(actual.getRestrictions().isEmpty(),
+          "Expected non-valid HCPSpecialityCodes to be filtered out");
     }
   }
 }

@@ -14,6 +14,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.k
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeHospPersonBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.HospPersonConverter;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
@@ -32,6 +34,8 @@ class HospRepositoryTest {
   private HospService hospService;
   @Mock
   private HashUtility hashUtility;
+  @Mock
+  private HospPersonConverter hospPersonConverter;
   @InjectMocks
   private HospRepository hospRepository;
 
@@ -68,6 +72,8 @@ class HospRepositoryTest {
   void shouldReturnWhenHospPersonFound() {
     when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getHsaId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
+    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
+        Optional.of(DR_KRANSTEGE_HOSP_PERSON));
 
     final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getHsaId());
 
@@ -87,6 +93,8 @@ class HospRepositoryTest {
     when(hospService.getHospLastUpdate()).thenReturn(expected.getHospUpdated());
     when(hospService.getHospCredentialsForPersonResponseType(drKranstege.getPersonId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
+    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
+        Optional.of(DR_KRANSTEGE_HOSP_PERSON));
 
     final var actual = hospRepository.updatedHospPerson(drKranstege);
 

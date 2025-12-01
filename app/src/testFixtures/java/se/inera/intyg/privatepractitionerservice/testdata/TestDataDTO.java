@@ -15,6 +15,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PHONE_NUMBER;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_POSITION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PRESCRIPTION_CODE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_TYPE_OF_CARE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_WORKPLACE_CODE;
@@ -41,6 +42,7 @@ import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPS
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.HospCredentialsForPersonBuilder;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest.TestabilityCreateRegistrationRequestBuilder;
 
@@ -157,6 +159,15 @@ public class TestDataDTO {
                     .healthCareProfessionalLicenceName(licensedHealtcareProfession.name())
                     .build()
                 )
+                .toList()
+        )
+        .restrictions(
+            DR_KRANSTEGE_RESTRICTIONS.stream()
+                .map(restriction -> new RestrictionDTO(
+                    restriction.healthCareProfessionalLicenceCode(),
+                    restriction.code(),
+                    restriction.name()
+                ))
                 .toList()
         );
   }

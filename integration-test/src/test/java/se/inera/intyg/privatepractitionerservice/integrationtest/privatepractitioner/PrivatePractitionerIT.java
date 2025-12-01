@@ -12,8 +12,8 @@ import static se.inera.intyg.privatepractitionerservice.integrationtest.environm
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePerson;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonWithSameName;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
@@ -218,7 +218,7 @@ class PrivatePractitionerIT {
         GetCredentialsForPersonResponseDTO.builder()
             .credentials(
                 fridaKranstegeHospCredentials()
-                    .restrictions(DR_KRANSTEGE_RESTRICTIONS)
+                    .restrictions(DR_KRANSTEGE_HOSP_CREDENTIALS.getRestrictions())
                     .build()
             )
             .build()
