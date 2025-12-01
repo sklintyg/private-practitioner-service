@@ -9,6 +9,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataAssert.
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.DR_KRANSTEGE_ENTITY;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.kranstegeEntityBuilder;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
 
 import java.time.LocalDateTime;
@@ -187,9 +188,14 @@ class PrivatePractitionerRepositoryTest {
       void shouldSaveCreatedPrivatePractitioner() {
         final var captor = ArgumentCaptor.forClass(PrivatlakareEntity.class);
         privatePractitionerRepository.save(DR_KRANSTEGE);
-
+        final var newKranstegeHsaid = "SE165565594230-WEBCERT00001";
+        final var newKranstegeEntity = kranstegeEntityBuilder()
+            .hsaId(newKranstegeHsaid)
+            .enhetsId(newKranstegeHsaid)
+            .vardgivareId(newKranstegeHsaid)
+            .build();
         verify(privatlakareEntityRepository).save(captor.capture());
-        assertPrivatlakareEntity(DR_KRANSTEGE_ENTITY, captor.getValue());
+        assertPrivatlakareEntity(newKranstegeEntity, captor.getValue());
       }
     }
 

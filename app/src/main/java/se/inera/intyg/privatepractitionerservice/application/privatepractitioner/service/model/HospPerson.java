@@ -17,12 +17,12 @@ public class HospPerson {
 
   private String personalIdentityNumber;
   private String personalPrescriptionCode;
-  private List<LicensedHealtcareProfession> licensedHealthcareProfessions;
-  private List<Speciality> specialities;
-  private List<String> specialityNames = new ArrayList<>();
-  private List<String> specialityCodes = new ArrayList<>();
-  private List<String> hsaTitles = new ArrayList<>();
-  private List<String> titleCodes = new ArrayList<>();
+  @Builder.Default
+  private List<LicensedHealtcareProfession> licensedHealthcareProfessions = new ArrayList<>();
+  @Builder.Default
+  private List<Restriction> restrictions = new ArrayList<>();
+  @Builder.Default
+  private List<Speciality> specialities = new ArrayList<>();
   @With
   private LocalDateTime hospUpdated;
 }

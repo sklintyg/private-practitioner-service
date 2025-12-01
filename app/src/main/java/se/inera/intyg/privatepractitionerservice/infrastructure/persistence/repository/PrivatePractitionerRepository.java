@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.EmailNotifications;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.PrivatlakareEntityConverter;
@@ -19,6 +20,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestriktionEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 
 @Repository
@@ -78,7 +80,7 @@ public class PrivatePractitionerRepository {
   private PrivatePractitioner updateExisting(PrivatlakareEntity existingEntity,
       PrivatePractitioner privatePractitioner) {
     existingEntity.setFullstandigtNamn(privatePractitioner.getName());
-    existingEntity.setEnhetsNamn(privatePractitioner.getCareProviderName());
+    existingEntity.setEnhetsNamn(privatePractitioner.getCareUnitName());
     existingEntity.setVardgivareNamn(privatePractitioner.getCareProviderName());
     existingEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
     existingEntity.setForskrivarKod(privatePractitioner.getPersonalPrescriptionCode());
@@ -100,6 +102,10 @@ public class PrivatePractitionerRepository {
 
     existingEntity.setSpecialiteter(
         getSpecialiteter(privatePractitioner.getSpecialties())
+    );
+
+    existingEntity.setRestriktioner(
+        getRestrictions(privatePractitioner.getRestrictions())
     );
 
     existingEntity.setLegitimeradeYrkesgrupper(
@@ -184,6 +190,14 @@ public class PrivatePractitionerRepository {
             speciality.name(),
             speciality.code()
         ))
+        .collect(Collectors.toCollection(ArrayList::new));
+  }
+
+  private List<RestriktionEntity> getRestrictions(List<Restriction> restrictions) {
+    return restrictions.stream()
+        .map(
+            restriction -> new RestriktionEntity(restriction.code(),
+                restriction.name()))
         .collect(Collectors.toCollection(ArrayList::new));
   }
 

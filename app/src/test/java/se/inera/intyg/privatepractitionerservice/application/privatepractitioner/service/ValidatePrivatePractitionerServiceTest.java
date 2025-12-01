@@ -23,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
@@ -117,5 +118,48 @@ class ValidatePrivatePractitionerServiceTest {
 
     final var actual = validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID);
     assertEquals(NOT_AUTHORIZED_IN_HOSP, actual.getResultCode());
+  }
+
+  @Test
+  void shouldReturnOKIfPrivatePractitionerIsNotRestrictedPhysician() {
+    final var drKranstegeRestricted = kranstegeBuilder()
+        .restrictions(List.of())
+        .build();
+
+    when(privatePractitionerRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(Optional.of(drKranstegeRestricted));
+
+    final var actual = validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID);
+    assertEquals(OK, actual.getResultCode());
+  }
+
+  @Test
+  void shouldReturnNotAuthorizedInHospIfPrivatePractitionerIsRestrictedPhysician() {
+    final var drKranstegeRestricted = kranstegeBuilder()
+        .restrictions(List.of(new Restriction[]{
+            new Restriction("001", "Återkallad legitimation", "LK")
+        }))
+        .build();
+
+    when(privatePractitionerRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(Optional.of(drKranstegeRestricted));
+
+    final var actual = validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID);
+    assertEquals(NOT_AUTHORIZED_IN_HOSP, actual.getResultCode());
+  }
+
+  @Test
+  void shouldReturnOKIfPrivatePractitionerHasRestrictionsButIsNotRestrictedPhysician() {
+    final var drKranstegeRestricted = kranstegeBuilder()
+        .restrictions(List.of(new Restriction[]{
+            new Restriction("002", "Treårig prövotid", "LK")
+        }))
+        .build();
+
+    when(privatePractitionerRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(Optional.of(drKranstegeRestricted));
+
+    final var actual = validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID);
+    assertEquals(OK, actual.getResultCode());
   }
 }

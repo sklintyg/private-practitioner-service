@@ -66,6 +66,8 @@ public class PrivatePractitioner {
   @Builder.Default
   List<Speciality> specialties = List.of();
   @Builder.Default
+  List<Restriction> restrictions = List.of();
+  @Builder.Default
   List<LicensedHealtcareProfession> licensedHealthcareProfessions = List.of();
 
   LocalDateTime startDate;
@@ -79,11 +81,11 @@ public class PrivatePractitioner {
       throw new IllegalArgumentException("Personal identity number does not match!");
     }
     personalPrescriptionCode = hosp.getPersonalPrescriptionCode();
-    specialties = hosp.getSpecialities() == null ? List.of()
-        : hosp.getSpecialities().stream().toList();
-    licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions() == null ? List.of()
-        : hosp.getLicensedHealthcareProfessions().stream().toList();
+    specialties = hosp.getSpecialities();
+    licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions();
     hospUpdated = hosp.getHospUpdated();
+    restrictions = hosp.getRestrictions().stream().filter(Restriction::isRestrictedPhysician)
+        .toList();
   }
 
   public void clearHospInformation() {
@@ -95,6 +97,10 @@ public class PrivatePractitioner {
   public boolean isLicensedPhysician() {
     return licensedHealthcareProfessions.stream()
         .anyMatch(LicensedHealtcareProfession::isLicensedPhysician);
+  }
+
+  public boolean isRestrictedPhysician() {
+    return restrictions.stream().anyMatch(Restriction::isRestrictedPhysician);
   }
 
   public RegistrationStatus getRegistrationStatus() {

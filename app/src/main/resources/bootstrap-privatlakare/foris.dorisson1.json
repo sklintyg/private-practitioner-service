@@ -1,0 +1,39 @@
+{
+  "personId": "195212222318",
+  "hsaId": "SE165565594230-WEBCERTBOOT8",
+  "fullstandigtNamn": "Foris Dorisson1",
+  "godkandAnvandare": true,
+  "enhetsId": "SE165565594230-WEBCERTBOOT8",
+  "enhetsNamn": "Dorisson1s vård",
+  "arbetsplatsKod": "888",
+  "agarform": "Privat",
+  "postadress": "Storgatan 5",
+  "postnummer": "11444",
+  "postort": "STOCKHOLM",
+  "telefonnummer": "444666888",
+  "epost": "Foris@Dorisson1.com",
+  "enhetStartdatum": null,
+  "enhetSlutDatum": null,
+  "lan": "STOCKHOLM",
+  "kommun": "STOCKHOLM",
+  "vardgivareId": "SE165565594230-WEBCERTBOOT8",
+  "vardgivareNamn": "Dorisson1s Vårdgivare",
+  "vardgivareStartdatum": null,
+  "vardgivareSlutdatum": null,
+  "befattningar": [
+    {
+      "kod": "202010"
+    }
+  ],
+  "verksamhetstyper": [
+    {
+      "kod": "11"
+    }
+  ],
+  "vardformer": [
+    {
+      "kod": "01"
+    }
+  ],
+  "registreringsdatum": "2020-01-01T00:00:00.000"
+}

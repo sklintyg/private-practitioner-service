@@ -4,13 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResultCode.NOT_AUTHORIZED_IN_HOSP;
+import static se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerResultCode.OK;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.addToCertifierResponseBuilder;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeCredentialsBuilder;
-import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeHospBuilder;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeHospCredentials;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePerson;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonWithSameName;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
@@ -34,8 +37,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Containers;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.ApiUtil;
@@ -104,7 +109,7 @@ class PrivatePractitionerIT {
     final var actual = response.getBody();
     assertAll(
         () -> assertEquals(DR_KRANSTEGE_DTO.getPersonId(), actual.getPersonId()),
-        () -> assertEquals(DR_KRANSTEGE_DTO.getHsaId(), actual.getHsaId()),
+        () -> assertEquals("SE165565594230-WEBCERT00001", actual.getHsaId()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
@@ -134,7 +139,7 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.credentialsForPersonResponse(
         fridaKranstegeCredentialsBuilder()
             .credentials(
-                fridaKranstegeHospBuilder()
+                fridaKranstegeHospCredentials()
                     .healthCareProfessionalLicence(List.of())
                     .build()
             )
@@ -224,7 +229,7 @@ class PrivatePractitionerIT {
     final var actual = response.getBody();
     assertAll(
         () -> assertEquals(DR_KRANSTEGE_DTO.getPersonId(), actual.getPersonId()),
-        () -> assertEquals(DR_KRANSTEGE_DTO.getHsaId(), actual.getHsaId()),
+        () -> assertEquals("SE165565594230-WEBCERT00001", actual.getHsaId()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
@@ -276,5 +281,60 @@ class PrivatePractitionerIT {
     assertNotNull(response.getBody());
     final var actual = response.getBody();
     assertEquals("Frida Kranstege", actual.getName());
+  }
+
+  @Test
+  void shallRestrictPrivatePractitionerWithRevokedLicense() {
+
+    testabilityApi.addPrivatePractitioner(
+        DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+
+    intygProxyServiceMock.credentialsForPersonResponse(
+        GetCredentialsForPersonResponseDTO.builder()
+            .credentials(
+                fridaKranstegeHospCredentials()
+                    .restrictions(DR_KRANSTEGE_RESTRICTIONS)
+                    .build()
+            )
+            .build()
+    );
+
+    intygProxyServiceMock.lastUpdate();
+
+    final var response = api.validatePrivatePractitioner(
+        ValidatePrivatePractitionerRequest.builder()
+            .personId(DR_KRANSTEGE_PERSON_ID)
+            .build());
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertEquals(NOT_AUTHORIZED_IN_HOSP, actual.getResultCode());
+  }
+
+  @Test
+  void shallNotRestrictPrivatePractitionerWithValidLicense() {
+
+    testabilityApi.addPrivatePractitioner(
+        DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+
+    intygProxyServiceMock.credentialsForPersonResponse(
+        GetCredentialsForPersonResponseDTO.builder()
+            .credentials(
+                fridaKranstegeHospCredentials()
+                    .build()
+            )
+            .build()
+    );
+
+    intygProxyServiceMock.lastUpdate();
+
+    final var response = api.validatePrivatePractitioner(
+        ValidatePrivatePractitionerRequest.builder()
+            .personId(DR_KRANSTEGE_PERSON_ID)
+            .build());
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
+    final var actual = response.getBody();
+    assertEquals(OK, actual.getResultCode());
   }
 }

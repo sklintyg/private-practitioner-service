@@ -136,6 +136,12 @@ public class PrivatlakareEntity {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  @OrderBy("kod ASC")
+  @Builder.Default
+  private List<RestriktionEntity> restriktioner = new ArrayList<>();
+
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
   private List<VerksamhetstypEntity> verksamhetstyper;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -191,6 +197,13 @@ public class PrivatlakareEntity {
     this.specialiteter.clear();
     if (specialiteter != null) {
       this.specialiteter.addAll(specialiteter);
+    }
+  }
+
+  public void setRestriktioner(List<RestriktionEntity> restriktioner) {
+    this.restriktioner.clear();
+    if (restriktioner != null) {
+      this.restriktioner.addAll(restriktioner);
     }
   }
 

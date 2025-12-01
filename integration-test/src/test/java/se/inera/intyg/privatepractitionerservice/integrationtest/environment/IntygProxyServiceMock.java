@@ -84,14 +84,31 @@ public class IntygProxyServiceMock {
     }
   }
 
+  public void lastUpdate() {
+    try {
+      mockServerClient.when(HttpRequest.request("/api/v1/lastUpdate"))
+          .respond(
+              HttpResponse
+                  .response(
+                      "{\"lastUpdate\":\"2024-01-01T12:00:00\"}"
+                  )
+                  .withStatusCode(200)
+                  .withContentType(MediaType.APPLICATION_JSON)
+          );
+    } catch (Exception ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
+
   public static GetCredentialsForPersonResponseDTOBuilder fridaKranstegeCredentialsBuilder() {
     return GetCredentialsForPersonResponseDTO.builder()
         .credentials(
-            fridaKranstegeHospBuilder().build()
+            fridaKranstegeHospCredentials()
+                .build()
         );
   }
 
-  public static HospCredentialsForPersonBuilder fridaKranstegeHospBuilder() {
+  public static HospCredentialsForPersonBuilder fridaKranstegeHospCredentials() {
     return HospCredentialsForPerson.builder()
         .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
         .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)

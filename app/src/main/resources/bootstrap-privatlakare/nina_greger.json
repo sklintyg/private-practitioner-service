@@ -1,47 +1,47 @@
 {
-    "personId": "197309069289",
-    "hsaId": "SE165565594230-WEBCERTBOOT2",
-    "fullstandigtNamn": "Nina greger",
-    "godkandAnvandare": true,
-    "enhetsId": "SE165565594230-WEBCERTBOOT2",
-    "enhetsNamn": "TestEnhet",
-    "arbetsplatsKod": "555",
-    "agarform": "Privat",
-    "postadress": "Gata 5",
-    "postnummer": "58216",
-    "postort": "Linköping",
-    "telefonnummer": "444666777",
-    "epost": "test@example.com",
-    "enhetStartdatum": null,
-    "enhetSlutDatum": null,
-    "lan": "Östergötland",
-    "kommun": "Linköping",
-    "vardgivareId": "SE165565594230-WEBCERTBOOT2",
-    "vardgivareNamn": "TestVardgivare",
-    "vardgivareStartdatum": null,
-    "vardgivareSlutdatum": null,
-    "befattningar": [
-        {
-            "kod": "202010"
-        }
-    ],
-    "legitimeradeYrkesgrupper": [
-        {
-            "kod": "ATLK",
-            "namn": "AT-läkare"
-        }
-    ],
-    "specialiteter": [
-    ],
-    "verksamhetstyper": [
-        {
-            "kod": "11"
-        }
-    ],
-    "vardformer": [
-        {
-            "kod": "01"
-        }
-    ],
-    "registreringsdatum": "2020-01-01T00:00:00.000"
+  "personId": "197309069289",
+  "hsaId": "SE165565594230-WEBCERTBOOT2",
+  "fullstandigtNamn": "Nina Maria Greger",
+  "godkandAnvandare": true,
+  "enhetsId": "SE165565594230-WEBCERTBOOT2",
+  "enhetsNamn": "Gregers Naprapatklinik",
+  "arbetsplatsKod": "555",
+  "agarform": "Privat",
+  "postadress": "MENHAMMAR 2",
+  "postnummer": "17890",
+  "postort": "EKERÖ",
+  "telefonnummer": "444666222",
+  "epost": "Nina@Greger.com",
+  "enhetStartdatum": null,
+  "enhetSlutDatum": null,
+  "lan": "STOCKHOLM",
+  "kommun": "EKERÖ",
+  "vardgivareId": "SE165565594230-WEBCERTBOOT2",
+  "vardgivareNamn": "Gregers Vårdgivare",
+  "vardgivareStartdatum": null,
+  "vardgivareSlutdatum": null,
+  "befattningar": [
+    {
+      "kod": "202010"
+    }
+  ],
+  "legitimeradeYrkesgrupper": [
+    {
+      "kod": "NA",
+      "namn": "Naprapat"
+    }
+  ],
+  "specialiteter": [
+  ],
+  "verksamhetstyper": [
+    {
+      "kod": "11"
+    }
+  ],
+  "vardformer": [
+    {
+      "kod": "01"
+    }
+  ],
+  "registreringsdatum": "2020-01-01T00:00:00.000"
 }

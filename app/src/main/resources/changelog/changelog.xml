@@ -256,26 +256,44 @@
 		</addColumn>
 	</changeSet>
 
-	<changeSet id="6" author="mww">
-		<createTable tableName="EPOST">
+	<changeSet id="6" author="dj">
+		<!-- Restriktion -->
+		<createTable tableName="RESTRIKTION">
 			<column name="ID" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" unique="true" nullable="false"/>
+				<constraints unique="true" nullable="false"/>
 			</column>
 			<column name="PRIVATLAKARE_ID" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
-			<column name="EPOST_TYP" type="varchar(50)">
+			<column name="KOD" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
-			<column name="SKICKAD_DATUM" type="datetime">
+			<column name="NAMN" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
 		</createTable>
 
 		<addForeignKeyConstraint baseColumnNames="PRIVATLAKARE_ID"
-				baseTableName="EPOST" constraintName="EPOST_PRIVATLAKARE_FK"
+				baseTableName="RESTRIKTION" constraintName="RESTRIKTION_PRIVATLAKARE"
 				referencedColumnNames="PRIVATLAKARE_ID" referencedTableName="PRIVATLAKARE"/>
 	</changeSet>
 
+  <changeSet id="7" author="mww">
+    <createTable tableName="EPOST">
+      <column name="ID" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" unique="true" nullable="false"/>
+      </column>
+      <column name="PRIVATLAKARE_ID" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="SKICKAD_DATUM" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseColumnNames="PRIVATLAKARE_ID"
+      baseTableName="EPOST" constraintName="EPOST_PRIVATLAKARE_FK"
+      referencedColumnNames="PRIVATLAKARE_ID" referencedTableName="PRIVATLAKARE"/>
+  </changeSet>
 
 </databaseChangeLog>
