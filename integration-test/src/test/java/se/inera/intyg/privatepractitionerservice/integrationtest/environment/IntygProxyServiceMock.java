@@ -132,6 +132,7 @@ public class IntygProxyServiceMock {
                     HCPSpecialityCodes.builder()
                         .specialityCode(speciality.code())
                         .specialityName(speciality.name())
+                        .healthCareProfessionalLicenceCode("LK")
                         .build()
                 )
                 .toList()
