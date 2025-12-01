@@ -11,6 +11,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.HospPersonConverter;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 
 @Repository
@@ -20,6 +21,7 @@ public class HospRepository {
 
   private final HospService hospService;
   private final HashUtility hashUtility;
+  private final HospPersonConverter hospPersonConverter;
 
   public void addToCertifier(PrivatePractitioner privatePractitioner) {
     final var result = hospService.handleHospCertificationPersonResponseType(
