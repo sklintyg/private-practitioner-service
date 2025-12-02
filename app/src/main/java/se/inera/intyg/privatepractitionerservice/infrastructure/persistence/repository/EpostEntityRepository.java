@@ -16,19 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
+package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.EpostEntity;
 
-public interface HospPersonService {
+@Repository
+public interface EpostEntityRepository extends JpaRepository<EpostEntity, Long> {
 
-  boolean addToCertifier(String personId, String certifierId);
-
-  boolean removeFromCertifier(String personId, String certifierId, String reason);
-
-  Optional<HospPerson> getHospPerson(String personId);
-
-  LocalDateTime getHospLastUpdate();
+  List<EpostEntity> findByPrivatlakareId(String privatlakareId);
 }
+

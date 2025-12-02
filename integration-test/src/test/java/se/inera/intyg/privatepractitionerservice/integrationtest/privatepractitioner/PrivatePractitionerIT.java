@@ -11,6 +11,7 @@ import static se.inera.intyg.privatepractitionerservice.integrationtest.environm
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeHospCredentials;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePerson;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonWithSameName;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
@@ -19,7 +20,12 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_BODY;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_SUBJECT;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_PENDING_MAIL_BODY;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_PENDING_MAIL_SUBJECT;
 
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,10 +38,13 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
+import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Containers;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.ApiUtil;
+import se.inera.intyg.privatepractitionerservice.integrationtest.util.MailHogUtil;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.TestabilityApiUtil;
 
 @ActiveProfiles({"integration-test", "testability"})
@@ -52,6 +61,7 @@ class PrivatePractitionerIT {
   private TestabilityApiUtil testabilityApi;
   private MockServerClient mockServerClient;
   private IntygProxyServiceMock intygProxyServiceMock;
+  private MailHogUtil mailHogUtil;
 
   @BeforeAll
   static void beforeAll() {
@@ -67,12 +77,19 @@ class PrivatePractitionerIT {
         Containers.mockServerContainer.getServerPort()
     );
     this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient);
+    this.mailHogUtil = new MailHogUtil(
+        restTemplate,
+        new CustomObjectMapper(),
+        Containers.mailHogContainer.getHost(),
+        Containers.mailHogContainer.getMappedPort(8025)
+    );
   }
 
   @AfterEach
   void tearDown() throws Exception {
     testabilityApi.reset();
     mockServerClient.reset();
+    mailHogUtil.reset();
     Containers.redisContainer.execInContainer("redis-cli", "flushall");
   }
 
@@ -99,6 +116,65 @@ class PrivatePractitionerIT {
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
         () -> assertNotNull(actual.getRegistrationDate())
     );
+  }
+
+  @Test
+  void shallSendRegistrationEmailWhenInHospAndIsLicencedPhysician() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
+
+    assertEquals(200, response.getStatusCode().value());
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_APPROVED_MAIL_SUBJECT,
+        REGISTRATION_APPROVED_MAIL_BODY);
+  }
+
+  @Test
+  void shallSendRegistrationEmailWhenInHospAndNotLicencedPhysician() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder()
+            .credentials(
+                fridaKranstegeHospCredentials()
+                    .healthCareProfessionalLicence(List.of())
+                    .build()
+            )
+            .build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
+
+    assertEquals(200, response.getStatusCode().value());
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT,
+        REGISTRATION_PENDING_MAIL_BODY);
+  }
+
+  @Test
+  void shallSendRegistrationEmailWhenNotInHosp() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder()
+            .credentials(HospCredentialsForPerson.builder().build())
+            .build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        addToCertifierResponseBuilder().build()
+    );
+
+    final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
+
+    assertEquals(200, response.getStatusCode().value());
+    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT,
+        REGISTRATION_PENDING_MAIL_BODY);
   }
 
   @Test

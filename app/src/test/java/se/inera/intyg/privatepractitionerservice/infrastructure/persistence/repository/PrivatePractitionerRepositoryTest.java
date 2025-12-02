@@ -14,6 +14,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.D
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.PrivatlakareEntityConverter;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
@@ -36,6 +38,8 @@ class PrivatePractitionerRepositoryTest {
   private PrivatlakareIdEntityRepository privatlakareIdEntityRepository;
   @Mock
   private PrivatlakareEntityConverter privatlakareEntityConverter;
+  @Mock
+  private HashUtility hashUtility;
   @InjectMocks
   private PrivatePractitionerRepository privatePractitionerRepository;
 
@@ -49,7 +53,9 @@ class PrivatePractitionerRepositoryTest {
     final var privatlakareEntity = PrivatlakareEntity.builder()
         .personId(personId)
         .build();
-    when(privatlakareEntityRepository.findByPersonId(personId)).thenReturn(privatlakareEntity);
+    when(privatlakareEntityRepository.findByPersonId(personId)).thenReturn(
+        Optional.of(privatlakareEntity)
+    );
     when(privatlakareEntityConverter.convert(privatlakareEntity)).thenReturn(expected);
 
     final var actual = privatePractitionerRepository.findByPersonId(personId);
@@ -61,7 +67,7 @@ class PrivatePractitionerRepositoryTest {
   void shouldReturnEpmtyIfNotFindByPersonId() {
     final var personId = "personId";
 
-    when(privatlakareEntityRepository.findByPersonId(personId)).thenReturn(null);
+    when(privatlakareEntityRepository.findByPersonId(personId)).thenReturn(Optional.empty());
 
     final var actual = privatePractitionerRepository.findByPersonId(personId);
 
@@ -78,7 +84,9 @@ class PrivatePractitionerRepositoryTest {
     final var privatlakareEntity = PrivatlakareEntity.builder()
         .hsaId(hsaId)
         .build();
-    when(privatlakareEntityRepository.findByHsaId(hsaId)).thenReturn(privatlakareEntity);
+    when(privatlakareEntityRepository.findByHsaId(hsaId)).thenReturn(
+        Optional.of(privatlakareEntity)
+    );
     when(privatlakareEntityConverter.convert(privatlakareEntity)).thenReturn(expected);
 
     final var actual = privatePractitionerRepository.findByHsaId(hsaId);
@@ -90,7 +98,7 @@ class PrivatePractitionerRepositoryTest {
   void shouldReturnEmptyIfNotFindByPersonId() {
     final var hsaId = "hsaId";
 
-    when(privatlakareEntityRepository.findByHsaId(hsaId)).thenReturn(null);
+    when(privatlakareEntityRepository.findByHsaId(hsaId)).thenReturn(Optional.empty());
 
     final var actual = privatePractitionerRepository.findByHsaId(hsaId);
 
@@ -134,7 +142,7 @@ class PrivatePractitionerRepositoryTest {
   @Test
   void shouldReturnTrueIfPrivatePractitionerExists() {
     when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
-        .thenReturn(DR_KRANSTEGE_ENTITY);
+        .thenReturn(Optional.of(DR_KRANSTEGE_ENTITY));
 
     final var actual = privatePractitionerRepository.isExists(DR_KRANSTEGE_PERSON_ID);
 
@@ -144,7 +152,7 @@ class PrivatePractitionerRepositoryTest {
   @Test
   void shouldReturnFalseIfPrivatePractitionerNotExists() {
     when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
-        .thenReturn(null);
+        .thenReturn(Optional.empty());
 
     final var actual = privatePractitionerRepository.isExists(DR_KRANSTEGE_PERSON_ID);
 
@@ -160,7 +168,7 @@ class PrivatePractitionerRepositoryTest {
       @BeforeEach
       void setUp() {
         when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE.getPersonId()))
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
         when(privatlakareIdEntityRepository.save(new PrivatlakareIdEntity())).thenReturn(
             PrivatlakareIdEntity.builder().id(1).build()
         );
@@ -206,7 +214,7 @@ class PrivatePractitionerRepositoryTest {
             .build();
 
         when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE.getPersonId()))
-            .thenReturn(existingEntity);
+            .thenReturn(Optional.of(existingEntity));
         when(privatlakareEntityRepository.save(any(PrivatlakareEntity.class)))
             .thenReturn(DR_KRANSTEGE_ENTITY);
         when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY))
