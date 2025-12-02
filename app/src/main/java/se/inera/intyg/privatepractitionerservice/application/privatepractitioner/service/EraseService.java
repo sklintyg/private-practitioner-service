@@ -19,8 +19,7 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +31,8 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EraseService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(EraseService.class);
 
   @Value("${erase.private.practitioner:true}")
   private boolean erasePrivatePractitioner;
@@ -48,13 +46,13 @@ public class EraseService {
     final var privatePractitioner = privatePractitionerRepository.findByHsaId(careProviderId);
 
     if (privatePractitioner.isEmpty()) {
-      LOG.warn("Could not find private practitioner with hsa-id {}. Nothing was erased.",
+      log.warn("Could not find private practitioner with hsa-id {}. Nothing was erased.",
           careProviderId);
       return;
     }
 
     if (!erasePrivatePractitioner) {
-      LOG.warn(
+      log.warn(
           "Erase private practitioner is inactivated via configuration. Private practitioner with hsa-id {} was not erased.",
           careProviderId);
       return;
@@ -64,9 +62,9 @@ public class EraseService {
         "Avslutat konto i Webcert.")) {
       privatePractitionerRepository.remove(privatePractitioner.get());
       monitoringLogService.logUserErased(privatePractitioner.get().getPersonId(), careProviderId);
-      LOG.info("Erased private practitioner with hsa-id {}.", careProviderId);
+      log.info("Erased private practitioner with hsa-id {}.", careProviderId);
     } else {
-      LOG.error("Failure unregistering private practitioner {} in certifier branch.",
+      log.error("Failure unregistering private practitioner {} in certifier branch.",
           privatePractitioner.get().getHsaId());
       throw new PrivatlakarportalServiceException(PrivatlakarportalErrorCodeEnum.EXTERNAL_ERROR,
           "Failure unregistering private practitioner in certifier branch.");
