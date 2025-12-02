@@ -19,6 +19,7 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 
 public interface HospPersonService {
@@ -27,7 +28,7 @@ public interface HospPersonService {
 
   boolean removeFromCertifier(String personId, String certifierId, String reason);
 
-  HospPerson getHospPerson(String personId);
+  Optional<HospPerson> getHospPerson(String personId);
 
   LocalDateTime getHospLastUpdate();
 }

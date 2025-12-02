@@ -19,15 +19,13 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.HospPersonConverter;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
 
@@ -39,63 +37,15 @@ public class HospPersonServiceImpl implements HospPersonService {
   private static final String OK = "OK";
 
   private final HospService hospService;
+  private final HospPersonConverter hospPersonConverter;
 
   @Override
-  public HospPerson getHospPerson(String personId) {
+  public Optional<HospPerson> getHospPerson(String personId) {
 
     LOG.debug("Getting hospPerson from HSA for '{}'", personId);
 
     final var response = hospService.getHospCredentialsForPersonResponseType(personId);
-
-    if (response == null || response.getPersonalIdentityNumber() == null) {
-      LOG.debug("Response did not contain any hospPerson for '{}'", personId);
-      return null;
-    }
-
-    final List<LicensedHealtcareProfession> licensedHealthcareProfessions;
-    if (response.getHealthCareProfessionalLicence() != null) {
-      licensedHealthcareProfessions = response.getHealthCareProfessionalLicence().stream()
-          .map(licence -> new LicensedHealtcareProfession(
-              licence.getHealthCareProfessionalLicenceCode(),
-              licence.getHealthCareProfessionalLicenceName()
-          ))
-          .toList();
-    } else {
-      licensedHealthcareProfessions = List.of();
-    }
-
-    final List<Speciality> specialities;
-    if (response.getHealthCareProfessionalLicenceSpeciality() != null) {
-      specialities = response.getHealthCareProfessionalLicenceSpeciality().stream()
-          .map(code -> new Speciality(
-              code.getSpecialityCode(),
-              code.getSpecialityName()
-          ))
-          .toList();
-    } else {
-      specialities = List.of();
-    }
-
-    final List<Restriction> restrictions;
-    if (response.getRestrictions() != null) {
-      restrictions = response.getRestrictions().stream()
-          .map(restriction -> new Restriction(
-              restriction.getRestrictionCode(),
-              restriction.getRestrictionName(),
-              restriction.getHealthCareProfessionalLicenceCode()
-          ))
-          .toList();
-    } else {
-      restrictions = List.of();
-    }
-
-    return HospPerson.builder()
-        .personalIdentityNumber(response.getPersonalIdentityNumber())
-        .personalPrescriptionCode(response.getPersonalPrescriptionCode())
-        .licensedHealthcareProfessions(licensedHealthcareProfessions)
-        .specialities(specialities)
-        .restrictions(restrictions)
-        .build();
+    return hospPersonConverter.convert(response);
   }
 
   @Override

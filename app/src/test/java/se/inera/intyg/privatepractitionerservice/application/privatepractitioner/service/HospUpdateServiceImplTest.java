@@ -35,6 +35,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,12 +51,14 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcHelper;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.HospPersonConverter;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.HospUppdateringEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospUppdateringEntityRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 
 /**
  * Created by pebe on 2015-09-04.
@@ -79,6 +82,12 @@ class HospUpdateServiceImplTest {
 
   @Mock
   private HospUppdateringEntityRepository hospUppdateringEntityRepository;
+
+  @Mock
+  private HospService hospService;
+
+  @Mock
+  private HospPersonConverter hospPersonConverter;
 
   @Mock
   private MailService mailService;
@@ -140,12 +149,12 @@ class HospUpdateServiceImplTest {
     hospPersonResponse2.getLicensedHealthcareProfessions()
         .add(new LicensedHealtcareProfession("DT", "Dietist"));
     hospPersonResponse2.getSpecialities().add(new Speciality("12", "Specialitet"));
-    when(hospPersonService.getHospPerson(PERSON_ID2)).thenReturn(hospPersonResponse2);
+    when(hospPersonService.getHospPerson(PERSON_ID2)).thenReturn(Optional.of(hospPersonResponse2));
     HospPerson hospPersonResponse3 = createGetHospPersonResponse();
     hospPersonResponse3.getLicensedHealthcareProfessions()
         .add(new LicensedHealtcareProfession("LK", "Läkare"));
     hospPersonResponse3.getSpecialities().add(new Speciality("12", "Specialitet"));
-    when(hospPersonService.getHospPerson(PERSON_ID3)).thenReturn(hospPersonResponse3);
+    when(hospPersonService.getHospPerson(PERSON_ID3)).thenReturn(Optional.of(hospPersonResponse3));
 
     hospUpdateService.scheduledUpdateHospInformation();
 
@@ -182,7 +191,7 @@ class HospUpdateServiceImplTest {
     hospPersonResponse1.getLicensedHealthcareProfessions()
         .add(new LicensedHealtcareProfession("LK", "Läkare"));
     hospPersonResponse1.getSpecialities().add(new Speciality("12", "Specialitet"));
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse1);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.of(hospPersonResponse1));
 
     hospUpdateService.scheduledUpdateHospInformation();
 
@@ -242,7 +251,8 @@ class HospUpdateServiceImplTest {
     privatlakareEntity.setGodkandAnvandare(true);
     privatlakareEntity.setPersonId(PERSON_ID);
 
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(createGetHospPersonResponse());
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(
+        Optional.ofNullable(createGetHospPersonResponse()));
 
     RegistrationStatus response = hospUpdateService.updateHospInformation(privatlakareEntity, true);
 
@@ -257,7 +267,7 @@ class HospUpdateServiceImplTest {
     privatlakareEntity.setGodkandAnvandare(true);
     privatlakareEntity.setPersonId(PERSON_ID);
 
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(null);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.empty());
 
     when(hospPersonService.addToCertifier(eq(PERSON_ID), nullable(String.class))).thenReturn(true);
 
@@ -277,7 +287,7 @@ class HospUpdateServiceImplTest {
     HospPerson hospPersonResponse = createGetHospPersonResponse();
     hospPersonResponse.getLicensedHealthcareProfessions()
         .add(new LicensedHealtcareProfession("LK", "Läkare"));
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.of(hospPersonResponse));
 
     RegistrationStatus response = hospUpdateService.updateHospInformation(privatlakareEntity, true);
 
@@ -296,7 +306,7 @@ class HospUpdateServiceImplTest {
     HospPerson hospPersonResponse = createGetHospPersonResponse();
     hospPersonResponse.getLicensedHealthcareProfessions()
         .add(new LicensedHealtcareProfession("LK", "Läkare"));
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.of(hospPersonResponse));
 
     RegistrationStatus response = hospUpdateService.updateHospInformation(privatlakareEntity, true);
 
@@ -335,7 +345,7 @@ class HospUpdateServiceImplTest {
     hospPersonResponse.getLicensedHealthcareProfessions()
         .add(new LicensedHealtcareProfession("DT", "Dietist"));
     hospPersonResponse.getSpecialities().add(new Speciality("12", "Specialitet"));
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(hospPersonResponse);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.of(hospPersonResponse));
 
     hospUpdateService.checkForUpdatedHospInformation(privatlakareEntity);
 
@@ -411,7 +421,7 @@ class HospUpdateServiceImplTest {
         LocalDate.parse("2015-09-05").atStartOfDay());
 
     // Läkarbehörigheten är borttagen ur HSA
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(null);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.empty());
 
     hospUpdateService.checkForUpdatedHospInformation(privatlakareEntity);
 
@@ -482,7 +492,7 @@ class HospUpdateServiceImplTest {
     when(privatlakareEntityRepository.findNeverHadLakarBehorighet()).thenReturn(list);
 
     // No hosp-data available for user
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(null);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.empty());
 
     hospUpdateService.scheduledUpdateHospInformation();
 
@@ -514,7 +524,7 @@ class HospUpdateServiceImplTest {
     when(privatlakareEntityRepository.findNeverHadLakarBehorighet()).thenReturn(list);
 
     // No hosp-data available for user
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(null);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.empty());
 
     hospUpdateService.scheduledUpdateHospInformation();
 
@@ -541,7 +551,7 @@ class HospUpdateServiceImplTest {
     when(privatlakareEntityRepository.findNeverHadLakarBehorighet()).thenReturn(list);
 
     // No hosp-data available for user
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(null);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.empty());
     when(hospPersonService.removeFromCertifier(eq(PERSON_ID), nullable(String.class),
         anyString())).thenReturn(true);
 
@@ -571,7 +581,7 @@ class HospUpdateServiceImplTest {
     when(privatlakareEntityRepository.findNeverHadLakarBehorighet()).thenReturn(list);
 
     // No hosp-data available for user
-    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(null);
+    when(hospPersonService.getHospPerson(PERSON_ID)).thenReturn(Optional.empty());
 
     hospUpdateService.scheduledUpdateHospInformation();
 

@@ -29,6 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.HospPersonConverter;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Result;
@@ -52,6 +54,10 @@ class HospPersonServiceImplTest {
 
   @Mock
   HospService authorizationManagementService;
+
+  @Mock
+  HospPersonConverter hospPersonConverter;
+
 
   @InjectMocks
   HospPersonServiceImpl hospPersonService;
@@ -74,7 +80,21 @@ class HospPersonServiceImplTest {
   @Test
   void testGetHsaPersonInfoWithValidPerson() {
 
-    HospPerson res = hospPersonService.getHospPerson(VALID_PERSON_ID);
+    final var hospPersonCredentials = HospCredentialsForPerson.builder()
+        .personalIdentityNumber(VALID_PERSON_ID)
+        .build();
+    when(authorizationManagementService.getHospCredentialsForPersonResponseType(
+        VALID_PERSON_ID)).thenReturn(hospPersonCredentials);
+
+    when(hospPersonConverter.convert(hospPersonCredentials)).thenReturn(
+        Optional.of(
+            HospPerson.builder()
+                .personalIdentityNumber(VALID_PERSON_ID)
+                .build()
+        )
+    );
+
+    HospPerson res = hospPersonService.getHospPerson(VALID_PERSON_ID).orElse(null);
 
     assertNotNull(res);
   }
@@ -82,7 +102,7 @@ class HospPersonServiceImplTest {
   @Test
   void testGetHsaPersonInfoWithInvalidPerson() {
 
-    HospPerson res = hospPersonService.getHospPerson(INVALID_PERSON_ID);
+    final var res = hospPersonService.getHospPerson(INVALID_PERSON_ID).orElse(null);
 
     assertNull(res);
   }

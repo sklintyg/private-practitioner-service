@@ -192,7 +192,8 @@ public class HospUpdateServiceImpl implements HospUpdateService {
 
     HospPerson hospPersonResponse;
     try {
-      hospPersonResponse = hospPersonService.getHospPerson(privatlakareEntity.getPersonId());
+      hospPersonResponse = hospPersonService.getHospPerson(privatlakareEntity.getPersonId())
+          .orElse(null);
     } catch (Exception e) {
       log.error(
           "Failed to call getHospPerson in HSA, this call will be retried at next hosp update cycle.");
