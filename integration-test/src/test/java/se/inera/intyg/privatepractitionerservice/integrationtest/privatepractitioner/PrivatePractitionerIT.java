@@ -83,6 +83,7 @@ class PrivatePractitionerIT {
         Containers.mailHogContainer.getHost(),
         Containers.mailHogContainer.getMappedPort(8025)
     );
+    mailHogUtil.reset();
   }
 
   @AfterEach

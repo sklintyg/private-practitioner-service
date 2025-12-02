@@ -27,10 +27,14 @@ public class MailHogUtil {
   private final int port;
 
   public void reset() {
-    final var requestUrl = "http://%s:%s/api/v1/messages".formatted(host, port);
+    final var requestUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
 
     try {
       restTemplate.delete(requestUrl);
+      Thread.sleep(100);
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+      log.warn("Interrupted while waiting after MailHog reset", ex);
     } catch (Exception ex) {
       log.warn("Could not reset MailHog messages", ex);
     }
@@ -43,7 +47,32 @@ public class MailHogUtil {
       throw new IllegalStateException("No messages received within timeout period");
     }
 
-    final var msg = messages.path("items").get(0);
+    final var items = messages.path("items");
+    JsonNode msg = null;
+
+    for (int i = items.size() - 1; i >= 0; i--) {
+      final var currentMsg = items.get(i);
+      final var currentSubject = decode(
+          currentMsg
+              .path("Content")
+              .path("Headers")
+              .path("Subject")
+              .get(0)
+              .asText()
+      );
+
+      if (subject.equals(currentSubject)) {
+        msg = currentMsg;
+        break;
+      }
+    }
+
+    if (msg == null) {
+      throw new IllegalStateException(
+          "No message found with subject '%s'. Found %d messages.".formatted(subject, items.size())
+      );
+    }
+
     final var to = msg.path("To").get(0);
     final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
 
@@ -80,7 +109,7 @@ public class MailHogUtil {
 
     try {
       await()
-          .atMost(Duration.ofSeconds(5))
+          .atMost(Duration.ofSeconds(20))
           .pollInterval(Duration.ofMillis(200))
           .until(() -> hasMessages(requestUrl));
 
