@@ -23,10 +23,11 @@ public class MailHogUtil {
 
   private final TestRestTemplate restTemplate;
   private final ObjectMapper objectMapper;
+  private final String host;
   private final int port;
 
   public void reset() {
-    final var requestUrl = "http://localhost:%s/api/v1/messages".formatted(port);
+    final var requestUrl = "http://%s:%s/api/v1/messages".formatted(host, port);
 
     try {
       restTemplate.delete(requestUrl);
@@ -75,7 +76,7 @@ public class MailHogUtil {
   }
 
   private JsonNode getMessages() {
-    final var requestUrl = "http://localhost:%s/api/v2/messages".formatted(port);
+    final var requestUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
 
     try {
       await()

@@ -80,6 +80,7 @@ class PrivatePractitionerIT {
     this.mailHogUtil = new MailHogUtil(
         restTemplate,
         new CustomObjectMapper(),
+        Containers.mailHogContainer.getHost(),
         Containers.mailHogContainer.getMappedPort(8025)
     );
   }
