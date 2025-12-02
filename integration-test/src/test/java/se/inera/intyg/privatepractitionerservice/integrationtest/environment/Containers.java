@@ -8,10 +8,12 @@ public class Containers {
 
   public static MockServerContainer mockServerContainer;
   public static GenericContainer<?> redisContainer;
+  public static GenericContainer<?> mailHogContainer;
 
   public static void ensureRunning() {
     mockServerContainer();
     redisContainer();
+    mailHogContainer();
   }
 
   private static void mockServerContainer() {
@@ -46,5 +48,23 @@ public class Containers {
 
     System.setProperty("spring.data.redis.host", redisContainer.getHost());
     System.setProperty("spring.data.redis.port", redisContainer.getMappedPort(6379).toString());
+  }
+
+  private static void mailHogContainer() {
+    if (mailHogContainer == null) {
+      mailHogContainer = new GenericContainer<>("mailhog/mailhog:latest")
+          .withExposedPorts(1025, 8025);
+    }
+
+    if (!mailHogContainer.isRunning()) {
+      mailHogContainer.start();
+    }
+
+    System.setProperty("spring.mail.host", mailHogContainer.getHost());
+    System.setProperty("spring.mail.port", mailHogContainer.getMappedPort(1025).toString());
+    System.setProperty("spring.mail.username", "");
+    System.setProperty("spring.mail.password", "");
+    System.setProperty("spring.mail.properties.mail.smtp.auth", "false");
+    System.setProperty("spring.mail.properties.mail.smtp.starttls.enable", "false");
   }
 }

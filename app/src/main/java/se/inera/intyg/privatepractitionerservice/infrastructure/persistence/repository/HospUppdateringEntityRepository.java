@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -34,5 +35,8 @@ public interface HospUppdateringEntityRepository extends
 
   @Query("SELECT h from HospUppdateringEntity h WHERE h.id = 1")
   HospUppdateringEntity findSingle();
+
+  @Query("SELECT h from HospUppdateringEntity h WHERE h.id = 1")
+  Optional<HospUppdateringEntity> findHospUppdatering();
 
 }

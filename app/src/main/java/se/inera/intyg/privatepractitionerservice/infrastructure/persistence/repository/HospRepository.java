@@ -11,6 +11,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.HospUppdateringEntity;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 
 @Repository
@@ -20,6 +21,7 @@ public class HospRepository {
 
   private final HospService hospService;
   private final HashUtility hashUtility;
+  private final HospUppdateringEntityRepository hospUppdateringEntityRepository;
 
   public void addToCertifier(PrivatePractitioner privatePractitioner) {
     final var result = hospService.handleHospCertificationPersonResponseType(
@@ -34,10 +36,12 @@ public class HospRepository {
     );
   }
 
-  public void removeFromCertifier() {
-
+  // TODO: Implement removal in HOSP
+  public boolean removeFromCertifier(PrivatePractitioner privatePractitioner, String reason) {
+    return false;
   }
 
+  // TODO: If no Hosp person, then still return with empty and a date when tried to fetch
   public Optional<HospPerson> findByPersonId(String personId) {
     final var response = hospService.getHospCredentialsForPersonResponseType(personId);
 
@@ -100,5 +104,30 @@ public class HospRepository {
                     .build()
             )
         );
+  }
+
+  public boolean needUpdateFromHosp() {
+    final var hospLastUpdate = hospService.getHospLastUpdate();
+    if (hospLastUpdate == null) {
+      log.warn("Hosp last update is null, cannot determine if update is needed");
+      return false;
+    }
+    return hospUppdateringEntityRepository.findHospUppdatering()
+        .map(hospUppdateringEntity ->
+            hospUppdateringEntity.getSenasteHospUppdatering().isBefore(hospLastUpdate)
+        )
+        .orElse(true);
+  }
+
+  public void hospUpdated() {
+    final var hospLastUpdate = hospService.getHospLastUpdate();
+    if (hospLastUpdate == null) {
+      log.warn("Hosp last update is null, cannot update stored hosp update");
+      return;
+    }
+    final var hospUppdateringEntity = hospUppdateringEntityRepository.findHospUppdatering()
+        .orElse(new HospUppdateringEntity());
+    hospUppdateringEntity.setSenasteHospUppdatering(hospLastUpdate);
+    hospUppdateringEntityRepository.save(hospUppdateringEntity);
   }
 }

@@ -47,7 +47,9 @@ public class HospLastUpdateClient {
         .get()
         .uri(lastUpdateEndpoint)
         .header(LOG_TRACE_ID_HEADER, MDC.get(TRACE_ID_KEY))
-        .header(LOG_SESSION_ID_HEADER, MDC.get(SESSION_ID_KEY))
+        .header(LOG_SESSION_ID_HEADER,
+            MDC.get(SESSION_ID_KEY) != null ? MDC.get(SESSION_ID_KEY) : "-"
+        )
         .retrieve()
         .body(GetHospLastUpdateResponseDTO.class);
   }

@@ -51,7 +51,9 @@ public class HospCertificationPersonClient {
         .uri(certificationPersonEndpoint)
         .body(getHospCertificationPersonRequestDTO)
         .header(LOG_TRACE_ID_HEADER, MDC.get(TRACE_ID_KEY))
-        .header(LOG_SESSION_ID_HEADER, MDC.get(SESSION_ID_KEY))
+        .header(LOG_SESSION_ID_HEADER,
+            MDC.get(SESSION_ID_KEY) != null ? MDC.get(SESSION_ID_KEY) : "-"
+        )
         .contentType(MediaType.APPLICATION_JSON)
         .retrieve()
         .body(GetHospCertificationPersonResponseDTO.class);
