@@ -14,7 +14,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE_HOSP_PERSON;
 
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter.PrivatePractitionerConverter;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter.PrivatePractitionerFactory;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.validator.CreateRegistrationRequestValidator;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
@@ -65,7 +65,7 @@ class CreateRegistrationServiceTest {
         .thenReturn(privatePractitionerMock);
 
     when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
-        .thenReturn(Optional.of(DR_KRANSTEGE_HOSP_PERSON));
+        .thenReturn(DR_KRANSTEGE_HOSP_PERSON);
 
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -75,14 +75,16 @@ class CreateRegistrationServiceTest {
   @Test
   void shouldNotUpdatePrivatePractitionerIfHospMissing() {
     final var privatePractitionerMock = mock(PrivatePractitioner.class);
+    final var hospPersonWithoutInfo = mock(HospPerson.class);
 
     when(privatePractitionerMock.getPersonId()).thenReturn(DR_KRANSTEGE_PERSON_ID);
+    when(hospPersonWithoutInfo.hasHospInformation()).thenReturn(false);
 
     when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST))
         .thenReturn(privatePractitionerMock);
 
     when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
-        .thenReturn(Optional.empty());
+        .thenReturn(hospPersonWithoutInfo);
 
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -96,7 +98,8 @@ class CreateRegistrationServiceTest {
     when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
         DR_KRANSTEGE);
     when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
-
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
+        HospPerson.builder().build());
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     verify(hospRepository).addToCertifier(savePrivatePractitioner);
@@ -109,7 +112,9 @@ class CreateRegistrationServiceTest {
     when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
         DR_KRANSTEGE);
     when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
-
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
+        HospPerson.builder().build());
+    
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     verify(notifyPrivatePractitionerRegistration).notify(savePrivatePractitioner);
@@ -124,6 +129,8 @@ class CreateRegistrationServiceTest {
     when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
     when(privatePractitionerConverter.convert(savePrivatePractitioner))
         .thenReturn(DR_KRANSTEGE_DTO);
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
+        HospPerson.builder().build());
 
     final var actual = createRegistrationService.createRegistration(
         DR_KRANSTEGE_REGISTATION_REQUEST);

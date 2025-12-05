@@ -1,16 +1,15 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
-import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 
 @Slf4j
@@ -20,21 +19,18 @@ public class HospPersonConverter {
 
   private final HashUtility hashUtility;
 
-  public Optional<HospPerson> convert(HospCredentialsForPerson hospCredentialsForPerson) {
-    if (hospCredentialsForPerson == null
-        || hospCredentialsForPerson.getPersonalIdentityNumber() == null) {
-      return Optional.empty();
+  public HospPerson convert(@NonNull HospCredentialsForPerson hospCredentialsForPerson) {
+    if (hospCredentialsForPerson.getPersonalIdentityNumber() == null) {
+      return HospPerson.builder().build();
     }
 
-    return Optional.of(
-        HospPerson.builder()
-            .personalIdentityNumber(hospCredentialsForPerson.getPersonalIdentityNumber())
-            .personalPrescriptionCode(hospCredentialsForPerson.getPersonalPrescriptionCode())
-            .licensedHealthcareProfessions(convertHealthcareProfessions(hospCredentialsForPerson))
-            .specialities(convertSpecialities(hospCredentialsForPerson))
-            .restrictions(convertRestrictions(hospCredentialsForPerson))
-            .build()
-    );
+    return HospPerson.builder()
+        .personalIdentityNumber(hospCredentialsForPerson.getPersonalIdentityNumber())
+        .personalPrescriptionCode(hospCredentialsForPerson.getPersonalPrescriptionCode())
+        .licensedHealthcareProfessions(convertHealthcareProfessions(hospCredentialsForPerson))
+        .specialities(convertSpecialities(hospCredentialsForPerson))
+        .restrictions(convertRestrictions(hospCredentialsForPerson))
+        .build();
   }
 
   private List<Restriction> convertRestrictions(
@@ -79,8 +75,7 @@ public class HospPersonConverter {
 
     return hospCredentialsForPerson.getHealthCareProfessionalLicence().stream()
         .filter(healthCareProfessionalLicence -> {
-          if (healthCareProfessionalLicence == null
-              || !healthCareProfessionalLicence.isValid()) {
+          if (healthCareProfessionalLicence == null || !healthCareProfessionalLicence.isValid()) {
             log.info(
                 "Invalid healthCareProfessionalLicence returned from hosp for personId '{}'",
                 hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
@@ -117,10 +112,10 @@ public class HospPersonConverter {
           }
           return true;
         })
-        .filter(HCPSpecialityCodes::isPhysicianSpeciality)
         .map(speciality -> new Speciality(
             speciality.getSpecialityCode(),
-            speciality.getSpecialityName()
+            speciality.getSpecialityName(),
+            speciality.getHealthCareProfessionalLicenceCode()
         )).toList();
   }
 }

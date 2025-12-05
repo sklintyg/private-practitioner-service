@@ -39,10 +39,16 @@ public class HospRepository {
     return false;
   }
 
-  // TODO: If no Hosp person, then still return with empty and a date when tried to fetch
-  public Optional<HospPerson> findByPersonId(String personId) {
+  public HospPerson findByPersonId(String personId) {
     final var response = hospService.getHospCredentialsForPersonResponseType(personId);
-    return hospPersonConverter.convert(response);
+    final var hospPerson = hospPersonConverter.convert(response);
+
+    return hospPerson.hasHospInformation()
+        ? hospPerson.withHospUpdated(hospService.getHospLastUpdate())
+        : HospPerson.builder()
+            .personalIdentityNumber(personId)
+            .hospUpdated(hospService.getHospLastUpdate())
+            .build();
   }
 
   public Optional<HospPerson> updatedHospPerson(PrivatePractitioner privatePractitioner) {
@@ -54,15 +60,7 @@ public class HospRepository {
       return Optional.empty();
     }
 
-    return findByPersonId(privatePractitioner.getPersonId())
-        .map(person -> person.withHospUpdated(hospLastUpdate))
-        .or(() -> Optional.of(
-                HospPerson.builder()
-                    .personalIdentityNumber(privatePractitioner.getPersonId())
-                    .hospUpdated(hospLastUpdate)
-                    .build()
-            )
-        );
+    return Optional.of(findByPersonId(privatePractitioner.getPersonId()));
   }
 
   public boolean needUpdateFromHosp() {

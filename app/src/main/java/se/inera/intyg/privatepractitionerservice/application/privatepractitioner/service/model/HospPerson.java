@@ -25,4 +25,8 @@ public class HospPerson {
   private List<Speciality> specialities = new ArrayList<>();
   @With
   private LocalDateTime hospUpdated;
+
+  public boolean hasHospInformation() {
+    return !licensedHealthcareProfessions.isEmpty();
+  }
 }

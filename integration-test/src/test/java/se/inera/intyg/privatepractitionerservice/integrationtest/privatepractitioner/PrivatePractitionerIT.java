@@ -102,6 +102,7 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.certificationPersonResponse(
         addToCertifierResponseBuilder().build()
     );
+    intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -127,6 +128,7 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.certificationPersonResponse(
         addToCertifierResponseBuilder().build()
     );
+    intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -150,6 +152,7 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.certificationPersonResponse(
         addToCertifierResponseBuilder().build()
     );
+    intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -169,6 +172,7 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.certificationPersonResponse(
         addToCertifierResponseBuilder().build()
     );
+    intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -182,6 +186,7 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.credentialsForPersonResponse(
         fridaKranstegeCredentialsBuilder().build()
     );
+    intygProxyServiceMock.lastUpdate();
 
     final var response = api.hospInformation(DR_KRANSTEGE_HOSP_INFORMATION_REQUEST);
 

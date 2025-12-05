@@ -1,6 +1,10 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.DR_KRANSTEGE_ENTITY;
 
 import org.junit.jupiter.api.Test;
@@ -96,25 +100,22 @@ class PrivatlakareEntityConverterTest {
   @Test
   void shouldConvertSpecialties() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertEquals(2, actual.getSpecialties().size());
-    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getFirst().getKod(),
-        actual.getSpecialties().getFirst().code());
-    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getFirst().getNamn(),
-        actual.getSpecialties().getFirst().name());
-    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getLast().getKod(),
-        actual.getSpecialties().getLast().code());
-    assertEquals(DR_KRANSTEGE_ENTITY.getSpecialiteter().getLast().getNamn(),
-        actual.getSpecialties().getLast().name());
+    assertThat(DR_KRANSTEGE_SPECIALITIES).containsExactlyInAnyOrderElementsOf(
+        actual.getSpecialties());
+  }
+
+  @Test
+  void shouldConvertRestrictions() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertThat(DR_KRANSTEGE_RESTRICTIONS).containsExactlyInAnyOrderElementsOf(
+        actual.getRestrictions());
   }
 
   @Test
   void shouldConvertLicensedHealthcareProfessions() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertEquals(1, actual.getLicensedHealthcareProfessions().size());
-    assertEquals(DR_KRANSTEGE_ENTITY.getLegitimeradeYrkesgrupper().getFirst().getKod(),
-        actual.getLicensedHealthcareProfessions().getFirst().code());
-    assertEquals(DR_KRANSTEGE_ENTITY.getLegitimeradeYrkesgrupper().getFirst().getNamn(),
-        actual.getLicensedHealthcareProfessions().getFirst().name());
+    assertThat(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS).containsExactlyInAnyOrderElementsOf(
+        actual.getLicensedHealthcareProfessions());
   }
 
   @Test

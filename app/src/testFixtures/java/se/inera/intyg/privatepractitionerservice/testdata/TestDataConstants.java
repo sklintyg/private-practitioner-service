@@ -27,13 +27,11 @@ public final class TestDataConstants {
   public static final String DR_KRANSTEGE_COUNTY = "STOCKHOLM";
   public static final String DR_KRANSTEGE_PRESCRIPTION_CODE = "1234568";
   public static final List<Speciality> DR_KRANSTEGE_SPECIALITIES = List.of(
-      new Speciality("3299", "Klinisk fysiologi"),
-      new Speciality("74", "Nukleärmedicin")
+      new Speciality("3299", "Klinisk fysiologi", "LK"),
+      new Speciality("74", "Nukleärmedicin", "LK")
   );
   public static final List<LicensedHealtcareProfession> DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS =
-      List.of(
-          new LicensedHealtcareProfession("LK", "Läkare")
-      );
+      List.of(new LicensedHealtcareProfession("LK", "Läkare"));
 
   public static final List<Restriction> DR_KRANSTEGE_RESTRICTIONS = List.of(
       new Restriction(
