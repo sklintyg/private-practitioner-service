@@ -102,11 +102,31 @@ class PrivatePractitionerIT {
     );
 
     intygProxyServiceMock.certificationPersonResponse(
-        removeFromCertifierResponseBuilder("OK").build());
+        removeFromCertifierResponseBuilder("OK").build()
+    );
 
     final var response = api.erasePrivatePractitioner(DR_KRANSTEGE_HSA_ID);
 
     assertEquals(200, response.getStatusCode().value());
+  }
+
+  @Test
+  void shallNotErasePrivatePractitionerWhenCertifierFails() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        removeFromCertifierResponseBuilder("ERROR").build());
+
+    final var privatePractitioner = testabilityApi.addPrivatePractitioner(
+        DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST).getBody();
+
+    assertNotNull(privatePractitioner);
+
+    final var response = api.erasePrivatePractitioner(privatePractitioner.getHsaId());
+
+    assertEquals(500, response.getStatusCode().value());
   }
 
   @Test

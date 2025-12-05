@@ -38,7 +38,6 @@ public class HospRepository {
     );
   }
 
-  // TODO: Implement removal in HOSP
   public boolean removeFromCertifier(PrivatePractitioner privatePractitioner, String reason) {
     final var result = hospService.handleHospCertificationPersonResponseType(
         privatePractitioner.getHsaId(),

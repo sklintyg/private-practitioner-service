@@ -29,19 +29,6 @@ public class IntygProxyServiceMock {
 
   private final MockServerClient mockServerClient;
 
-  public void deletePrivatePractitioner() {
-    try {
-      mockServerClient.when(HttpRequest.request("/api/v1/privatePractitioner").withMethod("DELETE"))
-          .respond(
-              HttpResponse
-                  .response()
-                  .withStatusCode(200)
-          );
-    } catch (Exception ex) {
-      throw new IllegalStateException(ex);
-    }
-  }
-
   public void credentialsForPersonResponse(
       GetCredentialsForPersonResponseDTO credentialsForPerson) {
     try {
