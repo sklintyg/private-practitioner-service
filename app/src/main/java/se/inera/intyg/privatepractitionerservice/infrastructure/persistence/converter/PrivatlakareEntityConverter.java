@@ -2,11 +2,14 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.con
 
 import java.util.List;
 import org.springframework.stereotype.Component;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.HospConstants;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestriktionEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 
 @Component
@@ -37,6 +40,7 @@ public class PrivatlakareEntityConverter {
         .county(privatlakareEntity.getLan())
         .personalPrescriptionCode(privatlakareEntity.getForskrivarKod())
         .specialties(convertSpecialiteter(privatlakareEntity.getSpecialiteter()))
+        .restrictions(convertRestrictions(privatlakareEntity.getRestriktioner()))
         .licensedHealthcareProfessions(
             convertLegitimeradeYrkesgrupper(privatlakareEntity.getLegitimeradeYrkesgrupper()))
         .startDate(privatlakareEntity.getVardgivareStartdatum())
@@ -80,7 +84,13 @@ public class PrivatlakareEntityConverter {
     }
 
     return entities.stream()
-        .map(s -> new Speciality(s.getKod(), s.getNamn()))
+        .map(s -> new Speciality(s.getKod(), s.getNamn(), HospConstants.LK))
+        .toList();
+  }
+
+  private List<Restriction> convertRestrictions(List<RestriktionEntity> restriktioner) {
+    return restriktioner.stream()
+        .map(s -> new Restriction(s.getKod(), s.getNamn(), HospConstants.LK))
         .toList();
   }
 

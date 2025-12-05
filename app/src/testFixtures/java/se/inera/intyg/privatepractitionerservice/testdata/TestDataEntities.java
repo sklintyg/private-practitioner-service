@@ -15,6 +15,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PHONE_NUMBER;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_POSITION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PRESCRIPTION_CODE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_TYPE_OF_CARE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_WORKPLACE_CODE;
@@ -25,6 +26,7 @@ import java.util.List;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.BefattningEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestriktionEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.VardformEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.VerksamhetstypEntity;
@@ -92,6 +94,12 @@ public class TestDataEntities {
                 )
                 .toList()
         )
+        .restriktioner(DR_KRANSTEGE_RESTRICTIONS.stream()
+            .map(restriction -> RestriktionEntity.builder()
+                .kod(restriction.code())
+                .namn(restriction.name())
+                .build())
+            .toList())
         .godkandAnvandare(true);
   }
 

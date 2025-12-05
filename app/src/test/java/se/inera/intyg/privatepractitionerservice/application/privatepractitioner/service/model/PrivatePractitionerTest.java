@@ -45,7 +45,7 @@ class PrivatePractitionerTest {
 
     final var hosp = kranstegeHospPersonBuilder()
         .specialities(List.of(
-            new Speciality("NEW_SPECIALITY_CODE", "New Speciality Name")
+            new Speciality("NEW_SPECIALITY_CODE", "New Speciality Name", "LK")
         ))
         .build();
 

@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.HospPersonConverter;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.HospUppdateringEntity;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.HospService;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
@@ -36,6 +37,8 @@ class HospRepositoryTest {
   private HospService hospService;
   @Mock
   private HashUtility hashUtility;
+  @Mock
+  private HospPersonConverter hospPersonConverter;
   @Mock
   private HospUppdateringEntityRepository hospUppdateringEntityRepository;
   @InjectMocks
@@ -64,20 +67,30 @@ class HospRepositoryTest {
 
   @Test
   void shouldReturnEmptyWhenNoHospPersonFound() {
-    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getHsaId()))
-        .thenReturn(null);
-    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getHsaId());
-    assertTrue(actual.isEmpty());
+    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getPersonId()))
+        .thenReturn(HospCredentialsForPerson.builder().build());
+    when(hospPersonConverter.convert(HospCredentialsForPerson.builder().build()))
+        .thenReturn(HospPerson.builder().build());
+    final var now = LocalDateTime.now();
+    when(hospService.getHospLastUpdate()).thenReturn(now);
+    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getPersonId());
+
+    assertEquals(HospPerson.builder()
+        .personalIdentityNumber(DR_KRANSTEGE.getPersonId())
+        .hospUpdated(now)
+        .build(), actual);
   }
 
   @Test
   void shouldReturnWhenHospPersonFound() {
-    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getHsaId()))
+    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getPersonId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
+    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
+        DR_KRANSTEGE_HOSP_PERSON);
 
-    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getHsaId());
+    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getPersonId());
 
-    assertEquals(DR_KRANSTEGE_HOSP_PERSON, actual.orElseThrow());
+    assertEquals(DR_KRANSTEGE_HOSP_PERSON, actual);
   }
 
   @Test
@@ -93,6 +106,8 @@ class HospRepositoryTest {
     when(hospService.getHospLastUpdate()).thenReturn(expected.getHospUpdated());
     when(hospService.getHospCredentialsForPersonResponseType(drKranstege.getPersonId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
+    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
+        DR_KRANSTEGE_HOSP_PERSON);
 
     final var actual = hospRepository.updatedHospPerson(drKranstege);
 
@@ -113,6 +128,8 @@ class HospRepositoryTest {
     when(hospService.getHospLastUpdate()).thenReturn(expected.getHospUpdated());
     when(hospService.getHospCredentialsForPersonResponseType(drKranstege.getPersonId()))
         .thenReturn(HospCredentialsForPerson.builder().build());
+    when(hospPersonConverter.convert(HospCredentialsForPerson.builder().build())).thenReturn(
+        HospPerson.builder().build());
 
     final var actual = hospRepository.updatedHospPerson(drKranstege);
 

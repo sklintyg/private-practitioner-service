@@ -28,70 +28,67 @@ import lombok.Setter;
 @Builder
 public class PrivatePractitioner {
 
-  String hsaId;
-  String personId;
+  private String hsaId;
+  private String personId;
   @Setter
-  String name;
+  private String name;
   @Setter
-  String careProviderName;
+  private String careProviderName;
 
   @Setter
-  String position;
+  private String position;
   @Setter
-  String careUnitName;
-  String ownershipType;
+  private String careUnitName;
+  private String ownershipType;
   @Setter
-  String typeOfCare;
+  private String typeOfCare;
   @Setter
-  String healthcareServiceType;
+  private String healthcareServiceType;
   @Setter
-  String workplaceCode;
+  private String workplaceCode;
 
   @Setter
-  String phoneNumber;
+  private String phoneNumber;
   @Setter
-  String email;
+  private String email;
   @Setter
-  String address;
+  private String address;
   @Setter
-  String zipCode;
+  private String zipCode;
   @Setter
-  String city;
+  private String city;
   @Setter
-  String municipality;
+  private String municipality;
   @Setter
-  String county;
+  private String county;
 
-  String personalPrescriptionCode;
+  private String personalPrescriptionCode;
   @Builder.Default
-  List<Speciality> specialties = List.of();
+  private List<Speciality> specialties = List.of();
   @Builder.Default
-  List<Restriction> restrictions = List.of();
+  private List<Restriction> restrictions = List.of();
   @Builder.Default
-  List<LicensedHealtcareProfession> licensedHealthcareProfessions = List.of();
+  private List<LicensedHealtcareProfession> licensedHealthcareProfessions = List.of();
 
-  LocalDateTime startDate;
-  LocalDateTime endDate;
+  private LocalDateTime startDate;
+  private LocalDateTime endDate;
 
-  LocalDateTime registrationDate;
-  LocalDateTime hospUpdated;
+  private LocalDateTime registrationDate;
+  private LocalDateTime hospUpdated;
 
   public void updateWithHospInformation(HospPerson hosp) {
     if (!hosp.getPersonalIdentityNumber().equalsIgnoreCase(this.personId)) {
       throw new IllegalArgumentException("Personal identity number does not match!");
     }
     personalPrescriptionCode = hosp.getPersonalPrescriptionCode();
-    specialties = hosp.getSpecialities();
+    specialties = hosp.getSpecialities().stream()
+        .filter((Speciality::isPhysicianSpeciality))
+        .toList();
     licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions();
     hospUpdated = hosp.getHospUpdated();
-    restrictions = hosp.getRestrictions().stream().filter(Restriction::isRestrictedPhysician)
+    restrictions = hosp.getRestrictions().stream()
+        .filter(Restriction::isRestrictedPhysician)
         .toList();
-  }
-
-  public void clearHospInformation() {
-    personalPrescriptionCode = null;
-    specialties = List.of();
-    licensedHealthcareProfessions = List.of();
   }
 
   public boolean isLicensedPhysician() {

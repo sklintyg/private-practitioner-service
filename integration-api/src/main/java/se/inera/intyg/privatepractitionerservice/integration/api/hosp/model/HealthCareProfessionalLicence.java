@@ -31,4 +31,11 @@ public class HealthCareProfessionalLicence {
 
   protected String healthCareProfessionalLicenceCode;
   protected String healthCareProfessionalLicenceName;
+
+  public boolean isValid() {
+    return healthCareProfessionalLicenceCode != null
+        && !healthCareProfessionalLicenceCode.isEmpty()
+        && healthCareProfessionalLicenceName != null
+        && !healthCareProfessionalLicenceName.isEmpty();
+  }
 }

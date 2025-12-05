@@ -55,5 +55,14 @@ public class HospCredentialsForPerson {
     private String healthCareProfessionalLicenceCode;
     private String restrictionCode;
     private String restrictionName;
+
+    public boolean isValid() {
+      return healthCareProfessionalLicenceCode != null
+          && !healthCareProfessionalLicenceCode.isEmpty()
+          && restrictionCode != null
+          && !restrictionCode.isEmpty()
+          && restrictionName != null
+          && !restrictionName.isEmpty();
+    }
   }
 }

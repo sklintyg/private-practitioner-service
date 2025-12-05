@@ -7,7 +7,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE_HOSP_PERSON;
 
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.HospRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +57,9 @@ class GetHospInformationServiceTest {
         .personId(DR_KRANSTEGE_PERSON_ID)
         .build();
 
-    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(Optional.empty());
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(HospPerson.builder()
+        .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
+        .build());
 
     final var actual = getHospInformationService.get(request);
 
@@ -70,8 +72,8 @@ class GetHospInformationServiceTest {
         .personId(DR_KRANSTEGE_PERSON_ID)
         .build();
 
-    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
-        .thenReturn(Optional.of(DR_KRANSTEGE_HOSP_PERSON));
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
+        DR_KRANSTEGE_HOSP_PERSON);
 
     final var actual = getHospInformationService.get(request);
 

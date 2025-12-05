@@ -49,6 +49,8 @@ public class PrivatlakarBootstrapBean {
         log.info("Loading privatlakare and adding it to db if it does not already exist {}",
             res.getFilename());
         addPrivatlakare(res);
+        log.info("Loaded {}", res.getFilename());
+
       }
     } catch (IOException e) {
       throw new IllegalStateException(e);
@@ -58,7 +60,7 @@ public class PrivatlakarBootstrapBean {
   private void addPrivatlakare(Resource res) throws IOException {
     final var privatlakareEntity = new CustomObjectMapper().readValue(res.getInputStream(),
         PrivatlakareEntity.class);
-    if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId()) == null) {
+    if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId()).isEmpty()) {
       privatlakareEntityRepository.save(privatlakareEntity);
     }
   }

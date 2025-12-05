@@ -55,7 +55,6 @@ public class IntygProxyServiceHospService implements
   public LocalDateTime getHospLastUpdate() {
     try {
       return getHospLastUpdateService.get();
-
     } catch (Exception exception) {
       throw new IllegalStateException(exception);
     }
