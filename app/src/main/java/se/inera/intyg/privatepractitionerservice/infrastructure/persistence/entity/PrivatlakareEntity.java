@@ -95,6 +95,9 @@ public class PrivatlakareEntity {
   @Column(name = "EPOST", nullable = false)
   private String epost;
 
+  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "privatlakareId")
+  private List<EpostEntity> epostList;
+
   @Column(name = "ENHET_STARTDATUM", nullable = true)
   private LocalDateTime enhetStartdatum;
 

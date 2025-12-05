@@ -26,7 +26,7 @@ public class TestabilityApiUtil {
   private final int port;
   private static final List<String> privatePractitionerPersonIds = new ArrayList<>();
 
-  public void addPrivatePractitioner(
+  public ResponseEntity<PrivatePractitionerDTO> addPrivatePractitioner(
       TestabilityCreateRegistrationRequest request) {
     final var requestUrl = "http://localhost:%s/testability/privatepractitioner".formatted(port);
     final var headers = new HttpHeaders();
@@ -44,6 +44,7 @@ public class TestabilityApiUtil {
     if (privatePractitionerPersonId(response.getBody()) != null) {
       privatePractitionerPersonIds.add(privatePractitionerPersonId(response.getBody()));
     }
+    return response;
   }
 
   public static void addPrivatePractitionerPersonId(String personId) {

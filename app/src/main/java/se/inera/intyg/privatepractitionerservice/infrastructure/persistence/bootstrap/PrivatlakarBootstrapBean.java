@@ -58,7 +58,7 @@ public class PrivatlakarBootstrapBean {
   private void addPrivatlakare(Resource res) throws IOException {
     final var privatlakareEntity = new CustomObjectMapper().readValue(res.getInputStream(),
         PrivatlakareEntity.class);
-    if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId()) == null) {
+    if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId()).isEmpty()) {
       privatlakareEntityRepository.save(privatlakareEntity);
     }
   }
