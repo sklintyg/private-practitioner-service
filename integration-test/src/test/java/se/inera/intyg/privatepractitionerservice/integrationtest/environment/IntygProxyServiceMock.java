@@ -29,6 +29,19 @@ public class IntygProxyServiceMock {
 
   private final MockServerClient mockServerClient;
 
+  public void deletePrivatePractitioner() {
+    try {
+      mockServerClient.when(HttpRequest.request("/api/v1/privatePractitioner").withMethod("DELETE"))
+          .respond(
+              HttpResponse
+                  .response()
+                  .withStatusCode(200)
+          );
+    } catch (Exception ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
+
   public void credentialsForPersonResponse(
       GetCredentialsForPersonResponseDTO credentialsForPerson) {
     try {
@@ -144,6 +157,17 @@ public class IntygProxyServiceMock {
             Result.builder()
                 .resultCode("OK")
                 .resultText("Successfully added to certifier")
+                .build()
+        );
+  }
+
+  public static GetHospCertificationPersonResponseDTOBuilder removeFromCertifierResponseBuilder(
+      String resultCode) {
+    return GetHospCertificationPersonResponseDTO.builder()
+        .result(
+            Result.builder()
+                .resultCode(resultCode)
+                .resultText("")
                 .build()
         );
   }
