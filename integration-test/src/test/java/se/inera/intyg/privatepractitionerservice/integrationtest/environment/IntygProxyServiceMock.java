@@ -149,6 +149,17 @@ public class IntygProxyServiceMock {
         );
   }
 
+  public static GetHospCertificationPersonResponseDTOBuilder removeFromCertifierResponseBuilder(
+      String resultCode) {
+    return GetHospCertificationPersonResponseDTO.builder()
+        .result(
+            Result.builder()
+                .resultCode(resultCode)
+                .resultText("")
+                .build()
+        );
+  }
+
   public static PersonSvarDTO fridaKranstegePerson() {
     return new PersonSvarDTO(new PersonDTO("197705232382", "Frida", "Andersson"), StatusDTO.FOUND);
   }

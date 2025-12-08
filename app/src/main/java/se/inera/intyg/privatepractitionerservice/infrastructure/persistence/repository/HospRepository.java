@@ -1,5 +1,6 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
+import static se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.HospConstants.OK;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +36,25 @@ public class HospRepository {
     );
   }
 
-  // TODO: Implement removal in HOSP
   public boolean removeFromCertifier(PrivatePractitioner privatePractitioner, String reason) {
-    return false;
+    final var result = hospService.handleHospCertificationPersonResponseType(
+        privatePractitioner.getHsaId(),
+        "remove",
+        privatePractitioner.getPersonId(),
+        reason
+    );
+
+    if (!OK.equals(result.getResultCode())) {
+      log.info("handleCertifier returned result '{}' for certifierId '{}'", result.getResultText(),
+          privatePractitioner.getHsaId());
+      return false;
+    }
+
+    log.info("Removed for '{}' certifier in HOSP with resultCode: '{}' and resultText '{}'",
+        privatePractitioner.getHsaId(), result.getResultCode(), result.getResultText()
+    );
+
+    return true;
   }
 
   public HospPerson findByPersonId(String personId) {

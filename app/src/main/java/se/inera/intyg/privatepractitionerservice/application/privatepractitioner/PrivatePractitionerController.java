@@ -115,7 +115,7 @@ public class PrivatePractitionerController {
     return ResponseEntity.ok(response);
   }
 
-  @DeleteMapping("/erase/{id}")
+  @DeleteMapping("/{id}")
   @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
   public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
     eraseService.erasePrivatePractitioner(careProviderId);

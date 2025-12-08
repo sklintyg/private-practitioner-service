@@ -45,6 +45,38 @@ class HospRepositoryTest {
   private HospRepository hospRepository;
 
   @Test
+  void shouldRemoveFromCertifierOK() {
+    when(hospService.handleHospCertificationPersonResponseType(
+        anyString(), anyString(), anyString(), any())
+    ).thenReturn(
+        Result.builder()
+            .resultCode("OK")
+            .resultText("")
+            .build()
+    );
+
+    final var result = hospRepository.removeFromCertifier(DR_KRANSTEGE, null);
+
+    assertTrue(result);
+  }
+
+  @Test
+  void shouldRemoveFromCertifierNotOK() {
+    when(hospService.handleHospCertificationPersonResponseType(
+        anyString(), anyString(), anyString(), any())
+    ).thenReturn(
+        Result.builder()
+            .resultCode("Error")
+            .resultText("")
+            .build()
+    );
+
+    final var result = hospRepository.removeFromCertifier(DR_KRANSTEGE, null);
+
+    assertFalse(result);
+  }
+
+  @Test
   void shouldAddToCertifier() {
     when(hospService.handleHospCertificationPersonResponseType(
         anyString(), anyString(), anyString(), any())

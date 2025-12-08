@@ -11,7 +11,9 @@ import static se.inera.intyg.privatepractitionerservice.integrationtest.environm
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegeHospCredentials;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePerson;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.fridaKranstegePersonWithSameName;
+import static se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock.removeFromCertifierResponseBuilder;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
@@ -91,6 +93,40 @@ class PrivatePractitionerIT {
     mockServerClient.reset();
     mailHogUtil.reset();
     Containers.redisContainer.execInContainer("redis-cli", "flushall");
+  }
+
+  @Test
+  void shallErasePrivatePractitioner() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        removeFromCertifierResponseBuilder("OK").build()
+    );
+
+    final var response = api.erasePrivatePractitioner(DR_KRANSTEGE_HSA_ID);
+
+    assertEquals(200, response.getStatusCode().value());
+  }
+
+  @Test
+  void shallNotErasePrivatePractitionerWhenCertifierFails() {
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().build()
+    );
+
+    intygProxyServiceMock.certificationPersonResponse(
+        removeFromCertifierResponseBuilder("ERROR").build());
+
+    final var privatePractitioner = testabilityApi.addPrivatePractitioner(
+        DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST).getBody();
+
+    assertNotNull(privatePractitioner);
+
+    final var response = api.erasePrivatePractitioner(privatePractitioner.getHsaId());
+
+    assertEquals(500, response.getStatusCode().value());
   }
 
   @Test
