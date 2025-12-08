@@ -45,6 +45,22 @@ public class ApiUtil {
     return response;
   }
 
+  public ResponseEntity<PrivatePractitionerDTO> erasePrivatePractitioner(
+      String hsaId) {
+    final var requestUrl =
+        "http://localhost:" + port + "/internalapi/privatepractitioner/%s".formatted(hsaId);
+    final var headers = new HttpHeaders();
+    final var response = this.restTemplate.exchange(
+        requestUrl,
+        HttpMethod.DELETE,
+        new HttpEntity<>(headers),
+        new ParameterizedTypeReference<PrivatePractitionerDTO>() {
+        },
+        Collections.emptyMap()
+    );
+    return response;
+  }
+
   public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(
       UpdatePrivatePractitionerRequest request
   ) {
