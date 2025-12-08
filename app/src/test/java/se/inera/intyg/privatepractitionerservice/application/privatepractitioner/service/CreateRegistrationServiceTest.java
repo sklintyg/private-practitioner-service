@@ -108,11 +108,14 @@ class CreateRegistrationServiceTest {
 
   @Test
   void shouldNotifyPrivatePractitionerRegistered() {
+    final var privatePractitionerMock = mock(PrivatePractitioner.class);
     final var savePrivatePractitioner = mock(PrivatePractitioner.class);
 
+    when(privatePractitionerMock.getPersonId()).thenReturn(DR_KRANSTEGE_PERSON_ID);
     when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
-        DR_KRANSTEGE);
-    when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
+        privatePractitionerMock);
+    when(privatePractitionerRepository.save(privatePractitionerMock)).thenReturn(
+        savePrivatePractitioner);
     when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
         HospPerson.builder()
             .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
