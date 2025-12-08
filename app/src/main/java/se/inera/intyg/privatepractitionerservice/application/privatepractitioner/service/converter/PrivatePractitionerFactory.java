@@ -13,6 +13,7 @@ public class PrivatePractitionerFactory {
         .personId(createRegistrationRequest.getPersonId())
         .name(createRegistrationRequest.getName())
         .position(createRegistrationRequest.getPosition())
+        .careUnitName(createRegistrationRequest.getCareUnitName())
         .careProviderName(createRegistrationRequest.getCareUnitName())
         .ownershipType("Privat")
         .typeOfCare(createRegistrationRequest.getTypeOfCare())
