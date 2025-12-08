@@ -31,26 +31,26 @@ import org.apache.commons.lang3.StringUtils;
 @AllArgsConstructor
 public class Registration {
 
-  String personId;
-  String name;
+  private String personId;
+  private String name;
 
-  String befattning;
-  String verksamhetensNamn;
+  private String befattning;
+  private String verksamhetensNamn;
   @Builder.Default
-  String agarForm = "Privat";
-  String vardform;
-  String verksamhetstyp;
-  String arbetsplatskod;
+  private String agarForm = "Privat";
+  private String vardform;
+  private String verksamhetstyp;
+  private String arbetsplatskod;
 
-  String telefonnummer;
-  String epost;
-  String adress;
-  String postnummer;
-  String postort;
-  String kommun;
-  String lan;
+  private String telefonnummer;
+  private String epost;
+  private String adress;
+  private String postnummer;
+  private String postort;
+  private String kommun;
+  private String lan;
 
-  Long godkannandeMedgivandeVersion;
+  private Long godkannandeMedgivandeVersion;
 
   public boolean checkIsValid() {
     return checkValues(

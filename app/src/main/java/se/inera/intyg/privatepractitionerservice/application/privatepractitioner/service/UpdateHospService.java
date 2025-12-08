@@ -23,12 +23,10 @@ public class UpdateHospService {
 
     final var privatePractitioners = privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate();
     privatePractitioners.forEach(privatePractitioner -> {
-          hospRepository.findByPersonId(privatePractitioner.getPersonId())
-              .ifPresent(hosp -> {
-                    privatePractitioner.updateWithHospInformation(hosp);
-                    privatePractitionerRepository.save(privatePractitioner);
-                  }
-              );
+
+          final var hospPerson = hospRepository.findByPersonId(privatePractitioner.getPersonId());
+          privatePractitioner.updateWithHospInformation(hospPerson);
+          privatePractitionerRepository.save(privatePractitioner);
 
           hospRepository.addToCertifier(privatePractitioner);
 

@@ -15,6 +15,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PHONE_NUMBER;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_POSITION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PRESCRIPTION_CODE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_TYPE_OF_CARE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_WORKPLACE_CODE;
@@ -84,7 +85,8 @@ public class TestDataModel {
         .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
         .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
         .licensedHealthcareProfessions(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS)
-        .specialities(DR_KRANSTEGE_SPECIALITIES);
+        .specialities(DR_KRANSTEGE_SPECIALITIES)
+        .restrictions(DR_KRANSTEGE_RESTRICTIONS);
   }
 
   private TestDataModel() {

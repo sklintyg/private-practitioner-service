@@ -20,36 +20,30 @@ public class GetHospInformationService {
 
     final var hospInformation = hospRepository.findByPersonId(request.getPersonId());
 
-    return hospInformation.map(
-            hosp -> GetHospInformationResponse.builder()
-                .personId(hosp.getPersonalIdentityNumber())
-                .personalPrescriptionCode(hosp.getPersonalPrescriptionCode())
-                .licensedHealthcareProfessions(
-                    hosp.getLicensedHealthcareProfessions().stream()
-                        .map(
-                            license -> new CodeDTO(
-                                license.code(),
-                                license.name()
-                            )
+    return
+        GetHospInformationResponse.builder()
+            .personId(hospInformation.getPersonalIdentityNumber())
+            .personalPrescriptionCode(hospInformation.getPersonalPrescriptionCode())
+            .licensedHealthcareProfessions(
+                hospInformation.getLicensedHealthcareProfessions().stream()
+                    .map(
+                        license -> new CodeDTO(
+                            license.code(),
+                            license.name()
                         )
-                        .toList()
-                )
-                .specialities(
-                    hosp.getSpecialities().stream()
-                        .map(
-                            speciality -> new CodeDTO(
-                                speciality.code(),
-                                speciality.name()
-                            )
+                    )
+                    .toList()
+            )
+            .specialities(
+                hospInformation.getSpecialities().stream()
+                    .map(
+                        speciality -> new CodeDTO(
+                            speciality.code(),
+                            speciality.name()
                         )
-                        .toList()
-                )
-                .build()
-        )
-        .orElseGet(
-            () -> GetHospInformationResponse.builder()
-                .personId(request.getPersonId())
-                .build()
-        );
+                    )
+                    .toList()
+            )
+            .build();
   }
 }

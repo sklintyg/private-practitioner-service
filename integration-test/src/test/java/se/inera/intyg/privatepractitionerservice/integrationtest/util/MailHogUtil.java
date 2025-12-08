@@ -27,12 +27,28 @@ public class MailHogUtil {
   private final int port;
 
   public void reset() {
-    final var requestUrl = "http://%s:%s/api/v1/messages".formatted(host, port);
+    final var deleteUrl = "http://%s:%s/api/v1/messages".formatted(host, port);
+    final var getUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
 
     try {
-      restTemplate.delete(requestUrl);
-    } catch (Exception ex) {
-      log.warn("Could not reset MailHog messages", ex);
+      restTemplate.delete(deleteUrl);
+      await()
+          .atMost(Duration.ofSeconds(5))
+          .pollInterval(Duration.ofMillis(150))
+          .until(() -> {
+            try {
+              var res = restTemplate.getForEntity(getUrl, String.class);
+              if (!res.getStatusCode().is2xxSuccessful()) {
+                return false;
+              }
+              var json = objectMapper.readTree(res.getBody());
+              return json.path("total").asInt(0) == 0;
+            } catch (Exception e) {
+              return false;
+            }
+          });
+    } catch (Exception e) {
+      log.warn("Failed to reset MailHog messages", e);
     }
   }
 
@@ -80,7 +96,7 @@ public class MailHogUtil {
 
     try {
       await()
-          .atMost(Duration.ofSeconds(5))
+          .atMost(Duration.ofSeconds(20))
           .pollInterval(Duration.ofMillis(200))
           .until(() -> hasMessages(requestUrl));
 

@@ -55,5 +55,22 @@ public class HospCredentialsForPerson {
     private String healthCareProfessionalLicenceCode;
     private String restrictionCode;
     private String restrictionName;
+
+    public boolean isValid() {
+      return healthCareProfessionalLicenceCode != null
+          && !healthCareProfessionalLicenceCode.isEmpty()
+          && restrictionCode != null
+          && !restrictionCode.isEmpty()
+          && restrictionName != null
+          && !restrictionName.isEmpty();
+    }
+
+    public RestrictionDTO validate() {
+      if (!isValid()) {
+        throw new IllegalStateException("RestrictionDTO is not valid");
+      } else {
+        return this;
+      }
+    }
   }
 }

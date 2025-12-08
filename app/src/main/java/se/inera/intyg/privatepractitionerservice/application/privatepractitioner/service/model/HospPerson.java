@@ -25,4 +25,5 @@ public class HospPerson {
   private List<Speciality> specialities = new ArrayList<>();
   @With
   private LocalDateTime hospUpdated;
+
 }

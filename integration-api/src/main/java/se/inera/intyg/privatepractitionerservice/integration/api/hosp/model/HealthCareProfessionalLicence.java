@@ -31,4 +31,19 @@ public class HealthCareProfessionalLicence {
 
   protected String healthCareProfessionalLicenceCode;
   protected String healthCareProfessionalLicenceName;
+
+  public boolean isValid() {
+    return healthCareProfessionalLicenceCode != null
+        && !healthCareProfessionalLicenceCode.isEmpty()
+        && healthCareProfessionalLicenceName != null
+        && !healthCareProfessionalLicenceName.isEmpty();
+  }
+
+  public HealthCareProfessionalLicence validate() {
+    if (!isValid()) {
+      throw new IllegalStateException("HealthCareProfessionalLicence is not valid");
+    } else {
+      return this;
+    }
+  }
 }

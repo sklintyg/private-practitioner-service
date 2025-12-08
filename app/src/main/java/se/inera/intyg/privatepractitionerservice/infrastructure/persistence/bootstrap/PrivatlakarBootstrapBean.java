@@ -49,6 +49,8 @@ public class PrivatlakarBootstrapBean {
         log.info("Loading privatlakare and adding it to db if it does not already exist {}",
             res.getFilename());
         addPrivatlakare(res);
+        log.info("Loaded {}", res.getFilename());
+
       }
     } catch (IOException e) {
       throw new IllegalStateException(e);

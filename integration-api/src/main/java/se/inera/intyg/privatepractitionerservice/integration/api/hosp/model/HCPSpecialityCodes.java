@@ -34,4 +34,21 @@ public class HCPSpecialityCodes implements Serializable {
   protected String healthCareProfessionalLicenceCode;
   protected String specialityCode;
   protected String specialityName;
+
+  public boolean isValid() {
+    return healthCareProfessionalLicenceCode != null
+        && !healthCareProfessionalLicenceCode.isEmpty()
+        && specialityCode != null
+        && !specialityCode.isEmpty()
+        && specialityName != null
+        && !specialityName.isEmpty();
+  }
+
+  public HCPSpecialityCodes validate() {
+    if (!isValid()) {
+      throw new IllegalStateException("HCPSpecialityCodes is not valid");
+    } else {
+      return this;
+    }
+  }
 }

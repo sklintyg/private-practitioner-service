@@ -11,7 +11,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeBuilder;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -63,10 +63,10 @@ class UpdatePrivatePractitionerServiceTest {
   @Test
   void shouldReturnUpdatedPrivatePractitioner() {
     when(repository.findByPersonId(DR_KRANSTEGE_UPDATE_REQUEST.getPersonId()))
-        .thenReturn(Optional.of(DR_KRANSTEGE));
+        .thenReturn(Optional.of(kranstegeBuilder().build()));
 
     when(repository.save(any(PrivatePractitioner.class)))
-        .thenReturn(DR_KRANSTEGE);
+        .thenReturn(kranstegeBuilder().build());
 
     when(converter.convert(any(PrivatePractitioner.class)))
         .thenReturn(DR_KRANSTEGE_DTO);
@@ -83,10 +83,10 @@ class UpdatePrivatePractitionerServiceTest {
   void shouldNotifyPrivatePractitionerUpdate() {
 
     when(repository.findByPersonId(DR_KRANSTEGE_UPDATE_REQUEST.getPersonId()))
-        .thenReturn(Optional.of(DR_KRANSTEGE));
+        .thenReturn(Optional.of(kranstegeBuilder().build()));
 
     when(repository.save(any(PrivatePractitioner.class)))
-        .thenReturn(DR_KRANSTEGE);
+        .thenReturn(kranstegeBuilder().build());
 
     service.update(DR_KRANSTEGE_UPDATE_REQUEST);
 
