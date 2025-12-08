@@ -31,8 +31,7 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.h
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IntygProxyServiceHospService implements
-    HospService {
+public class IntygProxyServiceHospService implements HospService {
 
   private final GetHospCertificationPersonService getHospCertificationPersonService;
   private final GetHospLastUpdateService getHospLastUpdateService;

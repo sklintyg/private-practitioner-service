@@ -44,7 +44,11 @@ public class HCPSpecialityCodes implements Serializable {
         && !specialityName.isEmpty();
   }
 
-  public boolean isPhysicianSpeciality() {
-    return "LK".equals(healthCareProfessionalLicenceCode);
+  public HCPSpecialityCodes validate() {
+    if (!isValid()) {
+      throw new IllegalStateException("HCPSpecialityCodes is not valid");
+    } else {
+      return this;
+    }
   }
 }

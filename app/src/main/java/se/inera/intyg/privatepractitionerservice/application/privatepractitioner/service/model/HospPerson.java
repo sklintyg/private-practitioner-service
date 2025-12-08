@@ -26,7 +26,4 @@ public class HospPerson {
   @With
   private LocalDateTime hospUpdated;
 
-  public boolean hasHospInformation() {
-    return !licensedHealthcareProfessions.isEmpty();
-  }
 }

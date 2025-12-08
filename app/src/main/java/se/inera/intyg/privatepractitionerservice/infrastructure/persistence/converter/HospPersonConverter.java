@@ -10,7 +10,10 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,16 +47,7 @@ public class HospPersonConverter {
     }
 
     return hospCredentialsForPerson.getRestrictions().stream()
-        .filter(restrictionDTO -> {
-          if (restrictionDTO == null || !restrictionDTO.isValid()) {
-            log.info(
-                "Invalid restriction type returned from hosp for personId '{}'",
-                hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
-            );
-            return false;
-          }
-          return true;
-        })
+        .map(RestrictionDTO::validate)
         .map(restriction -> new Restriction(
             restriction.getRestrictionCode(),
             restriction.getRestrictionName(),
@@ -74,16 +68,7 @@ public class HospPersonConverter {
     }
 
     return hospCredentialsForPerson.getHealthCareProfessionalLicence().stream()
-        .filter(healthCareProfessionalLicence -> {
-          if (healthCareProfessionalLicence == null || !healthCareProfessionalLicence.isValid()) {
-            log.info(
-                "Invalid healthCareProfessionalLicence returned from hosp for personId '{}'",
-                hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
-            );
-            return false;
-          }
-          return true;
-        })
+        .map(HealthCareProfessionalLicence::validate)
         .map(healthCareProfessionalLicence -> new LicensedHealtcareProfession(
             healthCareProfessionalLicence.getHealthCareProfessionalLicenceCode(),
             healthCareProfessionalLicence.getHealthCareProfessionalLicenceName()
@@ -102,21 +87,12 @@ public class HospPersonConverter {
     }
 
     return hospCredentialsForPerson.getHealthCareProfessionalLicenceSpeciality().stream()
-        .filter(speciality -> {
-          if (speciality == null || !speciality.isValid()) {
-            log.info(
-                "Invalid HCPSpecialityCode returned from hosp for personId '{}'",
-                hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
-            );
-            return false;
-          }
-          return true;
-        })
+        .map(HCPSpecialityCodes::validate)
         .map(speciality -> new Speciality(
             speciality.getSpecialityCode(),
             speciality.getSpecialityName(),
-            speciality.getHealthCareProfessionalLicenceCode()
-        )).toList();
+            speciality.getHealthCareProfessionalLicenceCode()))
+        .toList();
   }
 }
 

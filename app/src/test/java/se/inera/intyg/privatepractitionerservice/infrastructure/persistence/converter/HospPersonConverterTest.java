@@ -2,7 +2,7 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.con
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
@@ -15,8 +15,6 @@ import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -86,20 +84,8 @@ class HospPersonConverterTest {
           "Expected empty when HealthcareProfessions is null");
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    void shouldReturnFalseIfLicensedHealthcareProfessionsHasNoContent(
-        List<HealthCareProfessionalLicence> license) {
-      final var hospCredentials = kranstegeHospCredentialsBuilder().healthCareProfessionalLicence(
-          license).build();
-
-      final var actual = hospPersonConverter.convert(hospCredentials);
-
-      assertFalse(actual.hasHospInformation());
-    }
-
     @Test
-    void shouldFilterOutNonValidHealthcareProfessions() {
+    void shouldThrowExceptionIfInvalidHealthcareProfessions() {
       final var hospCredentials = kranstegeHospCredentialsBuilder()
           .healthCareProfessionalLicence(
               List.of(
@@ -111,10 +97,7 @@ class HospPersonConverterTest {
           )
           .build();
 
-      final var actual = hospPersonConverter.convert(hospCredentials);
-
-      assertTrue(actual.getLicensedHealthcareProfessions().isEmpty(),
-          "Expected non-valid HealthcareProfession to be filtered out");
+      assertThrows(IllegalStateException.class, () -> hospPersonConverter.convert(hospCredentials));
     }
   }
 
@@ -141,7 +124,7 @@ class HospPersonConverterTest {
     }
 
     @Test
-    void shouldFilterOutNonValidSpecialities() {
+    void shouldThrowExceptionIfInvalidSpecialities() {
       final var hospCredentials = kranstegeHospCredentialsBuilder()
           .healthCareProfessionalLicenceSpeciality(
               List.of(
@@ -153,10 +136,7 @@ class HospPersonConverterTest {
           )
           .build();
 
-      final var actual = hospPersonConverter.convert(hospCredentials);
-
-      assertTrue(actual.getSpecialities().isEmpty(),
-          "Expected non-valid HCPSpecialityCodes to be filtered out");
+      assertThrows(IllegalStateException.class, () -> hospPersonConverter.convert(hospCredentials));
     }
   }
 
@@ -178,11 +158,10 @@ class HospPersonConverterTest {
 
       assertTrue(actual.getRestrictions().isEmpty(),
           "Expected empty restrictions when RestrictionsDTO is null");
-
     }
 
     @Test
-    void shouldFilterOutNonValidRestrictions() {
+    void shouldThrowExceptionIfInvalidRestrictions() {
       final var hospCredentials = kranstegeHospCredentialsBuilder()
           .restrictions(
               List.of(
@@ -195,10 +174,7 @@ class HospPersonConverterTest {
           )
           .build();
 
-      final var actual = hospPersonConverter.convert(hospCredentials);
-
-      assertTrue(actual.getRestrictions().isEmpty(),
-          "Expected non-valid HCPSpecialityCodes to be filtered out");
+      assertThrows(IllegalStateException.class, () -> hospPersonConverter.convert(hospCredentials));
     }
   }
 }

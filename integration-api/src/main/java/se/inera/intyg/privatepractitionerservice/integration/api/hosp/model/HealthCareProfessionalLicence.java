@@ -38,4 +38,12 @@ public class HealthCareProfessionalLicence {
         && healthCareProfessionalLicenceName != null
         && !healthCareProfessionalLicenceName.isEmpty();
   }
+
+  public HealthCareProfessionalLicence validate() {
+    if (!isValid()) {
+      throw new IllegalStateException("HealthCareProfessionalLicence is not valid");
+    } else {
+      return this;
+    }
+  }
 }

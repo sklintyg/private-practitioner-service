@@ -23,9 +23,9 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestriktionEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.SpecialitetEntity;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
-@Slf4j
 public class PrivatePractitionerRepository {
 
   private final PrivatlakareEntityRepository privatlakareEntityRepository;
@@ -79,38 +79,7 @@ public class PrivatePractitionerRepository {
 
   private PrivatePractitioner updateExisting(PrivatlakareEntity existingEntity,
       PrivatePractitioner privatePractitioner) {
-    existingEntity.setFullstandigtNamn(privatePractitioner.getName());
-    existingEntity.setEnhetsNamn(privatePractitioner.getCareUnitName());
-    existingEntity.setVardgivareNamn(privatePractitioner.getCareProviderName());
-    existingEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
-    existingEntity.setForskrivarKod(privatePractitioner.getPersonalPrescriptionCode());
-
-    existingEntity.setPostadress(privatePractitioner.getAddress());
-    existingEntity.setPostnummer(privatePractitioner.getZipCode());
-    existingEntity.setPostort(privatePractitioner.getCity());
-    existingEntity.setTelefonnummer(privatePractitioner.getPhoneNumber());
-    existingEntity.setEpost(privatePractitioner.getEmail());
-
-    existingEntity.setKommun(privatePractitioner.getMunicipality());
-    existingEntity.setLan(privatePractitioner.getCounty());
-
-    existingEntity.setAgarform(privatePractitioner.getOwnershipType());
-
-    existingEntity.updateBefattningar(privatePractitioner.getPosition());
-    existingEntity.updateVardformer(privatePractitioner.getTypeOfCare());
-    existingEntity.updateVerksamhetstyper(privatePractitioner.getHealthcareServiceType());
-
-    existingEntity.setSpecialiteter(
-        getSpecialiteter(privatePractitioner.getSpecialties())
-    );
-
-    existingEntity.setRestriktioner(
-        getRestrictions(privatePractitioner.getRestrictions())
-    );
-
-    existingEntity.setLegitimeradeYrkesgrupper(
-        getLegitimeradeYrkesgrupper(privatePractitioner.getLicensedHealthcareProfessions())
-    );
+    setDefaultValues(privatePractitioner, existingEntity);
 
     if (existingEntity.getEnhetStartdatum() == null) {
       existingEntity.setEnhetStartdatum(privatePractitioner.getStartDate());
@@ -133,37 +102,11 @@ public class PrivatePractitionerRepository {
     newEntity.setEnhetsId(hsaId);
     newEntity.setHsaId(hsaId);
     newEntity.setVardgivareId(hsaId);
-
-    newEntity.setFullstandigtNamn(privatePractitioner.getName());
-    newEntity.setEnhetsNamn(privatePractitioner.getCareProviderName());
-    newEntity.setVardgivareNamn(privatePractitioner.getCareProviderName());
-    newEntity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
-    newEntity.setForskrivarKod(privatePractitioner.getPersonalPrescriptionCode());
-
-    newEntity.setPostadress(privatePractitioner.getAddress());
-    newEntity.setPostnummer(privatePractitioner.getZipCode());
-    newEntity.setPostort(privatePractitioner.getCity());
-    newEntity.setTelefonnummer(privatePractitioner.getPhoneNumber());
-    newEntity.setEpost(privatePractitioner.getEmail());
-
-    newEntity.setKommun(privatePractitioner.getMunicipality());
-    newEntity.setLan(privatePractitioner.getCounty());
-
-    newEntity.setAgarform(privatePractitioner.getOwnershipType());
     newEntity.setGodkandAnvandare(true);
     newEntity.setRegistreringsdatum(privatePractitioner.getRegistrationDate());
 
-    newEntity.updateBefattningar(privatePractitioner.getPosition());
-    newEntity.updateVardformer(privatePractitioner.getTypeOfCare());
-    newEntity.updateVerksamhetstyper(privatePractitioner.getHealthcareServiceType());
+    setDefaultValues(privatePractitioner, newEntity);
 
-    newEntity.setSpecialiteter(
-        getSpecialiteter(privatePractitioner.getSpecialties())
-    );
-
-    newEntity.setLegitimeradeYrkesgrupper(
-        getLegitimeradeYrkesgrupper(privatePractitioner.getLicensedHealthcareProfessions())
-    );
     final var savedEntity = privatlakareEntityRepository.save(newEntity);
 
 // TODO: Add logic to send email notification about HSA ID generation status
@@ -174,6 +117,42 @@ public class PrivatePractitionerRepository {
 //    }
 
     return privatlakareEntityConverter.convert(savedEntity);
+  }
+
+  private void setDefaultValues(PrivatePractitioner privatePractitioner,
+      PrivatlakareEntity entity) {
+    entity.setFullstandigtNamn(privatePractitioner.getName());
+    entity.setEnhetsNamn(privatePractitioner.getCareUnitName());
+    entity.setVardgivareNamn(privatePractitioner.getCareProviderName());
+    entity.setArbetsplatsKod(privatePractitioner.getWorkplaceCode());
+
+    entity.setPostadress(privatePractitioner.getAddress());
+    entity.setPostnummer(privatePractitioner.getZipCode());
+    entity.setPostort(privatePractitioner.getCity());
+    entity.setTelefonnummer(privatePractitioner.getPhoneNumber());
+    entity.setEpost(privatePractitioner.getEmail());
+
+    entity.setKommun(privatePractitioner.getMunicipality());
+    entity.setLan(privatePractitioner.getCounty());
+
+    entity.setAgarform(privatePractitioner.getOwnershipType());
+
+    entity.updateBefattningar(privatePractitioner.getPosition());
+    entity.updateVardformer(privatePractitioner.getTypeOfCare());
+    entity.updateVerksamhetstyper(privatePractitioner.getHealthcareServiceType());
+
+    setHospInfo(privatePractitioner, entity);
+
+  }
+
+  private void setHospInfo(PrivatePractitioner privatePractitioner, PrivatlakareEntity entity) {
+    entity.setSenasteHospUppdatering(privatePractitioner.getHospUpdated());
+    entity.setForskrivarKod(privatePractitioner.getPersonalPrescriptionCode());
+
+    entity.setSpecialiteter(getSpecialiteter(privatePractitioner.getSpecialties()));
+    entity.setRestriktioner(getRestrictions(privatePractitioner.getRestrictions()));
+    entity.setLegitimeradeYrkesgrupper(
+        getLegitimeradeYrkesgrupper(privatePractitioner.getLicensedHealthcareProfessions()));
   }
 
   private String generateHsaId(PrivatlakareIdEntity privatlakareIdEntity) {

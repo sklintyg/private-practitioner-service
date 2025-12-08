@@ -20,36 +20,30 @@ public class GetHospInformationService {
 
     final var hospInformation = hospRepository.findByPersonId(request.getPersonId());
 
-    if (hospInformation.hasHospInformation()) {
-      return
-          GetHospInformationResponse.builder()
-              .personId(hospInformation.getPersonalIdentityNumber())
-              .personalPrescriptionCode(hospInformation.getPersonalPrescriptionCode())
-              .licensedHealthcareProfessions(
-                  hospInformation.getLicensedHealthcareProfessions().stream()
-                      .map(
-                          license -> new CodeDTO(
-                              license.code(),
-                              license.name()
-                          )
-                      )
-                      .toList()
-              )
-              .specialities(
-                  hospInformation.getSpecialities().stream()
-                      .map(
-                          speciality -> new CodeDTO(
-                              speciality.code(),
-                              speciality.name()
-                          )
-                      )
-                      .toList()
-              )
-              .build();
-    } else {
-      return GetHospInformationResponse.builder()
-          .personId(request.getPersonId())
-          .build();
-    }
+    return
+        GetHospInformationResponse.builder()
+            .personId(hospInformation.getPersonalIdentityNumber())
+            .personalPrescriptionCode(hospInformation.getPersonalPrescriptionCode())
+            .licensedHealthcareProfessions(
+                hospInformation.getLicensedHealthcareProfessions().stream()
+                    .map(
+                        license -> new CodeDTO(
+                            license.code(),
+                            license.name()
+                        )
+                    )
+                    .toList()
+            )
+            .specialities(
+                hospInformation.getSpecialities().stream()
+                    .map(
+                        speciality -> new CodeDTO(
+                            speciality.code(),
+                            speciality.name()
+                        )
+                    )
+                    .toList()
+            )
+            .build();
   }
 }

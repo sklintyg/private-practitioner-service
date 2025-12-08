@@ -2,6 +2,7 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
@@ -14,8 +15,10 @@ public class GetHospInformationResponse {
 
   String personId;
   String personalPrescriptionCode;
-  List<CodeDTO> licensedHealthcareProfessions;
-  List<CodeDTO> specialities;
+  @Builder.Default
+  List<CodeDTO> licensedHealthcareProfessions = new ArrayList<>();
+  @Builder.Default
+  List<CodeDTO> specialities = new ArrayList<>();
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class GetHospInformationResponseBuilder {

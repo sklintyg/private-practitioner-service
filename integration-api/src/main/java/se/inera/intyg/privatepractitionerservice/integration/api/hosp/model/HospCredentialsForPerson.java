@@ -64,5 +64,13 @@ public class HospCredentialsForPerson {
           && restrictionName != null
           && !restrictionName.isEmpty();
     }
+
+    public RestrictionDTO validate() {
+      if (!isValid()) {
+        throw new IllegalStateException("RestrictionDTO is not valid");
+      } else {
+        return this;
+      }
+    }
   }
 }

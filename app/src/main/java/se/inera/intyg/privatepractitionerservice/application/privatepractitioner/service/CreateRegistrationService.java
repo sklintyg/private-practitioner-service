@@ -32,9 +32,7 @@ public class CreateRegistrationService {
 
     final var hospPerson = hospRepository.findByPersonId(privatePractitioner.getPersonId());
 
-    if (hospPerson.hasHospInformation()) {
-      privatePractitioner.updateWithHospInformation(hospPerson);
-    }
+    privatePractitioner.updateWithHospInformation(hospPerson);
 
     final var savedPrivatePractitioner = privatePractitionerRepository.save(privatePractitioner);
 

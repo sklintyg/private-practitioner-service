@@ -80,12 +80,13 @@ public class PrivatePractitioner {
     if (!hosp.getPersonalIdentityNumber().equalsIgnoreCase(this.personId)) {
       throw new IllegalArgumentException("Personal identity number does not match!");
     }
+
+    hospUpdated = hosp.getHospUpdated();
     personalPrescriptionCode = hosp.getPersonalPrescriptionCode();
     specialties = hosp.getSpecialities().stream()
         .filter((Speciality::isPhysicianSpeciality))
         .toList();
     licensedHealthcareProfessions = hosp.getLicensedHealthcareProfessions();
-    hospUpdated = hosp.getHospUpdated();
     restrictions = hosp.getRestrictions().stream()
         .filter(Restriction::isRestrictedPhysician)
         .toList();

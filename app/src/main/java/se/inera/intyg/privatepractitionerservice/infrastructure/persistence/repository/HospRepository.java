@@ -4,6 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
@@ -43,7 +44,7 @@ public class HospRepository {
     final var response = hospService.getHospCredentialsForPersonResponseType(personId);
     final var hospPerson = hospPersonConverter.convert(response);
 
-    return hospPerson.hasHospInformation()
+    return StringUtils.hasText(hospPerson.getPersonalIdentityNumber())
         ? hospPerson.withHospUpdated(hospService.getHospLastUpdate())
         : HospPerson.builder()
             .personalIdentityNumber(personId)
