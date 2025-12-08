@@ -57,6 +57,12 @@ class PrivatePractitionerFactoryTest {
   }
 
   @Test
+  void shouldIncludeCareUnitName() {
+    final var actual = privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST);
+    assertEquals(DR_KRANSTEGE_CARE_UNIT_NAME, actual.getCareUnitName());
+  }
+
+  @Test
   void shouldIncludeOwnershipType() {
     final var actual = privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST);
     assertEquals(DR_KRANSTEGE_OWNERSHIP_TYPE, actual.getOwnershipType());
