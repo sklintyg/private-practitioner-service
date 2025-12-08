@@ -1,6 +1,7 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.DR_KRANSTEGE_ENTITY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.kranstegeEntityBuilder;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -156,7 +158,7 @@ class PrivatePractitionerRepositoryTest {
 
     final var actual = privatePractitionerRepository.isExists(DR_KRANSTEGE_PERSON_ID);
 
-    assertTrue(!actual, "Expected exists to be false when personId not found");
+    assertFalse(actual, "Expected exists to be false when personId not found");
   }
 
   @Nested
@@ -165,29 +167,30 @@ class PrivatePractitionerRepositoryTest {
     @Nested
     class WhenCreatingNewPrivatePractitioner {
 
+      PrivatePractitioner kranstege;
+
       @BeforeEach
       void setUp() {
-        when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE.getPersonId()))
+        kranstege = kranstegeBuilder().build();
+        when(privatlakareEntityRepository.findByPersonId(kranstege.getPersonId()))
             .thenReturn(Optional.empty());
         when(privatlakareIdEntityRepository.save(new PrivatlakareIdEntity())).thenReturn(
-            PrivatlakareIdEntity.builder().id(1).build()
-        );
+            PrivatlakareIdEntity.builder().id(1).build());
         when(privatlakareEntityRepository.save(any(PrivatlakareEntity.class)))
             .thenReturn(DR_KRANSTEGE_ENTITY);
-        when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY))
-            .thenReturn(DR_KRANSTEGE);
+        when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY)).thenReturn(kranstege);
       }
 
       @Test
       void shouldReturnCreatedSavedPrivatePractitioner() {
-        final var actual = privatePractitionerRepository.save(DR_KRANSTEGE);
-        assertEquals(DR_KRANSTEGE, actual);
+        final var actual = privatePractitionerRepository.save(kranstege);
+        assertEquals(kranstege, actual);
       }
 
       @Test
       void shouldSaveCreatedPrivatePractitioner() {
         final var captor = ArgumentCaptor.forClass(PrivatlakareEntity.class);
-        privatePractitionerRepository.save(DR_KRANSTEGE);
+        privatePractitionerRepository.save(kranstege);
         final var newKranstegeHsaid = "SE165565594230-WEBCERT00001";
         final var newKranstegeEntity = kranstegeEntityBuilder()
             .hsaId(newKranstegeHsaid)
@@ -213,8 +216,8 @@ class PrivatePractitionerRepositoryTest {
             .godkandAnvandare(true)
             .build();
 
-        when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE.getPersonId()))
-            .thenReturn(Optional.of(existingEntity));
+        when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
+            Optional.of(existingEntity));
         when(privatlakareEntityRepository.save(any(PrivatlakareEntity.class)))
             .thenReturn(DR_KRANSTEGE_ENTITY);
         when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY))
@@ -223,14 +226,14 @@ class PrivatePractitionerRepositoryTest {
 
       @Test
       void shouldReturnUpdatedSavedPrivatePractitioner() {
-        final var actual = privatePractitionerRepository.save(DR_KRANSTEGE);
+        final var actual = privatePractitionerRepository.save(kranstegeBuilder().build());
         assertEquals(DR_KRANSTEGE, actual);
       }
 
       @Test
       void shouldSaveUpdatedPrivatePractitioner() {
         final var captor = ArgumentCaptor.forClass(PrivatlakareEntity.class);
-        privatePractitionerRepository.save(DR_KRANSTEGE);
+        privatePractitionerRepository.save(kranstegeBuilder().build());
 
         verify(privatlakareEntityRepository).save(captor.capture());
         assertPrivatlakareEntity(DR_KRANSTEGE_ENTITY, captor.getValue());

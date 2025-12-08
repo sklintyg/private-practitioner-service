@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE_HOSP_PERSON;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeBuilder;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,9 +94,9 @@ class CreateRegistrationServiceTest {
   void shouldAddPrivatePractitionerToCertifier() {
     final var savePrivatePractitioner = mock(PrivatePractitioner.class);
 
-    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
-        DR_KRANSTEGE);
-    when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
+    final var kranstege = kranstegeBuilder().build();
+    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(kranstege);
+    when(privatePractitionerRepository.save(kranstege)).thenReturn(savePrivatePractitioner);
     when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
         HospPerson.builder()
             .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
@@ -130,9 +130,9 @@ class CreateRegistrationServiceTest {
   void shouldReturnSavePrivatePractitioner() {
     final var savePrivatePractitioner = mock(PrivatePractitioner.class);
 
-    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
-        DR_KRANSTEGE);
-    when(privatePractitionerRepository.save(DR_KRANSTEGE)).thenReturn(savePrivatePractitioner);
+    final var kranstege = kranstegeBuilder().build();
+    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(kranstege);
+    when(privatePractitionerRepository.save(kranstege)).thenReturn(savePrivatePractitioner);
     when(privatePractitionerConverter.convert(savePrivatePractitioner))
         .thenReturn(DR_KRANSTEGE_DTO);
     when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(

@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeBuilder;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,9 +63,10 @@ class EraseServiceTest {
 
   @Test
   void shouldMonitorlogWhenPrivatePractitionerIsErased() {
-    doReturn(Optional.of(DR_KRANSTEGE)).when(privatePractitionerRepository).findByHsaId(HSA_ID);
+    final var kranstege = kranstegeBuilder().build();
+    doReturn(Optional.of(kranstege)).when(privatePractitionerRepository).findByHsaId(HSA_ID);
     doReturn(true).when(hospRepository)
-        .removeFromCertifier(DR_KRANSTEGE, "Avslutat konto i Webcert.");
+        .removeFromCertifier(kranstege, "Avslutat konto i Webcert.");
 
     eraseService.erasePrivatePractitioner(HSA_ID);
 
@@ -73,30 +75,36 @@ class EraseServiceTest {
 
   @Test
   void shouldEraseAccountWhenPrivatePractitionerIsFound() {
-    doReturn(Optional.of(DR_KRANSTEGE)).when(privatePractitionerRepository).findByHsaId(HSA_ID);
+    final var kranstege = kranstegeBuilder().build();
+    doReturn(Optional.of(kranstege)).when(privatePractitionerRepository)
+        .findByHsaId(HSA_ID);
     doReturn(true).when(hospRepository)
-        .removeFromCertifier(DR_KRANSTEGE, "Avslutat konto i Webcert.");
+        .removeFromCertifier(kranstege, "Avslutat konto i Webcert.");
 
     eraseService.erasePrivatePractitioner(HSA_ID);
 
-    verify(privatePractitionerRepository).remove(DR_KRANSTEGE);
+    verify(privatePractitionerRepository).remove(kranstege);
   }
 
   @Test
   void shouldThrowExceptionWhenDeletePrivatePractitionerFailure() {
+    final var kranstege = kranstegeBuilder().build();
     doReturn(true).when(hospRepository)
-        .removeFromCertifier(DR_KRANSTEGE, "Avslutat konto i Webcert.");
-    doReturn(Optional.of(DR_KRANSTEGE)).when(privatePractitionerRepository).findByHsaId(HSA_ID);
-    doThrow(new RuntimeException()).when(privatePractitionerRepository).remove(DR_KRANSTEGE);
+        .removeFromCertifier(kranstege, "Avslutat konto i Webcert.");
+    doReturn(Optional.of(kranstege)).when(privatePractitionerRepository)
+        .findByHsaId(HSA_ID);
+    doThrow(new RuntimeException()).when(privatePractitionerRepository)
+        .remove(kranstege);
 
     assertThrows(RuntimeException.class, () -> eraseService.erasePrivatePractitioner(HSA_ID));
   }
 
   @Test
   void shouldNotEraseAccountWhenFailureErasingCertifier() {
-    doReturn(Optional.of(DR_KRANSTEGE)).when(privatePractitionerRepository).findByHsaId(HSA_ID);
+    final var kranstege = kranstegeBuilder().build();
+    doReturn(Optional.of(kranstege)).when(privatePractitionerRepository).findByHsaId(HSA_ID);
     doReturn(false).when(hospRepository)
-        .removeFromCertifier(DR_KRANSTEGE, "Avslutat konto i Webcert.");
+        .removeFromCertifier(kranstege, "Avslutat konto i Webcert.");
 
     assertThrows(PrivatlakarportalServiceException.class,
         () -> eraseService.erasePrivatePractitioner(HSA_ID));

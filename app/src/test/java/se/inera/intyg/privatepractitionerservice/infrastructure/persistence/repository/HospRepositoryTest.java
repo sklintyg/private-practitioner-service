@@ -55,7 +55,7 @@ class HospRepositoryTest {
             .build()
     );
 
-    final var result = hospRepository.removeFromCertifier(DR_KRANSTEGE, null);
+    final var result = hospRepository.removeFromCertifier(kranstegeBuilder().build(), null);
 
     assertTrue(result);
   }
@@ -71,7 +71,7 @@ class HospRepositoryTest {
             .build()
     );
 
-    final var result = hospRepository.removeFromCertifier(DR_KRANSTEGE, null);
+    final var result = hospRepository.removeFromCertifier(kranstegeBuilder().build(), null);
 
     assertFalse(result);
   }
@@ -87,7 +87,7 @@ class HospRepositoryTest {
             .build()
     );
 
-    hospRepository.addToCertifier(DR_KRANSTEGE);
+    hospRepository.addToCertifier(kranstegeBuilder().build());
 
     verify(hospService).handleHospCertificationPersonResponseType(
         DR_KRANSTEGE.getHsaId(),
@@ -99,28 +99,30 @@ class HospRepositoryTest {
 
   @Test
   void shouldReturnEmptyWhenNoHospPersonFound() {
-    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getPersonId()))
+    when(hospService.getHospCredentialsForPersonResponseType(
+        kranstegeBuilder().build().getPersonId()))
         .thenReturn(HospCredentialsForPerson.builder().build());
     when(hospPersonConverter.convert(HospCredentialsForPerson.builder().build()))
         .thenReturn(HospPerson.builder().build());
     final var now = LocalDateTime.now();
     when(hospService.getHospLastUpdate()).thenReturn(now);
-    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getPersonId());
+    final var actual = hospRepository.findByPersonId(kranstegeBuilder().build().getPersonId());
 
     assertEquals(HospPerson.builder()
-        .personalIdentityNumber(DR_KRANSTEGE.getPersonId())
+        .personalIdentityNumber(kranstegeBuilder().build().getPersonId())
         .hospUpdated(now)
         .build(), actual);
   }
 
   @Test
   void shouldReturnWhenHospPersonFound() {
-    when(hospService.getHospCredentialsForPersonResponseType(DR_KRANSTEGE.getPersonId()))
+    when(hospService.getHospCredentialsForPersonResponseType(
+        kranstegeBuilder().build().getPersonId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
     when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
         DR_KRANSTEGE_HOSP_PERSON);
 
-    final var actual = hospRepository.findByPersonId(DR_KRANSTEGE.getPersonId());
+    final var actual = hospRepository.findByPersonId(kranstegeBuilder().build().getPersonId());
 
     assertEquals(DR_KRANSTEGE_HOSP_PERSON, actual);
   }

@@ -1,7 +1,7 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeBuilder;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,119 +11,121 @@ class PrivatePractitionerConverterTest {
 
   @Test
   void shouldConvertHsaId() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getHsaId(), dto.getHsaId());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getHsaId(), dto.getHsaId());
   }
 
   @Test
   void shouldConvertPersonId() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getPersonId(), dto.getPersonId());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getPersonId(), dto.getPersonId());
   }
 
   @Test
   void shouldConvertName() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getName(), dto.getName());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getName(), dto.getName());
   }
 
   @Test
   void shouldConvertCareProviderName() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getCareProviderName(), dto.getCareProviderName());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getCareProviderName(), dto.getCareProviderName());
   }
 
   @Test
   void shouldConvertPosition() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getPosition(), dto.getPosition());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getPosition(), dto.getPosition());
   }
 
   @Test
   void shouldConvertCareUnitName() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getCareUnitName(), dto.getCareUnitName());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getCareUnitName(), dto.getCareUnitName());
   }
 
   @Test
   void shouldConvertHealthcareServiceType() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getHealthcareServiceType(), dto.getHealthcareServiceType());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getHealthcareServiceType(),
+        dto.getHealthcareServiceType());
   }
 
   @Test
   void shouldConvertWorkplaceCode() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getWorkplaceCode(), dto.getWorkplaceCode());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getWorkplaceCode(), dto.getWorkplaceCode());
   }
 
   @Test
   void shouldConvertPhoneNumber() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getPhoneNumber(), dto.getPhoneNumber());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getPhoneNumber(), dto.getPhoneNumber());
   }
 
   @Test
   void shouldConvertEmail() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getEmail(), dto.getEmail());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getEmail(), dto.getEmail());
   }
 
   @Test
   void shouldConvertAddress() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getAddress(), dto.getAddress());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getAddress(), dto.getAddress());
   }
 
   @Test
   void shouldConvertZipCode() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getZipCode(), dto.getZipCode());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getZipCode(), dto.getZipCode());
   }
 
   @Test
   void shouldConvertCity() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getCity(), dto.getCity());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getCity(), dto.getCity());
   }
 
   @Test
   void shouldConvertMunicipality() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getMunicipality(), dto.getMunicipality());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getMunicipality(), dto.getMunicipality());
   }
 
   @Test
   void shouldConvertCounty() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getCounty(), dto.getCounty());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getCounty(), dto.getCounty());
   }
 
   @Test
   void shouldConvertPersonalPrescriptionCode() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getPersonalPrescriptionCode(), dto.getPersonalPrescriptionCode());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getPersonalPrescriptionCode(),
+        dto.getPersonalPrescriptionCode());
   }
 
   @Test
   void shouldConvertSpecialties() {
-    final var dto = converter.convert(DR_KRANSTEGE);
+    final var dto = converter.convert(kranstegeBuilder().build());
     assertEquals(2, dto.getSpecialties().size());
-    assertEquals(DR_KRANSTEGE.getSpecialties().getFirst().code(),
+    assertEquals(kranstegeBuilder().build().getSpecialties().getFirst().code(),
         dto.getSpecialties().getFirst().code());
   }
 
   @Test
   void shouldConvertLicensedHealthcareProfessions() {
-    final var dto = converter.convert(DR_KRANSTEGE);
+    final var dto = converter.convert(kranstegeBuilder().build());
     assertEquals(1, dto.getLicensedHealthcareProfessions().size());
-    assertEquals(DR_KRANSTEGE.getLicensedHealthcareProfessions().getFirst().code(),
+    assertEquals(kranstegeBuilder().build().getLicensedHealthcareProfessions().getFirst().code(),
         dto.getLicensedHealthcareProfessions().getFirst().code());
   }
 
   @Test
   void shouldConvertRegistrationDate() {
-    final var dto = converter.convert(DR_KRANSTEGE);
-    assertEquals(DR_KRANSTEGE.getRegistrationDate(), dto.getRegistrationDate());
+    final var dto = converter.convert(kranstegeBuilder().build());
+    assertEquals(kranstegeBuilder().build().getRegistrationDate(), dto.getRegistrationDate());
   }
 }
