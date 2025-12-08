@@ -82,7 +82,7 @@ public class MailService {
 
   private static final String INERA_LOGO = "inera_logo.png";
 
-  private static final String BOTTOM_BODY_CONTENT = "<br/><br/><span><img src='cid:inera_logo'></span>";
+  private static final String BOTTOM_BODY_CONTENT = "<br/><br/><br/><span><img src='cid:inera_logo' style='max-width: 75%%; max-height: auto'></span>";
 
   private final JavaMailSender mailSender;
 
