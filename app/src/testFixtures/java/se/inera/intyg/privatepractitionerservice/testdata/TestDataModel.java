@@ -15,6 +15,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PHONE_NUMBER;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_POSITION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PRESCRIPTION_CODE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_REGISTRATION_DATE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_TYPE_OF_CARE;
@@ -27,7 +28,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.TYPE_OF_CARE_CODE_OUTPATIENT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.TYPE_OF_CARE_DESCRIPTION_OUTPATIENT;
 
-import java.time.LocalDateTime;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HealthcareServiceType;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.HospPerson;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Position;
@@ -74,7 +74,7 @@ public class TestDataModel {
         .city(DR_KRANSTEGE_CITY)
         .municipality(DR_KRANSTEGE_MUNICIPALITY)
         .county(DR_KRANSTEGE_COUNTY)
-        .registrationDate(LocalDateTime.now())
+        .registrationDate(DR_KRANSTEGE_REGISTRATION_DATE)
         .specialties(DR_KRANSTEGE_SPECIALITIES)
         .licensedHealthcareProfessions(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS)
         .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE);

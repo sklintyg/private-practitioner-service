@@ -1,6 +1,8 @@
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_REGISTRATION_DATE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeBuilder;
 
 import org.junit.jupiter.api.Test;
@@ -125,7 +127,7 @@ class PrivatePractitionerConverterTest {
 
   @Test
   void shouldConvertRegistrationDate() {
-    final var dto = converter.convert(kranstegeBuilder().build());
-    assertEquals(kranstegeBuilder().build().getRegistrationDate(), dto.getRegistrationDate());
+    final var dto = converter.convert(DR_KRANSTEGE);
+    assertEquals(DR_KRANSTEGE_REGISTRATION_DATE, dto.getRegistrationDate());
   }
 }
