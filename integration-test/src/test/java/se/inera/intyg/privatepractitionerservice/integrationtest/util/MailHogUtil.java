@@ -37,12 +37,7 @@ public class MailHogUtil {
           .pollInterval(Duration.ofMillis(150))
           .until(() -> {
             try {
-              var res = restTemplate.getForEntity(getUrl, String.class);
-              if (!res.getStatusCode().is2xxSuccessful()) {
-                return false;
-              }
-              var json = objectMapper.readTree(res.getBody());
-              return json.path("total").asInt(0) == 0;
+              return !hasMessages(getUrl);
             } catch (Exception e) {
               return false;
             }

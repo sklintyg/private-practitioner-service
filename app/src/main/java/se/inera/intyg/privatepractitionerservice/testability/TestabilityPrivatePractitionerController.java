@@ -36,9 +36,24 @@ public class TestabilityPrivatePractitionerController {
     return ResponseEntity.ok(privatePractitionerDTO);
   }
 
+  @PostMapping("/add-existing")
+  public void add(@RequestBody List<String> personIds) {
+    testabilityPrivatePractitionerService.addExisting(personIds);
+  }
+
+  @DeleteMapping("/reset")
+  public void reset() {
+    clear();
+    testabilityPrivatePractitionerService.initDate();
+  }
+
+  @DeleteMapping("/clear")
+  public void clear() {
+    testabilityPrivatePractitionerService.clear();
+  }
+
   @DeleteMapping("/privatepractitioner")
-  public void reset(
-      @RequestBody List<String> testabilityPrivatePractitionerRequest) {
-    testabilityPrivatePractitionerService.reset(testabilityPrivatePractitionerRequest);
+  public void remove(@RequestBody List<String> personIds) {
+    testabilityPrivatePractitionerService.remove(personIds);
   }
 }
