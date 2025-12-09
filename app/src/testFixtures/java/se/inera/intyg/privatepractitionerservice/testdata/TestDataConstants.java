@@ -1,5 +1,6 @@
 package se.inera.intyg.privatepractitionerservice.testdata;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
@@ -23,6 +24,8 @@ public final class TestDataConstants {
   public static final String DR_KRANSTEGE_CITY = "STOCKHOLM";
   public static final String DR_KRANSTEGE_MUNICIPALITY = "STOCKHOLM";
   public static final String DR_KRANSTEGE_COUNTY = "STOCKHOLM";
+  public static final LocalDateTime DR_KRANSTEGE_REGISTRATION_DATE =
+      LocalDateTime.of(2025, 12, 8, 14, 30);
   public static final String DR_KRANSTEGE_PRESCRIPTION_CODE = "1234568";
   public static final List<Speciality> DR_KRANSTEGE_SPECIALITIES = List.of(
       new Speciality("3299", "Klinisk fysiologi", "LK"),
