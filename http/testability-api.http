@@ -1,0 +1,44 @@
+### DELETE
+# Delete Private Practitioner by id
+DELETE http://localhost:18070/testability/privatepractitioner
+Content-Type: application/json
+
+["199608112380","197705232382"]
+
+### DELETE
+# Delete all Private Practitioners and reset hsaid-counter
+DELETE http://localhost:18070/testability/clear
+
+### DELETE
+# Delete all Private Practitioners and reset hsaid-counter, then load test data
+DELETE http://localhost:18070/testability/reset
+
+
+### POST
+# Reload Private Practitioners from test data file
+POST http://localhost:18070/testability/add-existing
+Content-Type: application/json
+
+["199001092387","197705232382"]
+
+### POST
+# Add Private Practitioner
+POST http://localhost:18070/testability/privatepractitioner
+Content-Type: application/json
+
+{
+  "personId": "199608112380",
+  "name": "Petra Privat",
+  "position": "202010",
+  "careUnitName": "Petras vårdcentral",
+  "typeOfCare": "01",
+  "healthcareServiceType": "15",
+  "workplaceCode": "arbetsplatskod",
+  "phoneNumber": "0123-456789",
+  "email": "mail@privat.se",
+  "address": "Storgatan 14",
+  "zipCode": "83130",
+  "city": "ÖSTERSUND",
+  "municipality": "ÖSTERSUND",
+  "county": "JÄMTLAND"
+}

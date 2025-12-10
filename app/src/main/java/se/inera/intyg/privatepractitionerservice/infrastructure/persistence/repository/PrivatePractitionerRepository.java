@@ -61,18 +61,12 @@ public class PrivatePractitionerRepository {
   }
 
   /**
-   * Resets (deletes) private practitioner entities for the given person IDs. Used in testability
-   * scenarios.
+   * Resets (deletes) all private practitioner entities and resets the hsaidgenerationcounter. Used
+   * in testability scenarios.
    *
-   * @param personIds the person IDs to reset
    */
-  public void reset(List<String> personIds) {
-    personIds
-        .forEach(personId ->
-            privatlakareEntityRepository.findByPersonId(personId)
-                .ifPresent(existingEntity -> privatlakareEntityRepository.delete(existingEntity)
-                )
-        );
+  public void clear() {
+    privatlakareEntityRepository.deleteAll();
     privatlakareIdEntityRepository.deleteAll();
     privatlakareIdEntityRepository.resetIdSequence();
   }

@@ -56,14 +56,12 @@ public class TestabilityApiUtil {
       return;
     }
 
-    final var requestUrl = "http://localhost:%s/testability/privatepractitioner".formatted(port);
-    final var headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
+    final var requestUrl = "http://localhost:%s/testability/clear".formatted(port);
 
     final ResponseEntity<Void> response = this.restTemplate.exchange(
         requestUrl,
         HttpMethod.DELETE,
-        new HttpEntity<>(privatePractitionerPersonIds, headers),
+        new HttpEntity<>(null, null),
         new ParameterizedTypeReference<>() {
         },
         Collections.emptyMap()
@@ -71,7 +69,7 @@ public class TestabilityApiUtil {
 
     if (response.getStatusCode() != HttpStatus.OK) {
       log.error(
-          "Could not reset testability with request '%s'! StatusCode: '%s'".formatted(
+          "Could not clear practitioners using testability with request '%s'! StatusCode: '%s'".formatted(
               requestUrl,
               response.getStatusCode()
           )
