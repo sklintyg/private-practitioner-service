@@ -72,7 +72,7 @@ public class PrivatlakarBootstrapBean {
       for (Resource res : files) {
         final var privatlakareEntity = new CustomObjectMapper().readValue(res.getInputStream(),
             PrivatlakareEntity.class);
-        if (personIds.contains(privatlakareEntity.getPrivatlakareId())) {
+        if (personIds.contains(privatlakareEntity.getPersonId())) {
           log.info(
               "Loading private practitioner and adding it to db if it does not already exist {}",
               res.getFilename());

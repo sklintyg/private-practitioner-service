@@ -3,7 +3,7 @@
 DELETE http://localhost:18070/testability/privatepractitioner
 Content-Type: application/json
 
-["199001092387","197705232382"]
+["199608112380","197705232382"]
 
 ### DELETE
 # Delete all Private Practitioners and reset hsaid-counter
@@ -27,18 +27,18 @@ POST http://localhost:18070/testability/privatepractitioner
 Content-Type: application/json
 
 {
-  "personId": "201212121212",
-  "name": "LillTolvan Tolvansson",
+  "personId": "199608112380",
+  "name": "Petra Privat",
   "position": "202010",
-  "careUnitName": "Lilltrollens vårdcentral",
+  "careUnitName": "Petras vårdcentral",
   "typeOfCare": "01",
   "healthcareServiceType": "15",
   "workplaceCode": "arbetsplatskod",
   "phoneNumber": "0123-456789",
-  "email": "mail@nisse.se",
-  "address": "Addressgatan 1",
-  "zipCode": "12345",
-  "city": "Stad",
-  "municipality": "Kommun",
-  "county": "Län"
+  "email": "mail@privat.se",
+  "address": "Storgatan 14",
+  "zipCode": "83130",
+  "city": "ÖSTERSUND",
+  "municipality": "ÖSTERSUND",
+  "county": "JÄMTLAND"
 }
