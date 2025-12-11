@@ -78,7 +78,6 @@ class NotifyPrivatePractitionerRegistrationTest {
 
     verify(monitoringLogService).logUserRegistered(
         DR_KRANSTEGE_PERSON_ID,
-        "N/A",
         DR_KRANSTEGE_HSA_ID,
         DR_KRANSTEGE.getRegistrationStatus()
     );

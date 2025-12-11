@@ -16,7 +16,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_DTO;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_INFORMATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
@@ -42,6 +41,7 @@ import org.springframework.test.context.ActiveProfiles;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
+import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Containers;
 import se.inera.intyg.privatepractitionerservice.integrationtest.environment.IntygProxyServiceMock;
@@ -328,14 +328,17 @@ class PrivatePractitionerIT {
   @Test
   void shallRestrictPrivatePractitionerWithRevokedLicense() {
 
-    testabilityApi.addPrivatePractitioner(
-        DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
     intygProxyServiceMock.credentialsForPersonResponse(
         GetCredentialsForPersonResponseDTO.builder()
             .credentials(
                 fridaKranstegeHospCredentials()
-                    .restrictions(DR_KRANSTEGE_HOSP_CREDENTIALS.getRestrictions())
+                    .restrictions(List.of(new RestrictionDTO(
+                        "LK",
+                        "001",
+                        "Återkallad legitimation")
+                    ))
                     .build()
             )
             .build()

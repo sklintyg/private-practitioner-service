@@ -2,11 +2,13 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.con
 
 import java.util.List;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.HospConstants;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.EpostEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.RestriktionEntity;
@@ -31,6 +33,7 @@ public class PrivatlakareEntityConverter {
         .ownershipType(privatlakareEntity.getAgarform())
         .typeOfCare(getFirstVardformKod(privatlakareEntity))
         .healthcareServiceType(getFirstVerksamhetstypKod(privatlakareEntity))
+        .emailCount(getEmailCount(privatlakareEntity.getEpostList()))
         .phoneNumber(privatlakareEntity.getTelefonnummer())
         .email(privatlakareEntity.getEpost())
         .address(privatlakareEntity.getPostadress())
@@ -48,6 +51,10 @@ public class PrivatlakareEntityConverter {
         .registrationDate(privatlakareEntity.getRegistreringsdatum())
         .hospUpdated(privatlakareEntity.getSenasteHospUppdatering())
         .build();
+  }
+
+  private int getEmailCount(List<EpostEntity> epostList) {
+    return CollectionUtils.isEmpty(epostList) ? 0 : epostList.size();
   }
 
   private String getFirstBefattningKod(PrivatlakareEntity entity) {

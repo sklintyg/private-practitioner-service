@@ -6,6 +6,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_COUNTY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HOSP_UPDATE_DATE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_MUNICIPALITY;
@@ -77,7 +78,8 @@ public class TestDataModel {
         .registrationDate(DR_KRANSTEGE_REGISTRATION_DATE)
         .specialties(DR_KRANSTEGE_SPECIALITIES)
         .licensedHealthcareProfessions(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS)
-        .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE);
+        .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
+        .hospUpdated(DR_KRANSTEGE_HOSP_UPDATE_DATE);
   }
 
   public static HospPerson.HospPersonBuilder kranstegeHospPersonBuilder() {
@@ -86,7 +88,8 @@ public class TestDataModel {
         .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
         .licensedHealthcareProfessions(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS)
         .specialities(DR_KRANSTEGE_SPECIALITIES)
-        .restrictions(DR_KRANSTEGE_RESTRICTIONS);
+        .restrictions(DR_KRANSTEGE_RESTRICTIONS)
+        .hospUpdated(DR_KRANSTEGE_HOSP_UPDATE_DATE);
   }
 
   private TestDataModel() {

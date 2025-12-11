@@ -14,6 +14,7 @@ public class UpdateHospService {
   private final PrivatePractitionerRepository privatePractitionerRepository;
   private final NotifyPrivatePractitionerRegistration notifyPrivatePractitionerRegistration;
   private final HandleWaitingForHospService handleWaitingForHospService;
+  private final RemovePrivatePractitionerService removePrivatePractitionerService;
 
   @Transactional
   public void update() {
@@ -31,8 +32,8 @@ public class UpdateHospService {
           hospRepository.addToCertifier(privatePractitioner);
 
           switch (privatePractitioner.getRegistrationStatus()) {
-            case AUTHORIZED, NOT_AUTHORIZED ->
-                notifyPrivatePractitionerRegistration.notify(privatePractitioner);
+            case AUTHORIZED -> notifyPrivatePractitionerRegistration.notify(privatePractitioner);
+            case NOT_AUTHORIZED -> removePrivatePractitionerService.remove(privatePractitioner);
             case WAITING_FOR_HOSP -> handleWaitingForHospService.handle(privatePractitioner);
           }
         }

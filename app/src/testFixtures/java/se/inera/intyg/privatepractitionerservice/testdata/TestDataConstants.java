@@ -26,6 +26,8 @@ public final class TestDataConstants {
   public static final String DR_KRANSTEGE_COUNTY = "STOCKHOLM";
   public static final LocalDateTime DR_KRANSTEGE_REGISTRATION_DATE =
       LocalDateTime.of(2025, 12, 8, 14, 30);
+  public static final LocalDateTime DR_KRANSTEGE_HOSP_UPDATE_DATE =
+      LocalDateTime.of(2020, 12, 11, 14, 30);
   public static final String DR_KRANSTEGE_PRESCRIPTION_CODE = "1234568";
   public static final List<Speciality> DR_KRANSTEGE_SPECIALITIES = List.of(
       new Speciality("3299", "Klinisk fysiologi", "LK"),
@@ -36,8 +38,8 @@ public final class TestDataConstants {
 
   public static final List<Restriction> DR_KRANSTEGE_RESTRICTIONS = List.of(
       new Restriction(
-          "001",
-          "Återkallad legitimation",
+          "003",
+          "Begränsad förskrivningsrätt",
           "LK"
       )
   );
