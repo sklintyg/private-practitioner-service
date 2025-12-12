@@ -23,6 +23,7 @@ import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.M
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.ORGANIZATION_ID;
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.USER_ID;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Marker;
@@ -149,6 +150,7 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
     return logMsg.toString();
   }
 
+  @Getter
   private enum MonitoringEvent {
     USER_REGISTERED("User '{}' registered with hsaId '{}', returned status '{}'"),
     USER_DELETED("User '{}' deleted"),
@@ -162,10 +164,6 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
 
     MonitoringEvent(String msg) {
       this.message = msg;
-    }
-
-    public String getMessage() {
-      return message;
     }
   }
 

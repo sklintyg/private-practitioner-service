@@ -31,8 +31,6 @@ class UpdateHospServiceTest {
   private NotifyPrivatePractitionerRegistration notifyPrivatePractitionerRegistration;
   @Mock
   private HandleWaitingForHospService handleWaitingForHospService;
-  @Mock
-  private RemovePrivatePractitionerService removePrivatePractitionerService;
 
   @InjectMocks
   private UpdateHospService service;
@@ -45,7 +43,7 @@ class UpdateHospServiceTest {
 
     verify(hospRepository, never()).hospUpdated();
     verifyNoInteractions(privatePractitionerRepository, notifyPrivatePractitionerRegistration,
-        handleWaitingForHospService, removePrivatePractitionerService);
+        handleWaitingForHospService);
   }
 
   @Test
@@ -60,8 +58,7 @@ class UpdateHospServiceTest {
 
     verify(privatePractitionerRepository, never()).save(any());
     verify(hospRepository, never()).addToCertifier(any());
-    verifyNoInteractions(notifyPrivatePractitionerRegistration, handleWaitingForHospService,
-        removePrivatePractitionerService);
+    verifyNoInteractions(notifyPrivatePractitionerRegistration, handleWaitingForHospService);
   }
 
   @Test
@@ -81,7 +78,6 @@ class UpdateHospServiceTest {
     verify(hospRepository).addToCertifier(kranstege);
 
     verify(notifyPrivatePractitionerRegistration).notify(kranstege);
-    verify(removePrivatePractitionerService, never()).remove(any());
     verify(handleWaitingForHospService, never()).handle(any());
 
     verify(hospRepository).hospUpdated();
@@ -106,9 +102,8 @@ class UpdateHospServiceTest {
     verify(privatePractitionerRepository).save(kranstege);
     verify(hospRepository).addToCertifier(kranstege);
 
-    verify(removePrivatePractitionerService).remove(kranstege);
     verify(notifyPrivatePractitionerRegistration, never()).notify(any());
-    verify(handleWaitingForHospService, never()).handle(any());
+    verify(handleWaitingForHospService).handle(kranstege);
 
     verify(hospRepository).hospUpdated();
   }
@@ -133,7 +128,6 @@ class UpdateHospServiceTest {
 
     verify(handleWaitingForHospService).handle(kranstege);
     verify(notifyPrivatePractitionerRegistration, never()).notify(any());
-    verify(removePrivatePractitionerService, never()).remove(any());
 
     verify(hospRepository).hospUpdated();
   }

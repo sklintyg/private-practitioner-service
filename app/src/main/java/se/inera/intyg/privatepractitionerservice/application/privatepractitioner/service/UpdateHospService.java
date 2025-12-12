@@ -14,7 +14,6 @@ public class UpdateHospService {
   private final PrivatePractitionerRepository privatePractitionerRepository;
   private final NotifyPrivatePractitionerRegistration notifyPrivatePractitionerRegistration;
   private final HandleWaitingForHospService handleWaitingForHospService;
-  private final RemovePrivatePractitionerService removePrivatePractitionerService;
 
   @Transactional
   public void update() {
@@ -33,8 +32,8 @@ public class UpdateHospService {
 
           switch (privatePractitioner.getRegistrationStatus()) {
             case AUTHORIZED -> notifyPrivatePractitionerRegistration.notify(privatePractitioner);
-            case NOT_AUTHORIZED -> removePrivatePractitionerService.remove(privatePractitioner);
-            case WAITING_FOR_HOSP -> handleWaitingForHospService.handle(privatePractitioner);
+            case WAITING_FOR_HOSP, NOT_AUTHORIZED ->
+                handleWaitingForHospService.handle(privatePractitioner);
           }
         }
     );
