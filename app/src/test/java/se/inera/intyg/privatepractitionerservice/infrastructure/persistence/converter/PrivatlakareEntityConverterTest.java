@@ -6,11 +6,14 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_RESTRICTIONS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.DR_KRANSTEGE_ENTITY;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.kranstegeEntityBuilder;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.EpostEntity;
 
 @ExtendWith(MockitoExtension.class)
 class PrivatlakareEntityConverterTest {
@@ -134,5 +137,56 @@ class PrivatlakareEntityConverterTest {
   void shouldConvertHospUpdated() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
     assertEquals(DR_KRANSTEGE_ENTITY.getSenasteHospUppdatering(), actual.getHospUpdated());
+  }
+
+  @Test
+  void shouldConvertHsaId() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getHsaId(), actual.getHsaId());
+  }
+
+  @Test
+  void shouldConvertPersonId() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getPersonId(), actual.getPersonId());
+  }
+
+  @Test
+  void shouldConvertName() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getFullstandigtNamn(), actual.getName());
+  }
+
+  @Test
+  void shouldConvertCareProviderName() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getVardgivareNamn(), actual.getCareProviderName());
+  }
+
+  @Test
+  void shouldConvertEmail() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getEpost(), actual.getEmail());
+  }
+
+  @Test
+  void shouldConvertRegistrationDate() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(DR_KRANSTEGE_ENTITY.getRegistreringsdatum(), actual.getRegistrationDate());
+  }
+
+  @Test
+  void shouldConvertEmailCount() {
+    var actual = converter.convert(kranstegeEntityBuilder()
+        .epostList(List.of(EpostEntity.builder().build(), EpostEntity.builder().build()))
+        .build());
+    assertEquals(2, actual.getEmailCount());
+  }
+
+  @Test
+  void shouldConvertEmailCountWhenNoEmails() {
+    var actual = converter.convert(DR_KRANSTEGE_ENTITY);
+    assertEquals(0, actual.getEmailCount()
+    );
   }
 }

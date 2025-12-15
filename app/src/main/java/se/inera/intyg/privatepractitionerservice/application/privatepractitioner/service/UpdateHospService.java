@@ -31,9 +31,9 @@ public class UpdateHospService {
           hospRepository.addToCertifier(privatePractitioner);
 
           switch (privatePractitioner.getRegistrationStatus()) {
-            case AUTHORIZED, NOT_AUTHORIZED ->
-                notifyPrivatePractitionerRegistration.notify(privatePractitioner);
-            case WAITING_FOR_HOSP -> handleWaitingForHospService.handle(privatePractitioner);
+            case AUTHORIZED -> notifyPrivatePractitionerRegistration.notify(privatePractitioner);
+            case WAITING_FOR_HOSP, NOT_AUTHORIZED ->
+                handleWaitingForHospService.handle(privatePractitioner);
           }
         }
     );

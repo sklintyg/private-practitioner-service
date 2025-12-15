@@ -23,6 +23,7 @@ import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.M
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.ORGANIZATION_ID;
 import static se.inera.intyg.privatepractitionerservice.infrastructure.logging.MdcLogConstants.USER_ID;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Marker;
@@ -41,8 +42,7 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
   private static final Marker MONITORING = MarkerFactory.getMarker("Monitoring");
 
   @Override
-  public void logUserRegistered(String id, String consentVersion, String hsaId,
-      RegistrationStatus registrationStatus) {
+  public void logUserRegistered(String id, String hsaId, RegistrationStatus registrationStatus) {
     final var hashedPersonId = hashUtility.hash(id);
     try (MdcCloseableMap mdc =
         MdcCloseableMap.builder()
@@ -51,22 +51,8 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
             .put(ORGANIZATION_ID, hsaId)
             .build()
     ) {
-      logEvent(MonitoringEvent.USER_REGISTERED, hashedPersonId, consentVersion, hsaId,
+      logEvent(MonitoringEvent.USER_REGISTERED, hashedPersonId, hsaId,
           registrationStatus);
-    }
-  }
-
-  @Override
-  public void logUserDeleted(String id, String hsaId) {
-    final var hashedPersonId = hashUtility.hash(id);
-    try (MdcCloseableMap mdc =
-        MdcCloseableMap.builder()
-            .put(EVENT_ACTION, toEventType(MonitoringEvent.USER_DELETED))
-            .put(USER_ID, hashedPersonId)
-            .put(ORGANIZATION_ID, hsaId)
-            .build()
-    ) {
-      logEvent(MonitoringEvent.USER_DELETED, hashedPersonId);
     }
   }
 
@@ -164,9 +150,9 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
     return logMsg.toString();
   }
 
+  @Getter
   private enum MonitoringEvent {
-    USER_REGISTERED(
-        "User '{}' registered with consent version '{}' and hsaId '{}', returned status '{}'"),
+    USER_REGISTERED("User '{}' registered with hsaId '{}', returned status '{}'"),
     USER_DELETED("User '{}' deleted"),
     USER_DETAILS_CHANGED("Details for user '{}' changed"),
     HOSP_WAITING("User '{}' is waiting for HOSP"),
@@ -178,10 +164,6 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
 
     MonitoringEvent(String msg) {
       this.message = msg;
-    }
-
-    public String getMessage() {
-      return message;
     }
   }
 

@@ -9,7 +9,7 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_HOSP_CREDENTIALS;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.kranstegeHospCredentialsBuilder;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE_HOSP_PERSON;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.kranstegeHospPersonBuilder;
 
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -58,7 +58,9 @@ class HospPersonConverterTest {
 
       final var actual = hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS);
 
-      assertEquals(DR_KRANSTEGE_HOSP_PERSON, actual);
+      assertEquals(kranstegeHospPersonBuilder()
+          .hospUpdated(null)
+          .build(), actual);
     }
   }
 

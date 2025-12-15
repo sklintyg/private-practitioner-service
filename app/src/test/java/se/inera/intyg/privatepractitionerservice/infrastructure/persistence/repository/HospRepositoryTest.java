@@ -121,6 +121,7 @@ class HospRepositoryTest {
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
     when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
         DR_KRANSTEGE_HOSP_PERSON);
+    when(hospService.getHospLastUpdate()).thenReturn(DR_KRANSTEGE_HOSP_PERSON.getHospUpdated());
 
     final var actual = hospRepository.findByPersonId(kranstegeBuilder().build().getPersonId());
 

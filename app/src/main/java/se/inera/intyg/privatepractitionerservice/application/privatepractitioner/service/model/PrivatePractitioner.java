@@ -76,6 +76,8 @@ public class PrivatePractitioner {
   private LocalDateTime registrationDate;
   private LocalDateTime hospUpdated;
 
+  private int emailCount;
+
   public void updateWithHospInformation(HospPerson hosp) {
     if (!hosp.getPersonalIdentityNumber().equalsIgnoreCase(this.personId)) {
       throw new IllegalArgumentException("Personal identity number does not match!");
@@ -105,7 +107,7 @@ public class PrivatePractitioner {
     if (licensedHealthcareProfessions.isEmpty()) {
       return RegistrationStatus.WAITING_FOR_HOSP;
     }
-    if (isLicensedPhysician()) {
+    if (isLicensedPhysician() && !isRestrictedPhysician()) {
       return RegistrationStatus.AUTHORIZED;
     }
     return RegistrationStatus.NOT_AUTHORIZED;

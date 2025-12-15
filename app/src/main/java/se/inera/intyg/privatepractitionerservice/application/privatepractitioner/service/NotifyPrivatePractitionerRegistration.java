@@ -7,9 +7,9 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.MonitoringLogService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class NotifyPrivatePractitionerRegistration {
 
   private final MonitoringLogService monitoringLogService;
@@ -38,7 +38,6 @@ public class NotifyPrivatePractitionerRegistration {
 
     monitoringLogService.logUserRegistered(
         privatePractitioner.getPersonId(),
-        "N/A",
         privatePractitioner.getHsaId(),
         registrationStatus
     );
