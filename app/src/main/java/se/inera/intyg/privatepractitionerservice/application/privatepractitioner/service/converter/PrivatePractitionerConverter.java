@@ -24,6 +24,7 @@ public class PrivatePractitionerConverter {
         .careProviderName(privatePractitioner.getCareProviderName())
         .registrationDate(privatePractitioner.getRegistrationDate())
         .position(privatePractitioner.getPosition())
+        .typeOfCare(privatePractitioner.getTypeOfCare())
         .careUnitName(privatePractitioner.getCareUnitName())
         .healthcareServiceType(privatePractitioner.getHealthcareServiceType())
         .workplaceCode(privatePractitioner.getWorkplaceCode())

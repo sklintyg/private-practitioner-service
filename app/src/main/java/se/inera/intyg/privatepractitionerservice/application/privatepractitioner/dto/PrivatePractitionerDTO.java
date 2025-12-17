@@ -40,6 +40,7 @@ public class PrivatePractitionerDTO {
 
   String position;
   String careUnitName;
+  String typeOfCare;
   String healthcareServiceType;
   String workplaceCode;
 
