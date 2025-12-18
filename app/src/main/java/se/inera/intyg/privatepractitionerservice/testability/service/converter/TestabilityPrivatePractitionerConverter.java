@@ -27,6 +27,7 @@ public class TestabilityPrivatePractitionerConverter {
         .position(privatePractitioner.getPosition())
         .careUnitName(privatePractitioner.getCareUnitName())
         .healthcareServiceType(privatePractitioner.getHealthcareServiceType())
+        .typeOfCare(privatePractitioner.getTypeOfCare())
         .workplaceCode(privatePractitioner.getWorkplaceCode())
         .phoneNumber(privatePractitioner.getPhoneNumber())
         .address(privatePractitioner.getAddress())
