@@ -1,6 +1,5 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,19 +21,7 @@ public interface PrivatlakareEntityRepository extends JpaRepository<Privatlakare
   Optional<PrivatlakareEntity> findByPersonId(@Param("personId") String personId);
 
   @Query("SELECT p FROM PrivatlakareEntity p WHERE "
-      + "p.privatlakareId NOT IN (SELECT p2.privatlakareId FROM PrivatlakareEntity p2 JOIN p2.legitimeradeYrkesgrupper ly WHERE ly.namn = 'Läkare')")
-  List<PrivatlakareEntity> findWithoutLakarBehorighet();
-
-  @Query("SELECT p FROM PrivatlakareEntity p WHERE "
       + "p.privatlakareId NOT IN (SELECT p2.privatlakareId FROM PrivatlakareEntity p2 JOIN p2.legitimeradeYrkesgrupper ly WHERE ly.namn = 'Läkare') "
       + "AND p.enhetStartdatum IS NULL")
   List<PrivatlakareEntity> findNeverHadLakarBehorighet();
-
-  @Query("SELECT p FROM PrivatlakareEntity p WHERE "
-      + "p.privatlakareId NOT IN (SELECT p2.privatlakareId FROM PrivatlakareEntity p2 JOIN p2.legitimeradeYrkesgrupper ly WHERE ly.namn = 'Läkare') "
-      + "AND p.enhetStartdatum IS NULL "
-      + "AND p.registreringsdatum <= :beforeDate")
-  List<PrivatlakareEntity> findNeverHadLakarBehorighetAndRegisteredBefore(
-      @Param("beforeDate") LocalDateTime beforeDate);
-
 }

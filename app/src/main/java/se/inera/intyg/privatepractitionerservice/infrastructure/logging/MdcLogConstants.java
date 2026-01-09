@@ -17,7 +17,6 @@ public class MdcLogConstants {
   public static final String EVENT_CLASS = "event.class";
   public static final String EVENT_METHOD = "event.method";
   public static final String EVENT_OUTCOME = "event.outcome";
-  public static final String EVENT_AUTHENTICATION_SCHEME = "event.authentication.scheme";
   public static final String EVENT_OUTCOME_FAILURE = "failure";
   public static final String EVENT_OUTCOME_SUCCESS = "success";
   public static final String EVENT_PRIVATE_PRACTITIONER_ID = "event.private_practitioner.id";

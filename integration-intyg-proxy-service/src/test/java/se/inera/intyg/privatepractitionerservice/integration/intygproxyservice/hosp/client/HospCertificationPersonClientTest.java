@@ -41,7 +41,6 @@ class HospCertificationPersonClientTest {
   @InjectMocks
   private HospCertificationPersonClient hospCertificationPersonClient;
 
-  private RequestBodyUriSpec requestBodyUriSpec;
   private ResponseSpec responseSpec;
 
   @BeforeEach
@@ -49,7 +48,7 @@ class HospCertificationPersonClientTest {
     final var uri = "/api/from/configuration";
     ReflectionTestUtils.setField(hospCertificationPersonClient, "certificationPersonEndpoint", uri);
 
-    requestBodyUriSpec = mock(RequestBodyUriSpec.class);
+    RequestBodyUriSpec requestBodyUriSpec = mock(RequestBodyUriSpec.class);
     responseSpec = mock(ResponseSpec.class);
 
     MDC.put(TRACE_ID_KEY, "traceId");

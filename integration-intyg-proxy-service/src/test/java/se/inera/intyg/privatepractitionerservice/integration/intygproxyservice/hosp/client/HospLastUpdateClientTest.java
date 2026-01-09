@@ -32,7 +32,6 @@ class HospLastUpdateClientTest {
   @InjectMocks
   private HospLastUpdateClient hospLastUpdateClient;
 
-  private RequestHeadersUriSpec requestBodyUriSpec;
   private ResponseSpec responseSpec;
 
   @BeforeEach
@@ -40,7 +39,7 @@ class HospLastUpdateClientTest {
     final var uri = "/api/from/configuration";
     ReflectionTestUtils.setField(hospLastUpdateClient, "lastUpdateEndpoint", uri);
 
-    requestBodyUriSpec = mock(RestClient.RequestBodyUriSpec.class);
+    RequestHeadersUriSpec requestBodyUriSpec = mock(RestClient.RequestBodyUriSpec.class);
     responseSpec = mock(ResponseSpec.class);
 
     MDC.put(TRACE_ID_KEY, "traceId");

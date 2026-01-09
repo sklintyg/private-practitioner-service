@@ -127,9 +127,7 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
   }
 
   private String buildMessage(MonitoringEvent logEvent) {
-    StringBuilder logMsg = new StringBuilder();
-    logMsg.append(logEvent.name()).append(SPACE).append(logEvent.getMessage());
-    return logMsg.toString();
+    return logEvent.name() + SPACE + logEvent.getMessage();
   }
 
   @Getter
