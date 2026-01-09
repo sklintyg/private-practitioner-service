@@ -6,14 +6,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataEntities.DR_KRANSTEGE_ENTITY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.ADMIN_EMAIL;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.FROM_EMAIL;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.HSA_GENERATION_MAIL_BODY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.HSA_GENERATION_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_PENDING_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_REJECTED_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_REMOVED_MAIL_SUBJECT;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
 
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -50,13 +51,14 @@ class MailServiceTest {
       setField(mailService, "adminEpost", ADMIN_EMAIL);
       setField(mailService, "from", FROM_EMAIL);
       setField(mailService, "hsaGenerationMailSubject", HSA_GENERATION_MAIL_SUBJECT);
+      setField(mailService, "hsaGenerationMailBody", HSA_GENERATION_MAIL_BODY);
 
       when(mailSender.createMimeMessage()).thenReturn(message);
     }
 
     @Test
     void shouldSendFromNoReply() throws MessagingException {
-      mailService.sendHsaGenerationEmail();
+      mailService.sendHsaGenerationEmail(3);
 
       final var captor = ArgumentCaptor.forClass(InternetAddress.class);
       verify(message).setFrom(captor.capture());
@@ -65,7 +67,7 @@ class MailServiceTest {
 
     @Test
     void shouldSendToAdmin() throws MessagingException {
-      mailService.sendHsaGenerationEmail();
+      mailService.sendHsaGenerationEmail(3);
 
       final var captor = ArgumentCaptor.forClass(InternetAddress.class);
       verify(message).addRecipient(eq(Message.RecipientType.TO), captor.capture());
@@ -74,7 +76,7 @@ class MailServiceTest {
 
     @Test
     void shouldSendWithSubject() throws MessagingException {
-      mailService.sendHsaGenerationEmail();
+      mailService.sendHsaGenerationEmail(3);
 
       final var captor = ArgumentCaptor.forClass(String.class);
       verify(message).setSubject(captor.capture(), eq("UTF-8"));
@@ -162,7 +164,7 @@ class MailServiceTest {
 
     @Test
     void shouldSendFromNoReply() throws MessagingException {
-      mailService.sendRegistrationRemovedEmail(DR_KRANSTEGE_ENTITY);
+      mailService.sendRegistrationRemovedEmail(DR_KRANSTEGE);
 
       final var captor = ArgumentCaptor.forClass(InternetAddress.class);
       verify(message).setFrom(captor.capture());
@@ -171,7 +173,7 @@ class MailServiceTest {
 
     @Test
     void shouldSendToPrivatePractitioner() throws MessagingException {
-      mailService.sendRegistrationRemovedEmail(DR_KRANSTEGE_ENTITY);
+      mailService.sendRegistrationRemovedEmail(DR_KRANSTEGE);
 
       final var captor = ArgumentCaptor.forClass(InternetAddress.class);
       verify(message).addRecipient(eq(Message.RecipientType.TO), captor.capture());
@@ -180,7 +182,7 @@ class MailServiceTest {
 
     @Test
     void shouldSendWithSubject() throws MessagingException {
-      mailService.sendRegistrationRemovedEmail(DR_KRANSTEGE_ENTITY);
+      mailService.sendRegistrationRemovedEmail(DR_KRANSTEGE);
 
       final var captor = ArgumentCaptor.forClass(String.class);
       verify(message).setSubject(captor.capture(), eq("UTF-8"));

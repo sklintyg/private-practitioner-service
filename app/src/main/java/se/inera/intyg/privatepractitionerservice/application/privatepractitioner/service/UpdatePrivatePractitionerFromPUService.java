@@ -25,6 +25,10 @@ public class UpdatePrivatePractitionerFromPUService {
 
       final var response = getPersonIntegrationService.getPerson(request);
       if (response.getStatus() != Status.FOUND) {
+        log.warn(
+            "Could not update private practitioner from PU for personId {}. Reason: Person not found in PU.",
+            hashUtility.hash(practitioner.getPersonId())
+        );
         return practitioner;
       }
 

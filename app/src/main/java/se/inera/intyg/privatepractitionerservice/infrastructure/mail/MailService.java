@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2025 Inera AB (http://www.inera.se)
- *
- * This file is part of sklintyg (https://github.com/sklintyg).
- *
- * sklintyg is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sklintyg is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package se.inera.intyg.privatepractitionerservice.infrastructure.mail;
 
 import static se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM;
@@ -36,8 +18,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import se.inera.intyg.privatepractitionerservice.application.exception.PrivatlakarportalServiceException;
+import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.RegistrationStatus;
-import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -87,10 +69,11 @@ public class MailService {
   private final JavaMailSender mailSender;
 
   @Async
-  public void sendHsaGenerationEmail() {
+  public void sendHsaGenerationEmail(int numberOfCreatedAccounts) {
     try {
       log.info("Sending hsa-generation-status email to {}", adminEpost);
-      final var message = message(adminEpost, hsaGenerationMailSubject, hsaGenerationMailBody);
+      final var message = message(adminEpost, hsaGenerationMailSubject,
+          String.format(hsaGenerationMailBody, numberOfCreatedAccounts));
       message.saveChanges();
       mailSender.send(message);
     } catch (Exception ex) {
@@ -116,19 +99,15 @@ public class MailService {
   }
 
   @Async
-  public void sendRegistrationRemovedEmail(PrivatlakareEntity privatlakareEntity) {
-    sendRegistrationRemovedEmail(privatlakareEntity.getEpost());
-  }
-
-  public void sendRegistrationRemovedEmail(String email) {
+  public void sendRegistrationRemovedEmail(PrivatePractitioner privatePractitioner) {
     try {
-      log.info("Sending registration removed email to {}", email);
-      final var message = message(email, registrationRemovedSubject,
+      log.info("Sending registration removed email to {}", privatePractitioner.getEmail());
+      final var message = message(privatePractitioner.getEmail(), registrationRemovedSubject,
           registrationRemovedBody);
       message.saveChanges();
       mailSender.send(message);
     } catch (Exception ex) {
-      log.error("Error while sending registration removed email {}", ex);
+      log.error("Error while sending registration removed email", ex);
       throw new PrivatlakarportalServiceException(UNKNOWN_INTERNAL_PROBLEM, ex.getMessage());
     }
   }

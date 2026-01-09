@@ -1,9 +1,12 @@
+# To run theese in devtest you must portforward to the devtest cluster
+# kubectl port-forward service/private-practitioner-service-devtest 18070:8081
+
 ### DELETE
 # Delete Private Practitioner by id
 DELETE http://localhost:18070/testability/privatepractitioner
 Content-Type: application/json
 
-["199608112380","197705232382"]
+["199608112380"]
 
 ### DELETE
 # Delete all Private Practitioners and reset hsaid-counter
@@ -19,7 +22,7 @@ DELETE http://localhost:18070/testability/reset
 POST http://localhost:18070/testability/add-existing
 Content-Type: application/json
 
-["199001092387","197705232382"]
+["197309069289"]
 
 ### POST
 # Add Private Practitioner

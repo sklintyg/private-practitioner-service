@@ -8,13 +8,14 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.EmailNotifications;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.LicensedHealtcareProfession;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Restriction;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.Speciality;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.PrivatlakareEntityConverter;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.EpostEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.LegitimeradYrkesgruppEntity;
@@ -33,6 +34,10 @@ public class PrivatePractitionerRepository {
   private final PrivatlakareEntityConverter privatlakareEntityConverter;
   private final EpostEntityRepository epostEntityRepository;
   private final HashUtility hashUtility;
+  private final MailService mailService;
+
+  @Value("${mail.admin.notification.interval}")
+  private int hsaIdNotificationInterval;
 
   public Optional<PrivatePractitioner> findByPersonId(String personId) {
     return privatlakareEntityRepository.findByPersonId(personId)
@@ -103,14 +108,18 @@ public class PrivatePractitionerRepository {
 
     final var savedEntity = privatlakareEntityRepository.save(newEntity);
 
-// TODO: Add logic to send email notification about HSA ID generation status
-//    if (privatlakareIdEntityRepository.findLatestGeneratedHsaId() != 0
-//        && privatlakareIdEntityRepository.findLatestGeneratedHsaId() % hsaIdNotificationInterval
-//        == 0) {
-//      mailService.sendHsaGenerationStatusEmail();
-//    }
+    sendAdminNotification();
 
     return privatlakareEntityConverter.convert(savedEntity);
+  }
+
+  private void sendAdminNotification() {
+    final var latestGeneratedHsaId = privatlakareIdEntityRepository.findLatestGeneratedHsaId();
+    if (latestGeneratedHsaId != 0
+        && latestGeneratedHsaId % hsaIdNotificationInterval
+        == 0) {
+      mailService.sendHsaGenerationEmail(latestGeneratedHsaId);
+    }
   }
 
   private void setDefaultValues(PrivatePractitioner privatePractitioner,
@@ -197,22 +206,6 @@ public class PrivatePractitionerRepository {
             () -> log.warn("Tried to remove non-existing private practitioner with personId '{}'",
                 hashUtility.hash(privatePractitioner.getPersonId()))
         );
-  }
-
-  public EmailNotifications getEmailNotifications(String personId) {
-    return privatlakareEntityRepository.findByPersonId(personId)
-        .map(entity -> {
-              final var emailEntities = epostEntityRepository.findByPrivatlakareId(
-                  entity.getPrivatlakareId());
-              final var notificationDates = emailEntities.stream()
-                  .map(EpostEntity::getSkickadDatum)
-                  .toList();
-              return EmailNotifications.builder()
-                  .notificationDates(notificationDates)
-                  .build();
-            }
-        )
-        .orElse(EmailNotifications.builder().build());
   }
 
   public void addEmailNotification(String personId, LocalDateTime sent) {

@@ -1,9 +1,7 @@
 package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +35,7 @@ public class MailHogUtil {
           .pollInterval(Duration.ofMillis(150))
           .until(() -> {
             try {
-              return !hasMessages(getUrl);
+              return !hasMessages(getUrl, null);
             } catch (Exception e) {
               return false;
             }
@@ -48,52 +46,92 @@ public class MailHogUtil {
   }
 
   public void assertEmail(String address, String subject, String body) {
-    final var messages = getMessages();
+    assertEmail(address, subject, body, null);
+  }
+
+  public void assertEmail(String address, String subject, String body,
+      Integer totalExpectedMessages) {
+    final var messages = getMessages(totalExpectedMessages);
 
     if (messages == null) {
       throw new IllegalStateException("No messages received within timeout period");
     }
 
-    final var msg = messages.path("items").get(0);
-    final var to = msg.path("To").get(0);
-    final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
+    final var items = messages.path("items");
+    if (totalExpectedMessages != null) {
+      assertEquals(totalExpectedMessages, items.size());
+    }
 
-    final var actualSubject = decode(
-        msg
-            .path("Content")
-            .path("Headers")
-            .path("Subject")
-            .get(0)
-            .asText()
-    );
+    boolean found = false;
 
-    final var actualBody =
-        decodeQuotedPrintable(
-            decode(
-                msg
-                    .path("Content")
-                    .path("Body")
-                    .asText()
-            )
+    for (int i = 0; i < items.size(); i++) {
+      final var msg = items.get(i);
+      final var to = msg.path("To").get(0);
+      final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
+
+      final var actualSubject = decode(
+          msg
+              .path("Content")
+              .path("Headers")
+              .path("Subject")
+              .get(0)
+              .asText()
+      );
+
+      final var actualBody =
+          decodeQuotedPrintable(
+              decode(
+                  msg
+                      .path("Content")
+                      .path("Body")
+                      .asText()
+              )
+          );
+
+      if (address.equals(actualAddress) &&
+          subject.equals(actualSubject) &&
+          actualBody.contains(body)) {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      StringBuilder errorMsg = new StringBuilder("No email found matching criteria:\n");
+      errorMsg.append("Expected - Address: ").append(address)
+          .append(", Subject: ").append(subject)
+          .append(", Body contains: ").append(body)
+          .append("\n");
+      errorMsg.append("Actual messages found:\n");
+
+      for (int i = 0; i < items.size(); i++) {
+        final var msg = items.get(i);
+        final var to = msg.path("To").get(0);
+        final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
+        final var actualSubject = decode(
+            msg.path("Content").path("Headers").path("Subject").get(0).asText()
+        );
+        final var actualBody = decodeQuotedPrintable(
+            decode(msg.path("Content").path("Body").asText())
         );
 
-    assertAll(
-        () -> assertEquals(address, actualAddress),
-        () -> assertEquals(subject, actualSubject),
-        () -> assertTrue(actualBody.contains(body),
-            () -> "Body was '%s' when expected to contain '%s'".formatted(actualBody, body)
-        )
-    );
+        errorMsg.append("Message ").append(i).append(" - Address: ").append(actualAddress)
+            .append(", Subject: ").append(actualSubject)
+            .append(", Body: ").append(actualBody).append("\n");
+      }
+
+      throw new AssertionError(errorMsg.toString());
+    }
   }
 
-  private JsonNode getMessages() {
+  private JsonNode getMessages(Integer expectedAmount) {
     final var requestUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
 
     try {
       await()
           .atMost(Duration.ofSeconds(20))
           .pollInterval(Duration.ofMillis(200))
-          .until(() -> hasMessages(requestUrl));
+          .until(() -> hasMessages(requestUrl, expectedAmount));
 
       final ResponseEntity<String> res = restTemplate.getForEntity(requestUrl, String.class);
 
@@ -109,13 +147,13 @@ public class MailHogUtil {
     }
   }
 
-  private boolean hasMessages(String requestUrl) {
+  private boolean hasMessages(String requestUrl, Integer expectedAmount) {
     try {
       final var res = restTemplate.getForEntity(requestUrl, String.class);
       if (res.getStatusCode() == HttpStatus.OK && res.getBody() != null) {
         final var messages = objectMapper.readTree(res.getBody());
         final var total = messages.path("total").asInt(0);
-        return total > 0;
+        return expectedAmount == null ? total > 0 : total == expectedAmount;
       }
       return false;
     } catch (Exception e) {
