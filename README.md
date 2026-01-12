@@ -271,20 +271,6 @@ For more detailed setup and deployment instructions, refer to:
 - [DevOps Documentation](https://github.com/sklintyg/devops/tree/release/2021-1/develop/README.md)
 - Project wiki (if available)
 
-## License
-
-Copyright (C) 2025 Inera AB (http://www.inera.se)
-
-Private Practitioner Service is free software: you can redistribute it and/or modify it under the
-terms of the GNU Affero General Public License as published by the Free Software Foundation, either
-version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
-General Public License for more details.
-
-For the full license text, see [LICENSE](LICENSE).
-
 ## Support
 
 For issues and questions, please contact Inera AB or refer to the project's issue tracker. 

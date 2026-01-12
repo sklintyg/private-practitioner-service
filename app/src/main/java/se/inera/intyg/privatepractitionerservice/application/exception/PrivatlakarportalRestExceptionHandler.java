@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2025 Inera AB (http://www.inera.se)
- *
- * This file is part of sklintyg (https://github.com/sklintyg).
- *
- * sklintyg is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sklintyg is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package se.inera.intyg.privatepractitionerservice.application.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,28 +15,25 @@ public class PrivatlakarportalRestExceptionHandler {
   private static final Logger LOG = LoggerFactory.getLogger(
       PrivatlakarportalRestExceptionHandler.class);
 
-  @ExceptionHandler
+  @ExceptionHandler(PrivatlakarportalServiceException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
-  public PrivatlakarportalRestExceptionResponse serviceExceptionHandler(HttpServletRequest request,
+  public PrivatlakarportalRestExceptionResponse handleServiceException(HttpServletRequest request,
       PrivatlakarportalServiceException e) {
     LOG.warn("Internal exception occured! Internal error code: {} Error message: {}",
         e.getErrorCode(),
         e.getMessage());
-    PrivatlakarportalRestExceptionResponse response =
-        new PrivatlakarportalRestExceptionResponse(e.getErrorCode(), e.getMessage());
-    return response;
+    return new PrivatlakarportalRestExceptionResponse(e.getErrorCode(), e.getMessage());
   }
 
-  @ExceptionHandler
+  @ExceptionHandler(RuntimeException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
-  public PrivatlakarportalRestExceptionResponse serviceExceptionHandler(HttpServletRequest request,
+  public PrivatlakarportalRestExceptionResponse handleRuntimeException(HttpServletRequest request,
       RuntimeException re) {
     LOG.error("Unhandled RuntimeException occured!", re);
-    PrivatlakarportalRestExceptionResponse response = new PrivatlakarportalRestExceptionResponse(
+    return new PrivatlakarportalRestExceptionResponse(
         PrivatlakarportalErrorCodeEnum.UNKNOWN_INTERNAL_PROBLEM, "Unhandled runtime exception");
-    return response;
   }
 
 }

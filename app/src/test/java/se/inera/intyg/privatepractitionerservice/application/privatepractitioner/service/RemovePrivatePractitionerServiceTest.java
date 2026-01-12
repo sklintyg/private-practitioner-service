@@ -3,7 +3,6 @@ package se.inera.intyg.privatepractitionerservice.application.privatepractitione
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_EMAIL;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PERSON_ID;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataModel.DR_KRANSTEGE;
@@ -39,7 +38,7 @@ class RemovePrivatePractitionerServiceTest {
     service.remove(DR_KRANSTEGE);
 
     verify(privatePractitionerRepository).remove(DR_KRANSTEGE);
-    verify(mailService).sendRegistrationRemovedEmail(DR_KRANSTEGE_EMAIL);
+    verify(mailService).sendRegistrationRemovedEmail(DR_KRANSTEGE);
     verify(monitoringLogService).logRegistrationRemoved(DR_KRANSTEGE_PERSON_ID,
         DR_KRANSTEGE_HSA_ID);
   }

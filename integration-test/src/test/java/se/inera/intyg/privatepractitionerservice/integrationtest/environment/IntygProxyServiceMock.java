@@ -32,6 +32,7 @@ public class IntygProxyServiceMock {
   public void credentialsForPersonResponse(
       GetCredentialsForPersonResponseDTO credentialsForPerson) {
     try {
+      mockServerClient.clear(HttpRequest.request("/api/v1/credentialsForPerson"));
       mockServerClient.when(HttpRequest.request("/api/v1/credentialsForPerson"))
           .respond(
               HttpResponse

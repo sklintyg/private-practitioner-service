@@ -21,6 +21,10 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.DR_KRANSTEGE_UPDATE_REQUEST;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataDTO.kranstegeRegistrationRequest;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.ADMIN_EMAIL;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.HSA_GENERATION_MAIL_BODY;
+import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.HSA_GENERATION_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_BODY;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_PENDING_MAIL_BODY;
@@ -215,6 +219,24 @@ class PrivatePractitionerIT {
     assertEquals(200, response.getStatusCode().value());
     mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT,
         REGISTRATION_PENDING_MAIL_BODY);
+  }
+
+  @Test
+  void shallSendAdminEmailWhenLimitReached() {
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
+    intygProxyServiceMock.lastUpdate();
+    api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
+
+    intygProxyServiceMock.credentialsForPersonResponse(
+        fridaKranstegeCredentialsBuilder().credentials(
+            fridaKranstegeHospCredentials().personalIdentityNumber("197705232381").build()).build()
+    );
+    api.registerPrivatePractitioner(
+        kranstegeRegistrationRequest().personId("197705232381").build());
+
+    mailHogUtil.assertEmail(ADMIN_EMAIL, HSA_GENERATION_MAIL_SUBJECT,
+        String.format(HSA_GENERATION_MAIL_BODY, 2), 3);
   }
 
   @Test

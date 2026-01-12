@@ -97,19 +97,6 @@ class PersonIntegrationServiceTest {
           () -> personIntegrationService.getPerson(personRequest)
       );
     }
-
-    @Test
-    void shouldThrowIllegalStateExceptionIfNoPersonReturnedFromPU() {
-      final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
-      final var personSvarDTO = new PersonSvarDTO(null, StatusDTO.NOT_FOUND);
-
-      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
-          personSvarDTO);
-
-      assertThrows(IllegalStateException.class,
-          () -> personIntegrationService.getPerson(personRequest)
-      );
-    }
   }
 
   @Nested

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataAssert.assertPrivatlakareEntity;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_HSA_ID;
@@ -25,8 +26,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.model.PrivatePractitioner;
 import se.inera.intyg.privatepractitionerservice.infrastructure.logging.HashUtility;
+import se.inera.intyg.privatepractitionerservice.infrastructure.mail.MailService;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter.PrivatlakareEntityConverter;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
@@ -42,6 +45,8 @@ class PrivatePractitionerRepositoryTest {
   private PrivatlakareEntityConverter privatlakareEntityConverter;
   @Mock
   private HashUtility hashUtility;
+  @Mock
+  private MailService mailService;
   @InjectMocks
   private PrivatePractitionerRepository privatePractitionerRepository;
 
@@ -179,6 +184,8 @@ class PrivatePractitionerRepositoryTest {
         when(privatlakareEntityRepository.save(any(PrivatlakareEntity.class)))
             .thenReturn(DR_KRANSTEGE_ENTITY);
         when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY)).thenReturn(kranstege);
+        ReflectionTestUtils.setField(privatePractitionerRepository, "hsaIdNotificationInterval",
+            50);
       }
 
       @Test
@@ -199,6 +206,20 @@ class PrivatePractitionerRepositoryTest {
             .build();
         verify(privatlakareEntityRepository).save(captor.capture());
         assertPrivatlakareEntity(newKranstegeEntity, captor.getValue());
+      }
+
+      @Test
+      void shouldSendAdminMailAfterSpecifiedAmountOfRegistrations() {
+        when(privatlakareIdEntityRepository.findLatestGeneratedHsaId()).thenReturn(50);
+        privatePractitionerRepository.save(kranstege);
+        verify(mailService).sendHsaGenerationEmail(50);
+      }
+
+      @Test
+      void shouldNotSendAdminMailForEachRegistration() {
+        when(privatlakareIdEntityRepository.findLatestGeneratedHsaId()).thenReturn(49);
+        privatePractitionerRepository.save(kranstege);
+        verifyNoInteractions(mailService);
       }
     }
 

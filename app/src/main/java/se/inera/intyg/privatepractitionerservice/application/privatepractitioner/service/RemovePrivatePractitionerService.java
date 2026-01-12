@@ -27,7 +27,7 @@ public class RemovePrivatePractitionerService {
       return;
     }
     privatePractitionerRepository.remove(privatePractitioner);
-    mailService.sendRegistrationRemovedEmail(privatePractitioner.getEmail());
+    mailService.sendRegistrationRemovedEmail(privatePractitioner);
     monitoringLogService.logRegistrationRemoved(
         privatePractitioner.getPersonId(),
         privatePractitioner.getHsaId()
