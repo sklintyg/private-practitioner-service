@@ -12,7 +12,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.FR
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.HSA_GENERATION_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_APPROVED_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_PENDING_MAIL_SUBJECT;
-import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_REJECTED_MAIL_SUBJECT;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataMail.REGISTRATION_REMOVED_MAIL_SUBJECT;
 
 import jakarta.mail.Message;
@@ -92,7 +91,6 @@ class MailServiceTest {
     void setUp() {
       setField(mailService, "from", FROM_EMAIL);
       setField(mailService, "approvedSubject", REGISTRATION_APPROVED_MAIL_SUBJECT);
-      setField(mailService, "notApprovedSubject", REGISTRATION_REJECTED_MAIL_SUBJECT);
       setField(mailService, "awaitingHospSubject", REGISTRATION_PENDING_MAIL_SUBJECT);
 
       when(mailSender.createMimeMessage()).thenReturn(message);
@@ -123,16 +121,6 @@ class MailServiceTest {
       final var captor = ArgumentCaptor.forClass(String.class);
       verify(message).setSubject(captor.capture(), eq("UTF-8"));
       assertEquals(REGISTRATION_APPROVED_MAIL_SUBJECT, captor.getValue());
-    }
-
-    @Test
-    void shouldSendWithSubjectRejectedWhenAuthorized() throws MessagingException {
-      mailService.sendRegistrationStatusEmail(RegistrationStatus.NOT_AUTHORIZED,
-          DR_KRANSTEGE_EMAIL);
-
-      final var captor = ArgumentCaptor.forClass(String.class);
-      verify(message).setSubject(captor.capture(), eq("UTF-8"));
-      assertEquals(REGISTRATION_REJECTED_MAIL_SUBJECT, captor.getValue());
     }
 
     @Test
