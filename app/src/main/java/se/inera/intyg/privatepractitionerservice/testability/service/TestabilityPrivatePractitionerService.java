@@ -13,6 +13,7 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.bootstrap.PrivatlakarBootstrapBean;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatePractitionerRepository;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
+import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareIdEntityRepository;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.testability.service.converter.TestabilityPrivatePractitionerConverter;
 import se.inera.intyg.privatepractitionerservice.testability.service.factory.TestabilityPrivatePractitionerFactory;
@@ -28,6 +29,7 @@ public class TestabilityPrivatePractitionerService {
   private final PrivatePractitionerRepository privatePractitionerRepository;
   private final TestabilityPrivatePractitionerConverter privatePractitionerConverter;
   private final PrivatlakareEntityRepository privatlakareEntityRepository;
+  private final PrivatlakareIdEntityRepository privatlakareIdEntityRepository;
   private final Optional<PrivatlakarBootstrapBean> privatlakarBootstrapBean;
 
 
@@ -64,6 +66,10 @@ public class TestabilityPrivatePractitionerService {
   public void initDate() {
     clear();
     privatlakarBootstrapBean.orElseThrow().initData();
+  }
+
+  public void setPrivateLakarId(Integer id) {
+    privatlakareIdEntityRepository.setIdSequence(id);
   }
 }
 

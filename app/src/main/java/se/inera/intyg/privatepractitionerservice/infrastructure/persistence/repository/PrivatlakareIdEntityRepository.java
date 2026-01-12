@@ -3,6 +3,7 @@ package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.rep
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareIdEntity;
@@ -16,6 +17,6 @@ public interface PrivatlakareIdEntityRepository extends
   int findLatestGeneratedHsaId();
 
   @Modifying
-  @Query(value = "ALTER TABLE PRIVATLAKARE_ID AUTO_INCREMENT = 1", nativeQuery = true)
-  void resetIdSequence();
+  @Query(value = "ALTER TABLE PRIVATLAKARE_ID AUTO_INCREMENT = :id", nativeQuery = true)
+  void setIdSequence(@Param("id") Integer id);
 }

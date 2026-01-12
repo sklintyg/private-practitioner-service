@@ -73,7 +73,7 @@ public class PrivatePractitionerRepository {
   public void clear() {
     privatlakareEntityRepository.deleteAll();
     privatlakareIdEntityRepository.deleteAll();
-    privatlakareIdEntityRepository.resetIdSequence();
+    privatlakareIdEntityRepository.setIdSequence(1);
   }
 
   private PrivatePractitioner updateExisting(PrivatlakareEntity existingEntity,

@@ -16,6 +16,13 @@ DELETE http://localhost:18070/testability/clear
 # Delete all Private Practitioners and reset hsaid-counter, then load test data
 DELETE http://localhost:18070/testability/reset
 
+### POST
+# Set Hsa-id counter to specific value
+PUT http://localhost:18070/testability/hsa-id-counter
+Content-Type: application/json
+
+50
+
 
 ### POST
 # Reload Private Practitioners from test data file
