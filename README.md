@@ -15,7 +15,7 @@ notifications.
 - **Private Practitioner Registration**: Handles registration workflow for private practitioners
 - **HSA Integration**: Fetches and validates practitioner credentials from Socialstyrelsen (Swedish
   National Board of Health and Welfare)
-- **Email Notifications**: Sends status notifications (approved, rejected, pending, removed)
+- **Email Notifications**: Sends status notifications (approved, pending, removed)
 - **Scheduled HSA Updates**: Automatic credential updates via scheduled jobs
 - **Internal API**: Provides endpoints for integration with Webcert, Rehabstöd and Customer Termination
 - **Database Management**: Uses Liquibase for database migrations
@@ -256,8 +256,7 @@ The service implements:
 The service sends automated email notifications for:
 
 - **Approved**: Practitioner approved and can use Webcert
-- **Rejected**: Access denied due to missing credentials or suspension
-- **Pending**: Credentials not yet available from Socialstyrelsen
+- **Pending**: Credentials for a valid Läkarlegitimation not yet available from Socialstyrelsen
 - **Removed**: Registration removed after multiple failed validation attempts
 - **Admin Alerts**: HSA ID allocation warnings
 
