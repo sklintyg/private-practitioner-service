@@ -12,16 +12,16 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 @Component
+@RequiredArgsConstructor
 public class MdcServletFilter implements Filter {
 
-  @Autowired
-  private MdcHelper mdcHelper;
+  private final MdcHelper mdcHelper;
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

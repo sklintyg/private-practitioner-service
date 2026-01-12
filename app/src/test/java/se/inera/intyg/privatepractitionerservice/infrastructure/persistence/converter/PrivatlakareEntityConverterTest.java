@@ -110,15 +110,15 @@ class PrivatlakareEntityConverterTest {
   @Test
   void shouldConvertRestrictions() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertThat(DR_KRANSTEGE_RESTRICTIONS).containsExactlyInAnyOrderElementsOf(
-        actual.getRestrictions());
+    assertThat(actual.getRestrictions()).containsExactlyInAnyOrderElementsOf(
+        DR_KRANSTEGE_RESTRICTIONS);
   }
 
   @Test
   void shouldConvertLicensedHealthcareProfessions() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertThat(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS).containsExactlyInAnyOrderElementsOf(
-        actual.getLicensedHealthcareProfessions());
+    assertThat(actual.getLicensedHealthcareProfessions()).containsExactlyInAnyOrderElementsOf(
+        DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS);
   }
 
   @Test

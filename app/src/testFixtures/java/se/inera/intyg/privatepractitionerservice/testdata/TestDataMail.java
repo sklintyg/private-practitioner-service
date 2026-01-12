@@ -13,9 +13,8 @@ public class TestDataMail {
   public static final String HSA_GENERATION_MAIL_BODY = "Det är dags att TAK:a nytt. Det har totalt skapats %d konton i tjänsten";
 
   public static final String REGISTRATION_APPROVED_MAIL_SUBJECT = "Webcert är klar att användas";
-  public static final String REGISTRATION_APPROVED_MAIL_BODY = "Dina uppgifter har hämtats från Socialstyrelsen och du kan nu börja använda Webcert.";
-  public static final String REGISTRATION_REJECTED_MAIL_SUBJECT = "Registrering för Webcert";
+  public static final String REGISTRATION_APPROVED_MAIL_BODY = "Dina uppgifter avseende giltig läkarlegitimation har hämtats från Socialstyrelsen och du kan nu börja använda Webcert.";
   public static final String REGISTRATION_PENDING_MAIL_SUBJECT = "Registrering för Webcert";
-  public static final String REGISTRATION_PENDING_MAIL_BODY = "Dina uppgifter har tyvärr fortfarande inte kunnat hämtas från Socialstyrelsen. Du bör kontakta Socialstyrelsen för att verifiera att dina legitimationsuppgifter är korrekta.";
+  public static final String REGISTRATION_PENDING_MAIL_BODY = "Dina uppgifter avseende giltig läkarlegitimation har fortfarande inte kunnat hämtats från Socialstyrelsen. Du bör kontakta Socialstyrelsen för att verifiera att dina legitimationsuppgifter är korrekta.";
   public static final String REGISTRATION_REMOVED_MAIL_SUBJECT = "Registrering för Webcert";
 }

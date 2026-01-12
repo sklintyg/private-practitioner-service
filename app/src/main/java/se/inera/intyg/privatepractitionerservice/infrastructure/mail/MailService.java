@@ -35,17 +35,11 @@ public class MailService {
   @Value("${mail.content.approved.body}")
   private String approvedBody;
 
-  @Value("${mail.content.rejected.body}")
-  private String notApprovedBody;
-
   @Value("${mail.content.pending.body}")
   private String awaitingHospBody;
 
   @Value("${mail.content.approved.subject}")
   private String approvedSubject;
-
-  @Value("${mail.content.rejected.subject}")
-  private String notApprovedSubject;
 
   @Value("${mail.content.pending.subject}")
   private String awaitingHospSubject;
@@ -124,16 +118,14 @@ public class MailService {
   private String messageSubjectFromRegistrationStatus(RegistrationStatus status) {
     return switch (status) {
       case AUTHORIZED -> approvedSubject;
-      case NOT_AUTHORIZED -> notApprovedSubject;
-      case WAITING_FOR_HOSP -> awaitingHospSubject;
+      case NOT_AUTHORIZED, WAITING_FOR_HOSP -> awaitingHospSubject;
     };
   }
 
   private String messageBodyFromRegistrationStatus(RegistrationStatus status) {
     return switch (status) {
       case AUTHORIZED -> approvedBody;
-      case NOT_AUTHORIZED -> notApprovedBody;
-      case WAITING_FOR_HOSP -> awaitingHospBody;
+      case NOT_AUTHORIZED, WAITING_FOR_HOSP -> awaitingHospBody;
     };
   }
 
