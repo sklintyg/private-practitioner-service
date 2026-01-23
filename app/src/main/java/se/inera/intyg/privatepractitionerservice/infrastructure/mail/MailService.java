@@ -56,7 +56,7 @@ public class MailService {
   @Value("${mail.content.removed.subject}")
   private String registrationRemovedSubject;
 
-  private static final String INERA_LOGO = "inera_logo.svg";
+  private static final String INERA_LOGO = "inera_logo.png";
 
   private static final String BOTTOM_BODY_CONTENT = "<br/><br/><br/><span><img src='cid:inera_logo' style='max-width: 75%%; max-height: auto'></span>";
 
@@ -135,7 +135,7 @@ public class MailService {
     helper.setSubject(subjectText);
     helper.setText(bodyText + BOTTOM_BODY_CONTENT, true);
     final InputStreamSource imageSource = new ByteArrayResource(getLogo());
-    helper.addInline("inera_logo", imageSource, "image/svg+xml");
+    helper.addInline("inera_logo", imageSource, "image/png");
   }
 
   private byte[] getLogo() throws IOException {
