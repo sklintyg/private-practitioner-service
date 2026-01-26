@@ -28,8 +28,6 @@ public class UpdateHospService {
           privatePractitioner.updateWithHospInformation(hospPerson);
           privatePractitionerRepository.save(privatePractitioner);
 
-          hospRepository.addToCertifier(privatePractitioner);
-
           switch (privatePractitioner.getRegistrationStatus()) {
             case AUTHORIZED -> notifyPrivatePractitionerRegistration.notify(privatePractitioner);
             case WAITING_FOR_HOSP, NOT_AUTHORIZED ->

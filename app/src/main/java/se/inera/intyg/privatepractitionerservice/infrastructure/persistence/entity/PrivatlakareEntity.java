@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -138,6 +139,10 @@ public class PrivatlakareEntity {
 
   @Column(name = "REGISTRERINGSDATUM", nullable = false)
   private LocalDateTime registreringsdatum;
+
+  @OneToMany(cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "PRIVATLAKARE_ID", nullable = false)
+  private Set<MedgivandeEntity> medgivandeEntity;
 
   /**
    * Update Befattningar with a new Befattningskod if the Set exists. Effectively overriding the

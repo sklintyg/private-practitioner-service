@@ -75,7 +75,6 @@ class UpdateHospServiceTest {
     service.update();
 
     verify(privatePractitionerRepository).save(kranstege);
-    verify(hospRepository).addToCertifier(kranstege);
 
     verify(notifyPrivatePractitionerRegistration).notify(kranstege);
     verify(handleWaitingForHospService, never()).handle(any());
@@ -100,7 +99,6 @@ class UpdateHospServiceTest {
     service.update();
 
     verify(privatePractitionerRepository).save(kranstege);
-    verify(hospRepository).addToCertifier(kranstege);
 
     verify(notifyPrivatePractitionerRegistration, never()).notify(any());
     verify(handleWaitingForHospService).handle(kranstege);
@@ -124,7 +122,6 @@ class UpdateHospServiceTest {
     service.update();
 
     verify(privatePractitionerRepository).save(kranstege);
-    verify(hospRepository).addToCertifier(kranstege);
 
     verify(handleWaitingForHospService).handle(kranstege);
     verify(notifyPrivatePractitionerRegistration, never()).notify(any());
