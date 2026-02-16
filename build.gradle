@@ -1,24 +1,23 @@
 plugins {
     alias(libs.plugins.com.github.ben.manes.versions)
     alias(libs.plugins.org.cyclonedx.bom)
-    alias(libs.plugins.org.owasp.dependencycheck)
     alias(libs.plugins.org.sonarqube)
     alias(libs.plugins.org.springframework.boot)
-    id 'test-report-aggregation'
-    id 'application'
 }
 
-ext {
-    intygBomVersion = System.properties['intygBomVersion'] ?: '0.0.1-SNAPSHOT'
+apply from: 'gradle/configureIntygBom.gradle'
 
-    nvdMirror = 'https://vulnz-nvd-mirror-devtest.intyg.nordicmedtest.se'
-}
-
-application {
-    mainClassName = 'se.inera.intyg.privatepractitionerservice.PrivatePractitionerServiceApplication'
+springBoot {
+    mainClass = 'se.inera.intyg.privatepractitionerservice.PrivatePractitionerServiceApplication'
 }
 
 allprojects {
+    apply plugin: 'java'
+    apply plugin: 'test-report-aggregation'
+
+    group = 'se.inera.private-practitioner-service'
+    version = System.properties['buildVersion'] ?: '0-SNAPSHOT'
+
     repositories {
         mavenLocal()
         maven { url "https://nexus.drift.inera.se/repository/it-public/" }
@@ -28,19 +27,25 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'java-test-fixtures'
 
     java {
-        sourceCompatibility = 21
-        targetCompatibility = 21
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(javaVersion)
+        }
     }
 
     configurations {
+        mockitoAgent
         compileOnly {
             extendsFrom annotationProcessor
         }
+    }
+
+    compileJava {
+        options.encoding = "UTF-8"
+        options.compilerArgs.add("-parameters")
     }
 
     dependencies {
@@ -49,6 +54,23 @@ subprojects {
         testImplementation platform("se.inera.intyg.bom:platform:${intygBomVersion}")
         testAnnotationProcessor platform("se.inera.intyg.bom:platform:${intygBomVersion}")
         testFixturesImplementation platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+        mockitoAgent platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+        mockitoAgent("org.mockito:mockito-core") { transitive = false }
+    }
+
+    test {
+        jvmArgs += [
+                "-javaagent:${configurations.mockitoAgent.asPath}",
+                "-Xshare:off"
+        ]
+    }
+
+    testing {
+        suites {
+            test {
+                useJUnitJupiter()
+            }
+        }
     }
 
     jacocoTestReport {
@@ -69,13 +91,10 @@ subprojects {
         }
     }
 
-    tasks.withType(Test).configureEach {
-        jvmArgs '-Xshare:off'
+    tasks.matching { it.name == "cyclonedxDirectBom" }.configureEach { t ->
+        t.includeConfigs = ['^runtimeClasspath$']
     }
 }
-
-group = 'se.inera.private-practitioner-service'
-version = System.properties['buildVersion'] ?: '0-SNAPSHOT'
 
 reporting {
     reports {
@@ -84,11 +103,8 @@ reporting {
         }
     }
 
-    dependencies {
-        testReportAggregation project(':app')
-        testReportAggregation project(':integration-api')
-        testReportAggregation project(':integration-intyg-proxy-service')
-        testReportAggregation project(':integration-test')
+    subprojects.collect { subproject -> subproject.name }.each { subprojectName ->
+        dependencies { testReportAggregation project(":${subprojectName}") }
     }
 }
 
@@ -96,17 +112,5 @@ sonar {
     properties {
         property "sonar.projectKey", "intyg-private-practitioner-service"
         property "sonar.projectName", "intyg-private-practitioner-service"
-        property "sonar.dependencyCheck.jsonReportPath", "${layout.buildDirectory.get()}/reports/dependency-check-report.json" as String
-        property "sonar.dependencyCheck.htmlReportPath", "${layout.buildDirectory.get()}/reports/dependency-check-report.html" as String
     }
-}
-
-dependencyCheck {
-    formats = ['HTML', 'JSON']
-    nvd.setDatafeedUrl(nvdMirror)
-    analyzers.setAssemblyEnabled(false)
-    analyzers.setNodeEnabled(false)
-    analyzers.setCentralEnabled(false)
-    analyzers.ossIndex.setUsername(project.properties.get('ossIndexUsername'))
-    analyzers.ossIndex.setPassword(project.properties.get('ossIndexPassword'))
 }

@@ -1,5 +1,10 @@
 plugins {
+    alias(libs.plugins.org.cyclonedx.bom)
     alias(libs.plugins.org.springframework.boot)
+}
+
+tasks.named('bootJar') {
+    archiveFileName.set('app.jar')
 }
 
 def applicationDir = "${rootProject.projectDir}/devops/dev"
@@ -42,10 +47,6 @@ dependencies {
 
     testFixturesImplementation "org.junit.jupiter:junit-jupiter"
     testFixturesImplementation project(":integration-api")
-}
-
-testing.suites {
-    test { useJUnitJupiter() }
 }
 
 bootRun {

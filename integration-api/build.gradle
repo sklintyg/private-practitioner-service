@@ -2,7 +2,3 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 }
-
-testing.suites {
-    test { useJUnitJupiter() }
-}
