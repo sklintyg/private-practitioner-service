@@ -17,7 +17,8 @@ notifications.
   National Board of Health and Welfare)
 - **Email Notifications**: Sends status notifications (approved, pending, removed)
 - **Scheduled HSA Updates**: Automatic credential updates via scheduled jobs
-- **Internal API**: Provides endpoints for integration with Webcert, Rehabstöd and Customer Termination
+- **Internal API**: Provides endpoints for integration with Webcert, Rehabstöd and Customer
+  Termination
 - **Database Management**: Uses Liquibase for database migrations
 
 ## Technology Stack
@@ -25,7 +26,7 @@ notifications.
 - **Java 21**
 - **Spring Boot 3.x**
 - **Gradle** - Build automation
-- **MySQL** - Primary database (H2 for development)
+- **MySQL** - Primary database
 - **Redis** - Distributed locks
 - **Liquibase** - Database migration management
 - **Docker** - Containerization support
@@ -34,7 +35,7 @@ notifications.
 
 - Java Development Kit (JDK) 21
 - Gradle (wrapper included)
-- MySQL database (or H2 for local development)
+- MySQL database
 - Redis server
 - Docker (optional, for containerized deployment)
 
@@ -123,16 +124,15 @@ Webcert instance:
 
 ### Test Users
 
-| PNR           | name                | case                                                            | route             | action                           |
-|---------------|---------------------|-----------------------------------------------------------------|-------------------|----------------------------------|
-| 191212121212  | Tolvan Tolvanson    | Har inget avtal, inget pp-konto och inga hosp-uppgifter         | /info-inget-avtal | No actions available             |
-| 197705232382  | Frida Kranstege     | Har inget avtal, men har pp-konto och hosp-uppgifter            | /info             | Can only manage pp-account       |
-| 199608112380  | Petra Privat        | Har avtal, hosp-uppgifter men inte pp-konto                     | /register         | Can only register for pp-account |
-| 195212222318  | Foris Dorisson1     | Har avtal, pp-konto men inte hosp-uppgifter                     | /info             | Can only manage pp-account       |
-| 197309069289  | Nina Maria Greger   | Har avtal, pp-konto och hosp-uppgifter, inte läkarlegitimation  | /info             | Can only manage pp-account       |
-| 195711092642  | Amanda Tigersson    | Har avtal, pp-konto och hosp-uppgifter, återkallad legitimation | /info             | Can only manage pp-account       |
-| 199001092387  | Maj Pärsson         | Har avtal, pp-konto och hosp-uppgifter, läkarlegitimation       | /search           | Can do all actions               |
-
+| PNR          | name              | case                                                            | route             | action                           |
+|--------------|-------------------|-----------------------------------------------------------------|-------------------|----------------------------------|
+| 191212121212 | Tolvan Tolvanson  | Har inget avtal, inget pp-konto och inga hosp-uppgifter         | /info-inget-avtal | No actions available             |
+| 197705232382 | Frida Kranstege   | Har inget avtal, men har pp-konto och hosp-uppgifter            | /info             | Can only manage pp-account       |
+| 199608112380 | Petra Privat      | Har avtal, hosp-uppgifter men inte pp-konto                     | /register         | Can only register for pp-account |
+| 195212222318 | Foris Dorisson1   | Har avtal, pp-konto men inte hosp-uppgifter                     | /info             | Can only manage pp-account       |
+| 197309069289 | Nina Maria Greger | Har avtal, pp-konto och hosp-uppgifter, inte läkarlegitimation  | /info             | Can only manage pp-account       |
+| 195711092642 | Amanda Tigersson  | Har avtal, pp-konto och hosp-uppgifter, återkallad legitimation | /info             | Can only manage pp-account       |
+| 199001092387 | Maj Pärsson       | Har avtal, pp-konto och hosp-uppgifter, läkarlegitimation       | /search           | Can do all actions               |
 
 ### Configuration Steps
 
@@ -143,6 +143,7 @@ Webcert instance:
 ```properties
 privatepractitionerservice.base.url=http://localhost:18070/internalapi/privatepractitioner
 ```
+
 3. Start Webcert with spring profile `private-practitioner-service-active`
 
 4. Access Webcert at `https://wc.localtest.me/welcome.html`
