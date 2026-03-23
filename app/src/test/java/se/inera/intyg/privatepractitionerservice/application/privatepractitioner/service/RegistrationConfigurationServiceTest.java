@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,10 +39,8 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.codesystem.CodeS
 @ExtendWith(MockitoExtension.class)
 class RegistrationConfigurationServiceTest {
 
-  @Mock
-  private CodeSystemRepository codeSystemRepository;
-  @InjectMocks
-  private RegistrationConfigurationService registrationConfigurationService;
+  @Mock private CodeSystemRepository codeSystemRepository;
+  @InjectMocks private RegistrationConfigurationService registrationConfigurationService;
 
   @BeforeEach
   void setUp() {
@@ -38,26 +54,22 @@ class RegistrationConfigurationServiceTest {
   void shouldReturnHealthcareServiceTypesCodes() {
     final var actual = registrationConfigurationService.get();
     assertEquals(1, actual.getHealthcareServiceTypeCodes().size());
-    assertEquals(HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO,
-        actual.getHealthcareServiceTypeCodes().getFirst()
-    );
+    assertEquals(
+        HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO,
+        actual.getHealthcareServiceTypeCodes().getFirst());
   }
 
   @Test
   void shouldReturnPositionCodes() {
     final var actual = registrationConfigurationService.get();
     assertEquals(1, actual.getPositionCodes().size());
-    assertEquals(POSITION_SPECIALIST_DOCTOR_DTO,
-        actual.getPositionCodes().getFirst()
-    );
+    assertEquals(POSITION_SPECIALIST_DOCTOR_DTO, actual.getPositionCodes().getFirst());
   }
 
   @Test
   void shouldReturnTypeOfCareCodes() {
     final var actual = registrationConfigurationService.get();
     assertEquals(1, actual.getTypeOfCareCodes().size());
-    assertEquals(TYPE_OF_CARE_OUTPATIENT_DTO,
-        actual.getTypeOfCareCodes().getFirst()
-    );
+    assertEquals(TYPE_OF_CARE_OUTPATIENT_DTO, actual.getTypeOfCareCodes().getFirst());
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import static org.mockito.Mockito.any;
@@ -28,16 +46,11 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 @ExtendWith(MockitoExtension.class)
 class HandleWaitingForHospServiceTest {
 
-  @Mock
-  private PrivatePractitionerRepository privatePractitionerRepository;
-  @Mock
-  private MailService mailService;
-  @Mock
-  private MonitoringLogService monitoringLogService;
-  @Mock
-  private RemovePrivatePractitionerService removePrivatePractitionerService;
-  @InjectMocks
-  private HandleWaitingForHospService service;
+  @Mock private PrivatePractitionerRepository privatePractitionerRepository;
+  @Mock private MailService mailService;
+  @Mock private MonitoringLogService monitoringLogService;
+  @Mock private RemovePrivatePractitionerService removePrivatePractitionerService;
+  @InjectMocks private HandleWaitingForHospService service;
 
   @BeforeEach
   void init() {
@@ -67,8 +80,8 @@ class HandleWaitingForHospServiceTest {
 
     verify(monitoringLogService).logHospWaiting(DR_KRANSTEGE_PERSON_ID, DR_KRANSTEGE_HSA_ID);
     verify(mailService).sendRegistrationStatusEmail(AUTHORIZED, DR_KRANSTEGE_EMAIL);
-    verify(privatePractitionerRepository).addEmailNotification(eq(DR_KRANSTEGE_PERSON_ID),
-        any(LocalDateTime.class));
+    verify(privatePractitionerRepository)
+        .addEmailNotification(eq(DR_KRANSTEGE_PERSON_ID), any(LocalDateTime.class));
     verifyNoInteractions(removePrivatePractitionerService);
   }
 }

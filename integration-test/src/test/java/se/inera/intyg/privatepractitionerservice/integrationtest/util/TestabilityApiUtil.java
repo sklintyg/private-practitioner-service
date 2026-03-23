@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 
 import static se.inera.intyg.privatepractitionerservice.integrationtest.util.PrivatePractitionerUtil.privatePractitionerPersonId;
@@ -32,14 +50,13 @@ public class TestabilityApiUtil {
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    final ResponseEntity<PrivatePractitionerDTO> response = this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.POST,
-        new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+    final ResponseEntity<PrivatePractitionerDTO> response =
+        this.restTemplate.exchange(
+            requestUrl,
+            HttpMethod.POST,
+            new HttpEntity<>(request, headers),
+            new ParameterizedTypeReference<>() {},
+            Collections.emptyMap());
 
     if (privatePractitionerPersonId(response.getBody()) != null) {
       privatePractitionerPersonIds.add(privatePractitionerPersonId(response.getBody()));
@@ -58,22 +75,18 @@ public class TestabilityApiUtil {
 
     final var requestUrl = "http://localhost:%s/testability/clear".formatted(port);
 
-    final ResponseEntity<Void> response = this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.DELETE,
-        new HttpEntity<>(null, null),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+    final ResponseEntity<Void> response =
+        this.restTemplate.exchange(
+            requestUrl,
+            HttpMethod.DELETE,
+            new HttpEntity<>(null, null),
+            new ParameterizedTypeReference<>() {},
+            Collections.emptyMap());
 
     if (response.getStatusCode() != HttpStatus.OK) {
       log.error(
-          "Could not clear practitioners using testability with request '%s'! StatusCode: '%s'".formatted(
-              requestUrl,
-              response.getStatusCode()
-          )
-      );
+          "Could not clear practitioners using testability with request '%s'! StatusCode: '%s'"
+              .formatted(requestUrl, response.getStatusCode()));
     }
     privatePractitionerPersonIds.clear();
   }

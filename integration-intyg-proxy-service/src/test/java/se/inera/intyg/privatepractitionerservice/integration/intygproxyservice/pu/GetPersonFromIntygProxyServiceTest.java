@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,10 +35,8 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.p
 @ExtendWith(MockitoExtension.class)
 class GetPersonFromIntygProxyServiceTest {
 
-  @Mock
-  PersonFromIntygProxyServiceClient personFromIntygProxyServiceClient;
-  @InjectMocks
-  GetPersonFromIntygProxyService getPersonFromIntygProxyService;
+  @Mock PersonFromIntygProxyServiceClient personFromIntygProxyServiceClient;
+  @InjectMocks GetPersonFromIntygProxyService getPersonFromIntygProxyService;
 
   private static final String PERSON_ID = "197705232382";
   private static final String KRANSTEGE_NAME = "Frida";
@@ -33,8 +49,8 @@ class GetPersonFromIntygProxyServiceTest {
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
-    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
-        personRequest);
+    final var actualResponse =
+        getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
     assertEquals(PersonSvarDTO.class, actualResponse.getClass());
   }
@@ -46,8 +62,8 @@ class GetPersonFromIntygProxyServiceTest {
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
-    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
-        personRequest);
+    final var actualResponse =
+        getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
     assertEquals(PERSON_ID, actualResponse.person().personnummer());
   }
@@ -59,8 +75,8 @@ class GetPersonFromIntygProxyServiceTest {
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
-    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
-        personRequest);
+    final var actualResponse =
+        getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
     assertEquals(KRANSTEGE_NAME, actualResponse.person().fornamn());
   }
@@ -72,8 +88,8 @@ class GetPersonFromIntygProxyServiceTest {
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
-    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
-        personRequest);
+    final var actualResponse =
+        getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
     assertEquals(KRANSTEGE_LAST_NAME, actualResponse.person().efternamn());
   }
@@ -85,8 +101,8 @@ class GetPersonFromIntygProxyServiceTest {
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
-    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
-        personRequest);
+    final var actualResponse =
+        getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
     assertEquals(expectedResponse.status(), actualResponse.status());
   }
@@ -98,8 +114,8 @@ class GetPersonFromIntygProxyServiceTest {
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
-    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
-        personRequest);
+    final var actualResponse =
+        getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
     assertEquals(expectedResponse.status(), actualResponse.status());
   }
@@ -111,12 +127,11 @@ class GetPersonFromIntygProxyServiceTest {
 
     when(personFromIntygProxyServiceClient.get(personRequest)).thenReturn(expectedResponse);
 
-    final var actualResponse = getPersonFromIntygProxyService.getPersonFromIntygProxy(
-        personRequest);
+    final var actualResponse =
+        getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest);
 
     assertEquals(expectedResponse.status(), actualResponse.status());
   }
-
 
   private static PersonSvarDTO getPersonResponse() {
     return new PersonSvarDTO(new PersonDTO(PERSON_ID, KRANSTEGE_NAME, KRANSTEGE_LAST_NAME), null);

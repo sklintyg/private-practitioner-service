@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.testdata;
 
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_ADDRESS;
@@ -57,50 +75,37 @@ public class TestDataEntities {
         .forskrivarKod(DR_KRANSTEGE_PRESCRIPTION_CODE)
         .verksamhetstyper(
             List.of(
-                VerksamhetstypEntity.builder()
-                    .kod(DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE)
-                    .build()
-            )
-        )
-        .vardformer(
-            List.of(
-                VardformEntity.builder()
-                    .kod(DR_KRANSTEGE_TYPE_OF_CARE)
-                    .build()
-            )
-        )
+                VerksamhetstypEntity.builder().kod(DR_KRANSTEGE_HEALTHCARE_SERVICE_TYPE).build()))
+        .vardformer(List.of(VardformEntity.builder().kod(DR_KRANSTEGE_TYPE_OF_CARE).build()))
         .registreringsdatum(LocalDateTime.now())
-        .befattningar(
-            List.of(
-                BefattningEntity.builder()
-                    .kod(DR_KRANSTEGE_POSITION)
-                    .build()
-            )
-        )
+        .befattningar(List.of(BefattningEntity.builder().kod(DR_KRANSTEGE_POSITION).build()))
         .specialiteter(
             DR_KRANSTEGE_SPECIALITIES.stream()
-                .map(speciality -> SpecialitetEntity.builder()
-                    .kod(speciality.code())
-                    .namn(speciality.name())
-                    .build()
-                )
-                .toList()
-        )
+                .map(
+                    speciality ->
+                        SpecialitetEntity.builder()
+                            .kod(speciality.code())
+                            .namn(speciality.name())
+                            .build())
+                .toList())
         .legitimeradeYrkesgrupper(
             DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS.stream()
-                .map(profession -> LegitimeradYrkesgruppEntity.builder()
-                    .kod(profession.code())
-                    .namn(profession.name())
-                    .build()
-                )
-                .toList()
-        )
-        .restriktioner(DR_KRANSTEGE_RESTRICTIONS.stream()
-            .map(restriction -> RestriktionEntity.builder()
-                .kod(restriction.code())
-                .namn(restriction.name())
-                .build())
-            .toList())
+                .map(
+                    profession ->
+                        LegitimeradYrkesgruppEntity.builder()
+                            .kod(profession.code())
+                            .namn(profession.name())
+                            .build())
+                .toList())
+        .restriktioner(
+            DR_KRANSTEGE_RESTRICTIONS.stream()
+                .map(
+                    restriction ->
+                        RestriktionEntity.builder()
+                            .kod(restriction.code())
+                            .namn(restriction.name())
+                            .build())
+                .toList())
         .godkandAnvandare(true)
         .senasteHospUppdatering(DR_KRANSTEGE_HOSP_UPDATE_DATE);
   }

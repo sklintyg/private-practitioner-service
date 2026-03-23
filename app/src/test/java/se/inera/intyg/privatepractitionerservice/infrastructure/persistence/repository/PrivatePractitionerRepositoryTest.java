@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,32 +55,21 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 @ExtendWith(MockitoExtension.class)
 class PrivatePractitionerRepositoryTest {
 
-  @Mock
-  private PrivatlakareEntityRepository privatlakareEntityRepository;
-  @Mock
-  private PrivatlakareIdEntityRepository privatlakareIdEntityRepository;
-  @Mock
-  private PrivatlakareEntityConverter privatlakareEntityConverter;
-  @Mock
-  private HashUtility hashUtility;
-  @Mock
-  private MailService mailService;
-  @InjectMocks
-  private PrivatePractitionerRepository privatePractitionerRepository;
+  @Mock private PrivatlakareEntityRepository privatlakareEntityRepository;
+  @Mock private PrivatlakareIdEntityRepository privatlakareIdEntityRepository;
+  @Mock private PrivatlakareEntityConverter privatlakareEntityConverter;
+  @Mock private HashUtility hashUtility;
+  @Mock private MailService mailService;
+  @InjectMocks private PrivatePractitionerRepository privatePractitionerRepository;
 
   @Test
   void shouldReturnPrivatePractitionerIfFindByPersonId() {
     final var personId = "personId";
-    final var expected = PrivatePractitioner.builder()
-        .personId(personId)
-        .build();
+    final var expected = PrivatePractitioner.builder().personId(personId).build();
 
-    final var privatlakareEntity = PrivatlakareEntity.builder()
-        .personId(personId)
-        .build();
-    when(privatlakareEntityRepository.findByPersonId(personId)).thenReturn(
-        Optional.of(privatlakareEntity)
-    );
+    final var privatlakareEntity = PrivatlakareEntity.builder().personId(personId).build();
+    when(privatlakareEntityRepository.findByPersonId(personId))
+        .thenReturn(Optional.of(privatlakareEntity));
     when(privatlakareEntityConverter.convert(privatlakareEntity)).thenReturn(expected);
 
     final var actual = privatePractitionerRepository.findByPersonId(personId);
@@ -84,16 +91,11 @@ class PrivatePractitionerRepositoryTest {
   @Test
   void shouldReturnPrivatePractitionerIfFindByHsaId() {
     final var hsaId = "hsaId";
-    final var expected = PrivatePractitioner.builder()
-        .hsaId(hsaId)
-        .build();
+    final var expected = PrivatePractitioner.builder().hsaId(hsaId).build();
 
-    final var privatlakareEntity = PrivatlakareEntity.builder()
-        .hsaId(hsaId)
-        .build();
-    when(privatlakareEntityRepository.findByHsaId(hsaId)).thenReturn(
-        Optional.of(privatlakareEntity)
-    );
+    final var privatlakareEntity = PrivatlakareEntity.builder().hsaId(hsaId).build();
+    when(privatlakareEntityRepository.findByHsaId(hsaId))
+        .thenReturn(Optional.of(privatlakareEntity));
     when(privatlakareEntityConverter.convert(privatlakareEntity)).thenReturn(expected);
 
     final var actual = privatePractitionerRepository.findByHsaId(hsaId);
@@ -114,15 +116,15 @@ class PrivatePractitionerRepositoryTest {
 
   @Test
   void shouldReturnListOfPrivatePractitioners() {
-    final var expected = List.of(
-        PrivatePractitioner.builder().hsaId("HSA123").build(),
-        PrivatePractitioner.builder().hsaId("HSA456").build()
-    );
+    final var expected =
+        List.of(
+            PrivatePractitioner.builder().hsaId("HSA123").build(),
+            PrivatePractitioner.builder().hsaId("HSA456").build());
 
-    final var privatlakareEntities = List.of(
-        PrivatlakareEntity.builder().hsaId("HSA123").build(),
-        PrivatlakareEntity.builder().hsaId("HSA456").build()
-    );
+    final var privatlakareEntities =
+        List.of(
+            PrivatlakareEntity.builder().hsaId("HSA123").build(),
+            PrivatlakareEntity.builder().hsaId("HSA456").build());
 
     when(privatlakareEntityRepository.findAll()).thenReturn(privatlakareEntities);
     when(privatlakareEntityConverter.convert(privatlakareEntities.getFirst()))
@@ -179,13 +181,13 @@ class PrivatePractitionerRepositoryTest {
         kranstege = kranstegeBuilder().build();
         when(privatlakareEntityRepository.findByPersonId(kranstege.getPersonId()))
             .thenReturn(Optional.empty());
-        when(privatlakareIdEntityRepository.save(new PrivatlakareIdEntity())).thenReturn(
-            PrivatlakareIdEntity.builder().id(1).build());
+        when(privatlakareIdEntityRepository.save(new PrivatlakareIdEntity()))
+            .thenReturn(PrivatlakareIdEntity.builder().id(1).build());
         when(privatlakareEntityRepository.save(any(PrivatlakareEntity.class)))
             .thenReturn(DR_KRANSTEGE_ENTITY);
         when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY)).thenReturn(kranstege);
-        ReflectionTestUtils.setField(privatePractitionerRepository, "hsaIdNotificationInterval",
-            50);
+        ReflectionTestUtils.setField(
+            privatePractitionerRepository, "hsaIdNotificationInterval", 50);
       }
 
       @Test
@@ -199,11 +201,12 @@ class PrivatePractitionerRepositoryTest {
         final var captor = ArgumentCaptor.forClass(PrivatlakareEntity.class);
         privatePractitionerRepository.save(kranstege);
         final var newKranstegeHsaid = "SE165565594230-WEBCERT00001";
-        final var newKranstegeEntity = kranstegeEntityBuilder()
-            .hsaId(newKranstegeHsaid)
-            .enhetsId(newKranstegeHsaid)
-            .vardgivareId(newKranstegeHsaid)
-            .build();
+        final var newKranstegeEntity =
+            kranstegeEntityBuilder()
+                .hsaId(newKranstegeHsaid)
+                .enhetsId(newKranstegeHsaid)
+                .vardgivareId(newKranstegeHsaid)
+                .build();
         verify(privatlakareEntityRepository).save(captor.capture());
         assertPrivatlakareEntity(newKranstegeEntity, captor.getValue());
       }
@@ -228,21 +231,21 @@ class PrivatePractitionerRepositoryTest {
 
       @BeforeEach
       void setUp() {
-        final var existingEntity = PrivatlakareEntity.builder()
-            .personId(DR_KRANSTEGE_PERSON_ID)
-            .hsaId(DR_KRANSTEGE_HSA_ID)
-            .enhetsId(DR_KRANSTEGE_HSA_ID)
-            .vardgivareId(DR_KRANSTEGE_HSA_ID)
-            .registreringsdatum(LocalDateTime.now())
-            .godkandAnvandare(true)
-            .build();
+        final var existingEntity =
+            PrivatlakareEntity.builder()
+                .personId(DR_KRANSTEGE_PERSON_ID)
+                .hsaId(DR_KRANSTEGE_HSA_ID)
+                .enhetsId(DR_KRANSTEGE_HSA_ID)
+                .vardgivareId(DR_KRANSTEGE_HSA_ID)
+                .registreringsdatum(LocalDateTime.now())
+                .godkandAnvandare(true)
+                .build();
 
-        when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
-            Optional.of(existingEntity));
+        when(privatlakareEntityRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+            .thenReturn(Optional.of(existingEntity));
         when(privatlakareEntityRepository.save(any(PrivatlakareEntity.class)))
             .thenReturn(DR_KRANSTEGE_ENTITY);
-        when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY))
-            .thenReturn(DR_KRANSTEGE);
+        when(privatlakareEntityConverter.convert(DR_KRANSTEGE_ENTITY)).thenReturn(DR_KRANSTEGE);
       }
 
       @Test

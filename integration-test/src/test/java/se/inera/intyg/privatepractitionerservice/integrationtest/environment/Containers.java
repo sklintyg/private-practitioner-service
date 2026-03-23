@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.integrationtest.environment;
 
 import org.testcontainers.containers.GenericContainer;
@@ -18,9 +36,8 @@ public class Containers {
 
   private static void mockServerContainer() {
     if (mockServerContainer == null) {
-      mockServerContainer = new MockServerContainer(
-          DockerImageName.parse("mockserver/mockserver:5.15.0")
-      );
+      mockServerContainer =
+          new MockServerContainer(DockerImageName.parse("mockserver/mockserver:5.15.0"));
     }
 
     if (!mockServerContainer.isRunning()) {
@@ -30,16 +47,16 @@ public class Containers {
     final var mockServerContainerHost = mockServerContainer.getHost();
     final var mockServerContainerPort = String.valueOf(mockServerContainer.getServerPort());
 
-    System.setProperty("integration.intygproxyservice.baseurl",
-        "http://%s:%s".formatted(mockServerContainerHost, mockServerContainerPort)
-    );
+    System.setProperty(
+        "integration.intygproxyservice.baseurl",
+        "http://%s:%s".formatted(mockServerContainerHost, mockServerContainerPort));
   }
 
   private static void redisContainer() {
     if (redisContainer == null) {
-      redisContainer = new GenericContainer<>(
-          DockerImageName.parse("redis:6.0.9-alpine")
-      ).withExposedPorts(6379);
+      redisContainer =
+          new GenericContainer<>(DockerImageName.parse("redis:6.0.9-alpine"))
+              .withExposedPorts(6379);
     }
 
     if (!redisContainer.isRunning()) {
@@ -52,8 +69,8 @@ public class Containers {
 
   private static void mailHogContainer() {
     if (mailHogContainer == null) {
-      mailHogContainer = new GenericContainer<>("mailhog/mailhog:latest")
-          .withExposedPorts(1025, 8025);
+      mailHogContainer =
+          new GenericContainer<>("mailhog/mailhog:latest").withExposedPorts(1025, 8025);
     }
 
     if (!mailHogContainer.isRunning()) {

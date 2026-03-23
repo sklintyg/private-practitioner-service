@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter;
 
 import java.util.List;
@@ -36,23 +54,22 @@ public class HospPersonConverter {
         .build();
   }
 
-  private List<Restriction> convertRestrictions(
-      HospCredentialsForPerson hospCredentialsForPerson) {
+  private List<Restriction> convertRestrictions(HospCredentialsForPerson hospCredentialsForPerson) {
     if (hospCredentialsForPerson.getRestrictions() == null) {
       log.info(
           "Null Restrictions value received from hosp for personId '{}'",
-          hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
-      );
+          hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber()));
       return List.of();
     }
 
     return hospCredentialsForPerson.getRestrictions().stream()
         .map(RestrictionDTO::validate)
-        .map(restriction -> new Restriction(
-            restriction.getRestrictionCode(),
-            restriction.getRestrictionName(),
-            restriction.getHealthCareProfessionalLicenceCode()
-        ))
+        .map(
+            restriction ->
+                new Restriction(
+                    restriction.getRestrictionCode(),
+                    restriction.getRestrictionName(),
+                    restriction.getHealthCareProfessionalLicenceCode()))
         .toList();
   }
 
@@ -62,17 +79,17 @@ public class HospPersonConverter {
     if (hospCredentialsForPerson.getHealthCareProfessionalLicence() == null) {
       log.info(
           "Null HealthCareProfessionalLicence value received from hosp for personId '{}'",
-          hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
-      );
+          hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber()));
       return List.of();
     }
 
     return hospCredentialsForPerson.getHealthCareProfessionalLicence().stream()
         .map(HealthCareProfessionalLicence::validate)
-        .map(healthCareProfessionalLicence -> new LicensedHealtcareProfession(
-            healthCareProfessionalLicence.getHealthCareProfessionalLicenceCode(),
-            healthCareProfessionalLicence.getHealthCareProfessionalLicenceName()
-        ))
+        .map(
+            healthCareProfessionalLicence ->
+                new LicensedHealtcareProfession(
+                    healthCareProfessionalLicence.getHealthCareProfessionalLicenceCode(),
+                    healthCareProfessionalLicence.getHealthCareProfessionalLicenceName()))
         .toList();
   }
 
@@ -81,18 +98,18 @@ public class HospPersonConverter {
     if (hospCredentialsForPerson.getHealthCareProfessionalLicenceSpeciality() == null) {
       log.info(
           "Null HealthCareProfessionalLicenceSpeciality value received from hosp for personId '{}'",
-          hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber())
-      );
+          hashUtility.hash(hospCredentialsForPerson.getPersonalIdentityNumber()));
       return List.of();
     }
 
     return hospCredentialsForPerson.getHealthCareProfessionalLicenceSpeciality().stream()
         .map(HCPSpecialityCodes::validate)
-        .map(speciality -> new Speciality(
-            speciality.getSpecialityCode(),
-            speciality.getSpecialityName(),
-            speciality.getHealthCareProfessionalLicenceCode()))
+        .map(
+            speciality ->
+                new Speciality(
+                    speciality.getSpecialityCode(),
+                    speciality.getSpecialityName(),
+                    speciality.getHealthCareProfessionalLicenceCode()))
         .toList();
   }
 }
-

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.integrationtest.privatepractitioner;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -57,11 +75,9 @@ import se.inera.intyg.privatepractitionerservice.integrationtest.util.Testabilit
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class PrivatePractitionerIT {
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
-  @Autowired
-  private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
   private ApiUtil api;
   private TestabilityApiUtil testabilityApi;
@@ -78,17 +94,17 @@ class PrivatePractitionerIT {
   void setUp() {
     this.api = new ApiUtil(restTemplate, port);
     this.testabilityApi = new TestabilityApiUtil(restTemplate, port);
-    this.mockServerClient = new MockServerClient(
-        Containers.mockServerContainer.getHost(),
-        Containers.mockServerContainer.getServerPort()
-    );
+    this.mockServerClient =
+        new MockServerClient(
+            Containers.mockServerContainer.getHost(),
+            Containers.mockServerContainer.getServerPort());
     this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient);
-    this.mailHogUtil = new MailHogUtil(
-        restTemplate,
-        new CustomObjectMapper(),
-        Containers.mailHogContainer.getHost(),
-        Containers.mailHogContainer.getMappedPort(8025)
-    );
+    this.mailHogUtil =
+        new MailHogUtil(
+            restTemplate,
+            new CustomObjectMapper(),
+            Containers.mailHogContainer.getHost(),
+            Containers.mailHogContainer.getMappedPort(8025));
   }
 
   @AfterEach
@@ -101,13 +117,10 @@ class PrivatePractitionerIT {
 
   @Test
   void shallErasePrivatePractitioner() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
 
     intygProxyServiceMock.certificationPersonResponse(
-        removeFromCertifierResponseBuilder("OK").build()
-    );
+        removeFromCertifierResponseBuilder("OK").build());
 
     final var response = api.erasePrivatePractitioner(DR_KRANSTEGE_HSA_ID);
 
@@ -116,15 +129,15 @@ class PrivatePractitionerIT {
 
   @Test
   void shallNotErasePrivatePractitionerWhenCertifierFails() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
 
     intygProxyServiceMock.certificationPersonResponse(
         removeFromCertifierResponseBuilder("ERROR").build());
 
-    final var privatePractitioner = testabilityApi.addPrivatePractitioner(
-        DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST).getBody();
+    final var privatePractitioner =
+        testabilityApi
+            .addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST)
+            .getBody();
 
     assertNotNull(privatePractitioner);
 
@@ -135,13 +148,9 @@ class PrivatePractitionerIT {
 
   @Test
   void shallRegisterPrivatePractitioner() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
 
-    intygProxyServiceMock.certificationPersonResponse(
-        addToCertifierResponseBuilder().build()
-    );
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
     intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
@@ -155,26 +164,21 @@ class PrivatePractitionerIT {
         () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
-        () -> assertNotNull(actual.getRegistrationDate())
-    );
+        () -> assertNotNull(actual.getRegistrationDate()));
   }
 
   @Test
   void shallSendRegistrationEmailWhenInHospAndIsLicencedPhysician() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
 
-    intygProxyServiceMock.certificationPersonResponse(
-        addToCertifierResponseBuilder().build()
-    );
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
     intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
-    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_APPROVED_MAIL_SUBJECT,
-        REGISTRATION_APPROVED_MAIL_BODY);
+    mailHogUtil.assertEmail(
+        DR_KRANSTEGE_EMAIL, REGISTRATION_APPROVED_MAIL_SUBJECT, REGISTRATION_APPROVED_MAIL_BODY);
   }
 
   @Test
@@ -182,23 +186,17 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.credentialsForPersonResponse(
         fridaKranstegeCredentialsBuilder()
             .credentials(
-                fridaKranstegeHospCredentials()
-                    .healthCareProfessionalLicence(List.of())
-                    .build()
-            )
-            .build()
-    );
+                fridaKranstegeHospCredentials().healthCareProfessionalLicence(List.of()).build())
+            .build());
 
-    intygProxyServiceMock.certificationPersonResponse(
-        addToCertifierResponseBuilder().build()
-    );
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
     intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
-    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT,
-        REGISTRATION_PENDING_MAIL_BODY);
+    mailHogUtil.assertEmail(
+        DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT, REGISTRATION_PENDING_MAIL_BODY);
   }
 
   @Test
@@ -206,19 +204,16 @@ class PrivatePractitionerIT {
     intygProxyServiceMock.credentialsForPersonResponse(
         fridaKranstegeCredentialsBuilder()
             .credentials(HospCredentialsForPerson.builder().build())
-            .build()
-    );
+            .build());
 
-    intygProxyServiceMock.certificationPersonResponse(
-        addToCertifierResponseBuilder().build()
-    );
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
     intygProxyServiceMock.lastUpdate();
 
     final var response = api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(200, response.getStatusCode().value());
-    mailHogUtil.assertEmail(DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT,
-        REGISTRATION_PENDING_MAIL_BODY);
+    mailHogUtil.assertEmail(
+        DR_KRANSTEGE_EMAIL, REGISTRATION_PENDING_MAIL_SUBJECT, REGISTRATION_PENDING_MAIL_BODY);
   }
 
   @Test
@@ -229,21 +224,20 @@ class PrivatePractitionerIT {
     api.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().credentials(
-            fridaKranstegeHospCredentials().personalIdentityNumber("197705232381").build()).build()
-    );
+        fridaKranstegeCredentialsBuilder()
+            .credentials(
+                fridaKranstegeHospCredentials().personalIdentityNumber("197705232381").build())
+            .build());
     api.registerPrivatePractitioner(
         kranstegeRegistrationRequest().personId("197705232381").build());
 
-    mailHogUtil.assertEmail(ADMIN_EMAIL, HSA_GENERATION_MAIL_SUBJECT,
-        String.format(HSA_GENERATION_MAIL_BODY, 2), 3);
+    mailHogUtil.assertEmail(
+        ADMIN_EMAIL, HSA_GENERATION_MAIL_SUBJECT, String.format(HSA_GENERATION_MAIL_BODY, 2), 3);
   }
 
   @Test
   void shallReturnHospInformation() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
     intygProxyServiceMock.lastUpdate();
 
     final var response = api.hospInformation(DR_KRANSTEGE_HOSP_INFORMATION_REQUEST);
@@ -262,28 +256,28 @@ class PrivatePractitionerIT {
     assertNotNull(response.getBody());
     final var actual = response.getBody();
     assertAll(
-        () -> assertNotNull(actual.getHealthcareServiceTypeCodes(),
-            "HealthcareServiceType codes should not be null"),
-        () -> assertFalse(actual.getHealthcareServiceTypeCodes().isEmpty(),
-            "HealthcareServiceType codes should not be empty"),
+        () ->
+            assertNotNull(
+                actual.getHealthcareServiceTypeCodes(),
+                "HealthcareServiceType codes should not be null"),
+        () ->
+            assertFalse(
+                actual.getHealthcareServiceTypeCodes().isEmpty(),
+                "HealthcareServiceType codes should not be empty"),
         () -> assertNotNull(actual.getPositionCodes(), "Position codes should not be null"),
-        () -> assertFalse(actual.getPositionCodes().isEmpty(),
-            "Position codes should not be empty"),
+        () ->
+            assertFalse(actual.getPositionCodes().isEmpty(), "Position codes should not be empty"),
         () -> assertNotNull(actual.getTypeOfCareCodes(), "TypeOfCare codes should not be null"),
-        () -> assertFalse(actual.getTypeOfCareCodes().isEmpty(),
-            "TypeOfCare codes should not be empty")
-    );
+        () ->
+            assertFalse(
+                actual.getTypeOfCareCodes().isEmpty(), "TypeOfCare codes should not be empty"));
   }
 
   @Test
   void shallUpdatePrivatePractitioner() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
 
-    intygProxyServiceMock.certificationPersonResponse(
-        addToCertifierResponseBuilder().build()
-    );
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
 
     testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
@@ -297,19 +291,14 @@ class PrivatePractitionerIT {
         () -> assertEquals(DR_KRANSTEGE_DTO.getName(), actual.getName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getCareProviderName(), actual.getCareProviderName()),
         () -> assertEquals(DR_KRANSTEGE_DTO.getEmail(), actual.getEmail()),
-        () -> assertNotNull(actual.getRegistrationDate())
-    );
+        () -> assertNotNull(actual.getRegistrationDate()));
   }
 
   @Test
   void shallUpdateNameFromPUWhenNameHasChanged() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
 
-    intygProxyServiceMock.certificationPersonResponse(
-        addToCertifierResponseBuilder().build()
-    );
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
 
     testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
@@ -325,19 +314,13 @@ class PrivatePractitionerIT {
 
   @Test
   void shallNotUpdateNameFromPUWhenNameHasNotChanged() {
-    intygProxyServiceMock.credentialsForPersonResponse(
-        fridaKranstegeCredentialsBuilder().build()
-    );
+    intygProxyServiceMock.credentialsForPersonResponse(fridaKranstegeCredentialsBuilder().build());
 
-    intygProxyServiceMock.certificationPersonResponse(
-        addToCertifierResponseBuilder().build()
-    );
+    intygProxyServiceMock.certificationPersonResponse(addToCertifierResponseBuilder().build());
 
     testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
-    intygProxyServiceMock.personResponse(
-        fridaKranstegePersonWithSameName()
-    );
+    intygProxyServiceMock.personResponse(fridaKranstegePersonWithSameName());
 
     final var response = api.getPrivatePractitioner(DR_KRANSTEGE_PERSON_ID);
 
@@ -356,22 +339,16 @@ class PrivatePractitionerIT {
         GetCredentialsForPersonResponseDTO.builder()
             .credentials(
                 fridaKranstegeHospCredentials()
-                    .restrictions(List.of(new RestrictionDTO(
-                        "LK",
-                        "001",
-                        "Återkallad legitimation")
-                    ))
-                    .build()
-            )
-            .build()
-    );
+                    .restrictions(
+                        List.of(new RestrictionDTO("LK", "001", "Återkallad legitimation")))
+                    .build())
+            .build());
 
     intygProxyServiceMock.lastUpdate();
 
-    final var response = api.validatePrivatePractitioner(
-        ValidatePrivatePractitionerRequest.builder()
-            .personId(DR_KRANSTEGE_PERSON_ID)
-            .build());
+    final var response =
+        api.validatePrivatePractitioner(
+            ValidatePrivatePractitionerRequest.builder().personId(DR_KRANSTEGE_PERSON_ID).build());
     assertEquals(200, response.getStatusCode().value());
     assertNotNull(response.getBody());
     final var actual = response.getBody();
@@ -381,24 +358,18 @@ class PrivatePractitionerIT {
   @Test
   void shallNotRestrictPrivatePractitionerWithValidLicense() {
 
-    testabilityApi.addPrivatePractitioner(
-        DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
+    testabilityApi.addPrivatePractitioner(DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST);
 
     intygProxyServiceMock.credentialsForPersonResponse(
         GetCredentialsForPersonResponseDTO.builder()
-            .credentials(
-                fridaKranstegeHospCredentials()
-                    .build()
-            )
-            .build()
-    );
+            .credentials(fridaKranstegeHospCredentials().build())
+            .build());
 
     intygProxyServiceMock.lastUpdate();
 
-    final var response = api.validatePrivatePractitioner(
-        ValidatePrivatePractitionerRequest.builder()
-            .personId(DR_KRANSTEGE_PERSON_ID)
-            .build());
+    final var response =
+        api.validatePrivatePractitioner(
+            ValidatePrivatePractitionerRequest.builder().personId(DR_KRANSTEGE_PERSON_ID).build());
     assertEquals(200, response.getStatusCode().value());
     assertNotNull(response.getBody());
     final var actual = response.getBody();

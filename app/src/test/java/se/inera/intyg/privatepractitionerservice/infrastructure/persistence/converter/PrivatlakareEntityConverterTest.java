@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,8 +36,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.enti
 @ExtendWith(MockitoExtension.class)
 class PrivatlakareEntityConverterTest {
 
-  @InjectMocks
-  private PrivatlakareEntityConverter converter;
+  @InjectMocks private PrivatlakareEntityConverter converter;
 
   @Test
   void shouldConvertCareUnitName() {
@@ -54,7 +71,8 @@ class PrivatlakareEntityConverterTest {
   @Test
   void shouldConvertHealthcareServiceType() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertEquals(DR_KRANSTEGE_ENTITY.getVerksamhetstyper().getFirst().getKod(),
+    assertEquals(
+        DR_KRANSTEGE_ENTITY.getVerksamhetstyper().getFirst().getKod(),
         actual.getHealthcareServiceType());
   }
 
@@ -103,22 +121,22 @@ class PrivatlakareEntityConverterTest {
   @Test
   void shouldConvertSpecialties() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertThat(DR_KRANSTEGE_SPECIALITIES).containsExactlyInAnyOrderElementsOf(
-        actual.getSpecialties());
+    assertThat(DR_KRANSTEGE_SPECIALITIES)
+        .containsExactlyInAnyOrderElementsOf(actual.getSpecialties());
   }
 
   @Test
   void shouldConvertRestrictions() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertThat(actual.getRestrictions()).containsExactlyInAnyOrderElementsOf(
-        DR_KRANSTEGE_RESTRICTIONS);
+    assertThat(actual.getRestrictions())
+        .containsExactlyInAnyOrderElementsOf(DR_KRANSTEGE_RESTRICTIONS);
   }
 
   @Test
   void shouldConvertLicensedHealthcareProfessions() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertThat(actual.getLicensedHealthcareProfessions()).containsExactlyInAnyOrderElementsOf(
-        DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS);
+    assertThat(actual.getLicensedHealthcareProfessions())
+        .containsExactlyInAnyOrderElementsOf(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS);
   }
 
   @Test
@@ -177,16 +195,17 @@ class PrivatlakareEntityConverterTest {
 
   @Test
   void shouldConvertEmailCount() {
-    var actual = converter.convert(kranstegeEntityBuilder()
-        .epostList(List.of(EpostEntity.builder().build(), EpostEntity.builder().build()))
-        .build());
+    var actual =
+        converter.convert(
+            kranstegeEntityBuilder()
+                .epostList(List.of(EpostEntity.builder().build(), EpostEntity.builder().build()))
+                .build());
     assertEquals(2, actual.getEmailCount());
   }
 
   @Test
   void shouldConvertEmailCountWhenNoEmails() {
     var actual = converter.convert(DR_KRANSTEGE_ENTITY);
-    assertEquals(0, actual.getEmailCount()
-    );
+    assertEquals(0, actual.getEmailCount());
   }
 }

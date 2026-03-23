@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.testdata;
 
 import java.time.LocalDateTime;
@@ -29,23 +47,20 @@ public final class TestDataConstants {
   public static final LocalDateTime DR_KRANSTEGE_HOSP_UPDATE_DATE =
       LocalDateTime.of(2020, 12, 11, 14, 30);
   public static final String DR_KRANSTEGE_PRESCRIPTION_CODE = "1234568";
-  public static final List<Speciality> DR_KRANSTEGE_SPECIALITIES = List.of(
-      new Speciality("3299", "Klinisk fysiologi", "LK"),
-      new Speciality("74", "Nukleärmedicin", "LK")
-  );
-  public static final List<LicensedHealtcareProfession> DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS =
-      List.of(new LicensedHealtcareProfession("LK", "Läkare"));
+  public static final List<Speciality> DR_KRANSTEGE_SPECIALITIES =
+      List.of(
+          new Speciality("3299", "Klinisk fysiologi", "LK"),
+          new Speciality("74", "Nukleärmedicin", "LK"));
+  public static final List<LicensedHealtcareProfession>
+      DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS =
+          List.of(new LicensedHealtcareProfession("LK", "Läkare"));
 
-  public static final List<Restriction> DR_KRANSTEGE_RESTRICTIONS = List.of(
-      new Restriction(
-          "003",
-          "Begränsad förskrivningsrätt",
-          "LK"
-      )
-  );
+  public static final List<Restriction> DR_KRANSTEGE_RESTRICTIONS =
+      List.of(new Restriction("003", "Begränsad förskrivningsrätt", "LK"));
 
   public static final String HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE = "11";
-  public static final String HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE = "Medicinsk verksamhet";
+  public static final String HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE =
+      "Medicinsk verksamhet";
 
   public static final String POSITION_CODE_SPECIALIST_DOCTOR = "202010";
   public static final String POSITION_DESCRIPTION_SPECIALIST_DOCTOR = "Specialistläkare";
@@ -53,6 +68,5 @@ public final class TestDataConstants {
   public static final String TYPE_OF_CARE_CODE_OUTPATIENT = "01";
   public static final String TYPE_OF_CARE_DESCRIPTION_OUTPATIENT = "Öppenvård";
 
-  private TestDataConstants() {
-  }
+  private TestDataConstants() {}
 }

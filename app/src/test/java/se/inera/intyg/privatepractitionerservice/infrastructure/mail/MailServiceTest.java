@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,17 +51,14 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
 
-  @Mock
-  private JavaMailSender mailSender;
+  @Mock private JavaMailSender mailSender;
 
-  @InjectMocks
-  private MailService mailService;
+  @InjectMocks private MailService mailService;
 
   @Nested
   class TestSendHsaGenerationEmail {
 
-    @Mock
-    private MimeMessage message;
+    @Mock private MimeMessage message;
 
     @BeforeEach
     void setUp() {
@@ -86,8 +101,7 @@ class MailServiceTest {
   @Nested
   class TestSendRegistrationStatusEmail {
 
-    @Mock
-    private MimeMessage message;
+    @Mock private MimeMessage message;
 
     @BeforeEach
     void setUp() {
@@ -127,8 +141,8 @@ class MailServiceTest {
 
     @Test
     void shouldSendWithSubjectPendingWhenWaitingForHosp() throws MessagingException {
-      mailService.sendRegistrationStatusEmail(RegistrationStatus.WAITING_FOR_HOSP,
-          DR_KRANSTEGE_EMAIL);
+      mailService.sendRegistrationStatusEmail(
+          RegistrationStatus.WAITING_FOR_HOSP, DR_KRANSTEGE_EMAIL);
 
       final var captor = ArgumentCaptor.forClass(String.class);
       verify(message).setSubject(captor.capture(), eq("UTF-8"));
@@ -139,8 +153,7 @@ class MailServiceTest {
   @Nested
   class TestSendRegistrationRemovedEmail {
 
-    @Mock
-    private MimeMessage message;
+    @Mock private MimeMessage message;
 
     @BeforeEach
     void setUp() {
