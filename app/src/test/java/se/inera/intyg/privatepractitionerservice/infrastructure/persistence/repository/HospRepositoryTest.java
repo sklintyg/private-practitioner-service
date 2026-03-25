@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,27 +51,17 @@ import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Resu
 @ExtendWith(MockitoExtension.class)
 class HospRepositoryTest {
 
-  @Mock
-  private HospService hospService;
-  @Mock
-  private HashUtility hashUtility;
-  @Mock
-  private HospPersonConverter hospPersonConverter;
-  @Mock
-  private HospUppdateringEntityRepository hospUppdateringEntityRepository;
-  @InjectMocks
-  private HospRepository hospRepository;
+  @Mock private HospService hospService;
+  @Mock private HashUtility hashUtility;
+  @Mock private HospPersonConverter hospPersonConverter;
+  @Mock private HospUppdateringEntityRepository hospUppdateringEntityRepository;
+  @InjectMocks private HospRepository hospRepository;
 
   @Test
   void shouldRemoveFromCertifierOK() {
     when(hospService.handleHospCertificationPersonResponseType(
-        anyString(), anyString(), anyString(), any())
-    ).thenReturn(
-        Result.builder()
-            .resultCode("OK")
-            .resultText("")
-            .build()
-    );
+            anyString(), anyString(), anyString(), any()))
+        .thenReturn(Result.builder().resultCode("OK").resultText("").build());
 
     final var result = hospRepository.removeFromCertifier(kranstegeBuilder().build(), null);
 
@@ -63,13 +71,8 @@ class HospRepositoryTest {
   @Test
   void shouldRemoveFromCertifierNotOK() {
     when(hospService.handleHospCertificationPersonResponseType(
-        anyString(), anyString(), anyString(), any())
-    ).thenReturn(
-        Result.builder()
-            .resultCode("Error")
-            .resultText("")
-            .build()
-    );
+            anyString(), anyString(), anyString(), any()))
+        .thenReturn(Result.builder().resultCode("Error").resultText("").build());
 
     final var result = hospRepository.removeFromCertifier(kranstegeBuilder().build(), null);
 
@@ -79,28 +82,20 @@ class HospRepositoryTest {
   @Test
   void shouldAddToCertifier() {
     when(hospService.handleHospCertificationPersonResponseType(
-        anyString(), anyString(), anyString(), any())
-    ).thenReturn(
-        Result.builder()
-            .resultCode("0")
-            .resultText("Success")
-            .build()
-    );
+            anyString(), anyString(), anyString(), any()))
+        .thenReturn(Result.builder().resultCode("0").resultText("Success").build());
 
     hospRepository.addToCertifier(kranstegeBuilder().build());
 
-    verify(hospService).handleHospCertificationPersonResponseType(
-        DR_KRANSTEGE.getHsaId(),
-        "add",
-        DR_KRANSTEGE.getPersonId(),
-        null
-    );
+    verify(hospService)
+        .handleHospCertificationPersonResponseType(
+            DR_KRANSTEGE.getHsaId(), "add", DR_KRANSTEGE.getPersonId(), null);
   }
 
   @Test
   void shouldReturnEmptyWhenNoHospPersonFound() {
     when(hospService.getHospCredentialsForPersonResponseType(
-        kranstegeBuilder().build().getPersonId()))
+            kranstegeBuilder().build().getPersonId()))
         .thenReturn(HospCredentialsForPerson.builder().build());
     when(hospPersonConverter.convert(HospCredentialsForPerson.builder().build()))
         .thenReturn(HospPerson.builder().build());
@@ -108,19 +103,21 @@ class HospRepositoryTest {
     when(hospService.getHospLastUpdate()).thenReturn(now);
     final var actual = hospRepository.findByPersonId(kranstegeBuilder().build().getPersonId());
 
-    assertEquals(HospPerson.builder()
-        .personalIdentityNumber(kranstegeBuilder().build().getPersonId())
-        .hospUpdated(now)
-        .build(), actual);
+    assertEquals(
+        HospPerson.builder()
+            .personalIdentityNumber(kranstegeBuilder().build().getPersonId())
+            .hospUpdated(now)
+            .build(),
+        actual);
   }
 
   @Test
   void shouldReturnWhenHospPersonFound() {
     when(hospService.getHospCredentialsForPersonResponseType(
-        kranstegeBuilder().build().getPersonId()))
+            kranstegeBuilder().build().getPersonId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
-    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
-        DR_KRANSTEGE_HOSP_PERSON);
+    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS))
+        .thenReturn(DR_KRANSTEGE_HOSP_PERSON);
     when(hospService.getHospLastUpdate()).thenReturn(DR_KRANSTEGE_HOSP_PERSON.getHospUpdated());
 
     final var actual = hospRepository.findByPersonId(kranstegeBuilder().build().getPersonId());
@@ -130,19 +127,16 @@ class HospRepositoryTest {
 
   @Test
   void shouldReturnHospInformationIfHospUpdated() {
-    final var expected = kranstegeHospPersonBuilder()
-        .hospUpdated(LocalDateTime.now())
-        .build();
+    final var expected = kranstegeHospPersonBuilder().hospUpdated(LocalDateTime.now()).build();
 
-    final var drKranstege = kranstegeBuilder()
-        .hospUpdated(LocalDateTime.now().minusDays(1))
-        .build();
+    final var drKranstege =
+        kranstegeBuilder().hospUpdated(LocalDateTime.now().minusDays(1)).build();
 
     when(hospService.getHospLastUpdate()).thenReturn(expected.getHospUpdated());
     when(hospService.getHospCredentialsForPersonResponseType(drKranstege.getPersonId()))
         .thenReturn(DR_KRANSTEGE_HOSP_CREDENTIALS);
-    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS)).thenReturn(
-        DR_KRANSTEGE_HOSP_PERSON);
+    when(hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS))
+        .thenReturn(DR_KRANSTEGE_HOSP_PERSON);
 
     final var actual = hospRepository.updatedHospPerson(drKranstege);
 
@@ -151,20 +145,20 @@ class HospRepositoryTest {
 
   @Test
   void shouldReturnEmptyHospInformationIfUserRemovedFromHosp() {
-    final var expected = HospPerson.builder()
-        .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
-        .hospUpdated(LocalDateTime.now())
-        .build();
+    final var expected =
+        HospPerson.builder()
+            .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
+            .hospUpdated(LocalDateTime.now())
+            .build();
 
-    final var drKranstege = kranstegeBuilder()
-        .hospUpdated(LocalDateTime.now().minusDays(1))
-        .build();
+    final var drKranstege =
+        kranstegeBuilder().hospUpdated(LocalDateTime.now().minusDays(1)).build();
 
     when(hospService.getHospLastUpdate()).thenReturn(expected.getHospUpdated());
     when(hospService.getHospCredentialsForPersonResponseType(drKranstege.getPersonId()))
         .thenReturn(HospCredentialsForPerson.builder().build());
-    when(hospPersonConverter.convert(HospCredentialsForPerson.builder().build())).thenReturn(
-        HospPerson.builder().build());
+    when(hospPersonConverter.convert(HospCredentialsForPerson.builder().build()))
+        .thenReturn(HospPerson.builder().build());
 
     final var actual = hospRepository.updatedHospPerson(drKranstege);
 
@@ -173,9 +167,7 @@ class HospRepositoryTest {
 
   @Test
   void shouldEmptyHospInformationIfNotHospUpdated() {
-    final var drKranstege = kranstegeBuilder()
-        .hospUpdated(LocalDateTime.now().plusDays(1))
-        .build();
+    final var drKranstege = kranstegeBuilder().hospUpdated(LocalDateTime.now().plusDays(1)).build();
 
     when(hospService.getHospLastUpdate()).thenReturn(LocalDateTime.now());
 
@@ -204,9 +196,8 @@ class HospRepositoryTest {
   @Test
   void shouldReturnTrueWhenHospLastUpdateIsAfterHospUpdate() {
     when(hospService.getHospLastUpdate()).thenReturn(LocalDateTime.now());
-    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(
-        Optional.of(new HospUppdateringEntity(LocalDateTime.now().minusDays(1)))
-    );
+    when(hospUppdateringEntityRepository.findHospUppdatering())
+        .thenReturn(Optional.of(new HospUppdateringEntity(LocalDateTime.now().minusDays(1))));
 
     final var actual = hospRepository.needUpdateFromHosp();
     assertTrue(actual, "Expected true when hosp last update is after stored hosp update");
@@ -215,9 +206,8 @@ class HospRepositoryTest {
   @Test
   void shouldReturnFalseWhenHospLastUpdateIsBeforeHospUpdate() {
     when(hospService.getHospLastUpdate()).thenReturn(LocalDateTime.now().minusDays(1));
-    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(
-        Optional.of(new HospUppdateringEntity(LocalDateTime.now()))
-    );
+    when(hospUppdateringEntityRepository.findHospUppdatering())
+        .thenReturn(Optional.of(new HospUppdateringEntity(LocalDateTime.now())));
 
     final var actual = hospRepository.needUpdateFromHosp();
     assertFalse(actual, "Expected false when hosp last update is before stored hosp update");
@@ -227,15 +217,12 @@ class HospRepositoryTest {
   void shouldUpdateHospUpdatedWhenUpdateHasBeenStoredBefore() {
     final var hospLastUpdate = LocalDateTime.now();
     when(hospService.getHospLastUpdate()).thenReturn(hospLastUpdate);
-    when(hospUppdateringEntityRepository.findHospUppdatering()).thenReturn(
-        Optional.of(new HospUppdateringEntity(LocalDateTime.now().minusDays(1)))
-    );
+    when(hospUppdateringEntityRepository.findHospUppdatering())
+        .thenReturn(Optional.of(new HospUppdateringEntity(LocalDateTime.now().minusDays(1))));
 
     hospRepository.hospUpdated();
 
-    verify(hospUppdateringEntityRepository).save(
-        new HospUppdateringEntity(hospLastUpdate)
-    );
+    verify(hospUppdateringEntityRepository).save(new HospUppdateringEntity(hospLastUpdate));
   }
 
   @Test
@@ -246,9 +233,7 @@ class HospRepositoryTest {
 
     hospRepository.hospUpdated();
 
-    verify(hospUppdateringEntityRepository).save(
-        new HospUppdateringEntity(hospLastUpdate)
-    );
+    verify(hospUppdateringEntityRepository).save(new HospUppdateringEntity(hospLastUpdate));
   }
 
   @Test

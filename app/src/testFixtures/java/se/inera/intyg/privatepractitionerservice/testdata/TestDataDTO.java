@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.testdata;
 
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_ADDRESS;
@@ -48,10 +66,14 @@ import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCrea
 
 public class TestDataDTO {
 
-  public static final CreateRegistrationRequest DR_KRANSTEGE_REGISTATION_REQUEST = kranstegeRegistrationRequest().build();
-  public static final TestabilityCreateRegistrationRequest DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST = kranstegeTestabilityRegistrationRequest().build();
+  public static final CreateRegistrationRequest DR_KRANSTEGE_REGISTATION_REQUEST =
+      kranstegeRegistrationRequest().build();
+  public static final TestabilityCreateRegistrationRequest
+      DR_KRANSTEGE_TESTABILITY_REGISTATION_REQUEST =
+          kranstegeTestabilityRegistrationRequest().build();
 
-  private static TestabilityCreateRegistrationRequestBuilder kranstegeTestabilityRegistrationRequest() {
+  private static TestabilityCreateRegistrationRequestBuilder
+      kranstegeTestabilityRegistrationRequest() {
     return TestabilityCreateRegistrationRequest.builder()
         .personId(DR_KRANSTEGE_PERSON_ID)
         .name(DR_KRANSTEGE_NAME)
@@ -70,28 +92,27 @@ public class TestDataDTO {
         .county(DR_KRANSTEGE_COUNTY);
   }
 
-  public static final UpdatePrivatePractitionerRequest DR_KRANSTEGE_UPDATE_REQUEST = kranstegeUpdateRequest().build();
-  public static final GetHospInformationRequest DR_KRANSTEGE_HOSP_INFORMATION_REQUEST = GetHospInformationRequest.builder()
-      .personId(DR_KRANSTEGE_PERSON_ID)
-      .build();
+  public static final UpdatePrivatePractitionerRequest DR_KRANSTEGE_UPDATE_REQUEST =
+      kranstegeUpdateRequest().build();
+  public static final GetHospInformationRequest DR_KRANSTEGE_HOSP_INFORMATION_REQUEST =
+      GetHospInformationRequest.builder().personId(DR_KRANSTEGE_PERSON_ID).build();
   public static final PrivatePractitionerDTO DR_KRANSTEGE_DTO = kranstegeDTOBuilder().build();
-  public static final GetHospInformationResponse DR_KRANSTEGE_HOSP_INFORMATION = kranstegeHospInformationBuilder().build();
+  public static final GetHospInformationResponse DR_KRANSTEGE_HOSP_INFORMATION =
+      kranstegeHospInformationBuilder().build();
 
-  public static final HospCredentialsForPerson DR_KRANSTEGE_HOSP_CREDENTIALS = kranstegeHospCredentialsBuilder().build();
+  public static final HospCredentialsForPerson DR_KRANSTEGE_HOSP_CREDENTIALS =
+      kranstegeHospCredentialsBuilder().build();
 
-  public static final CodeDTO HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO = new CodeDTO(
-      HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE,
-      HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE
-  );
-  public static final CodeDTO POSITION_SPECIALIST_DOCTOR_DTO = new CodeDTO(
-      POSITION_CODE_SPECIALIST_DOCTOR,
-      POSITION_DESCRIPTION_SPECIALIST_DOCTOR
-  );
-  public static final CodeDTO TYPE_OF_CARE_OUTPATIENT_DTO = new CodeDTO(
-      TYPE_OF_CARE_CODE_OUTPATIENT,
-      TYPE_OF_CARE_DESCRIPTION_OUTPATIENT
-  );
-  public static final RegistrationConfigurationResponse REGISTER_CONFIGURATION_RESPONSE = registerConfigurationResponseBuilder().build();
+  public static final CodeDTO HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE_DTO =
+      new CodeDTO(
+          HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE,
+          HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE);
+  public static final CodeDTO POSITION_SPECIALIST_DOCTOR_DTO =
+      new CodeDTO(POSITION_CODE_SPECIALIST_DOCTOR, POSITION_DESCRIPTION_SPECIALIST_DOCTOR);
+  public static final CodeDTO TYPE_OF_CARE_OUTPATIENT_DTO =
+      new CodeDTO(TYPE_OF_CARE_CODE_OUTPATIENT, TYPE_OF_CARE_DESCRIPTION_OUTPATIENT);
+  public static final RegistrationConfigurationResponse REGISTER_CONFIGURATION_RESPONSE =
+      registerConfigurationResponseBuilder().build();
 
   public static PrivatePractitionerDTOBuilder kranstegeDTOBuilder() {
     return PrivatePractitionerDTO.builder()
@@ -102,7 +123,8 @@ public class TestDataDTO {
         .careProviderName(DR_KRANSTEGE_CARE_UNIT_NAME);
   }
 
-  public static CreateRegistrationRequest.CreateRegistrationRequestBuilder kranstegeRegistrationRequest() {
+  public static CreateRegistrationRequest.CreateRegistrationRequestBuilder
+      kranstegeRegistrationRequest() {
     return CreateRegistrationRequest.builder()
         .personId(DR_KRANSTEGE_PERSON_ID)
         .name(DR_KRANSTEGE_NAME)
@@ -121,7 +143,8 @@ public class TestDataDTO {
         .county(DR_KRANSTEGE_COUNTY);
   }
 
-  public static UpdatePrivatePractitionerRequest.UpdatePrivatePractitionerRequestBuilder kranstegeUpdateRequest() {
+  public static UpdatePrivatePractitionerRequest.UpdatePrivatePractitionerRequestBuilder
+      kranstegeUpdateRequest() {
     return UpdatePrivatePractitionerRequest.builder()
         .personId(DR_KRANSTEGE_PERSON_ID)
         .position(DR_KRANSTEGE_POSITION)
@@ -144,32 +167,32 @@ public class TestDataDTO {
         .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
         .healthCareProfessionalLicenceSpeciality(
             DR_KRANSTEGE_SPECIALITIES.stream()
-                .map(speciality -> HCPSpecialityCodes.builder()
-                    .specialityCode(speciality.code())
-                    .specialityName(speciality.name())
-                    .healthCareProfessionalLicenceCode("LK")
-                    .build()
-                )
-                .toList()
-        )
+                .map(
+                    speciality ->
+                        HCPSpecialityCodes.builder()
+                            .specialityCode(speciality.code())
+                            .specialityName(speciality.name())
+                            .healthCareProfessionalLicenceCode("LK")
+                            .build())
+                .toList())
         .healthCareProfessionalLicence(
             DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS.stream()
-                .map(licensedHealtcareProfession -> HealthCareProfessionalLicence.builder()
-                    .healthCareProfessionalLicenceCode(licensedHealtcareProfession.code())
-                    .healthCareProfessionalLicenceName(licensedHealtcareProfession.name())
-                    .build()
-                )
-                .toList()
-        )
+                .map(
+                    licensedHealtcareProfession ->
+                        HealthCareProfessionalLicence.builder()
+                            .healthCareProfessionalLicenceCode(licensedHealtcareProfession.code())
+                            .healthCareProfessionalLicenceName(licensedHealtcareProfession.name())
+                            .build())
+                .toList())
         .restrictions(
             DR_KRANSTEGE_RESTRICTIONS.stream()
-                .map(restriction -> new RestrictionDTO(
-                    restriction.healthCareProfessionalLicenceCode(),
-                    restriction.code(),
-                    restriction.name()
-                ))
-                .toList()
-        );
+                .map(
+                    restriction ->
+                        new RestrictionDTO(
+                            restriction.healthCareProfessionalLicenceCode(),
+                            restriction.code(),
+                            restriction.name()))
+                .toList());
   }
 
   public static RegistrationConfigurationResponseBuilder registerConfigurationResponseBuilder() {
@@ -185,19 +208,14 @@ public class TestDataDTO {
         .personalPrescriptionCode(DR_KRANSTEGE_PRESCRIPTION_CODE)
         .licensedHealthcareProfessions(
             DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS.stream()
-                .map(licensedHealtcareProfession -> new CodeDTO(
-                    licensedHealtcareProfession.code(),
-                    licensedHealtcareProfession.name()
-                ))
-                .toList()
-        )
+                .map(
+                    licensedHealtcareProfession ->
+                        new CodeDTO(
+                            licensedHealtcareProfession.code(), licensedHealtcareProfession.name()))
+                .toList())
         .specialities(
             DR_KRANSTEGE_SPECIALITIES.stream()
-                .map(speciality -> new CodeDTO(
-                    speciality.code(),
-                    speciality.name()
-                ))
-                .toList()
-        );
+                .map(speciality -> new CodeDTO(speciality.code(), speciality.name()))
+                .toList());
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import static java.util.Collections.emptyList;
@@ -23,17 +41,12 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 @ExtendWith(MockitoExtension.class)
 class UpdateHospServiceTest {
 
-  @Mock
-  private HospRepository hospRepository;
-  @Mock
-  private PrivatePractitionerRepository privatePractitionerRepository;
-  @Mock
-  private NotifyPrivatePractitionerRegistration notifyPrivatePractitionerRegistration;
-  @Mock
-  private HandleWaitingForHospService handleWaitingForHospService;
+  @Mock private HospRepository hospRepository;
+  @Mock private PrivatePractitionerRepository privatePractitionerRepository;
+  @Mock private NotifyPrivatePractitionerRegistration notifyPrivatePractitionerRegistration;
+  @Mock private HandleWaitingForHospService handleWaitingForHospService;
 
-  @InjectMocks
-  private UpdateHospService service;
+  @InjectMocks private UpdateHospService service;
 
   @Test
   void shouldNotPerformUpdateWhenHospSaysNoNeed() {
@@ -42,15 +55,17 @@ class UpdateHospServiceTest {
     service.update();
 
     verify(hospRepository, never()).hospUpdated();
-    verifyNoInteractions(privatePractitionerRepository, notifyPrivatePractitionerRegistration,
+    verifyNoInteractions(
+        privatePractitionerRepository,
+        notifyPrivatePractitionerRegistration,
         handleWaitingForHospService);
   }
 
   @Test
   void shouldMarkHospUpdatedWhenNoPractitionersToProcess() {
     when(hospRepository.needUpdateFromHosp()).thenReturn(true);
-    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate()).thenReturn(
-        emptyList());
+    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate())
+        .thenReturn(emptyList());
 
     service.update();
 
@@ -66,11 +81,11 @@ class UpdateHospServiceTest {
     when(hospRepository.needUpdateFromHosp()).thenReturn(true);
 
     final var kranstege = kranstegeBuilder().build();
-    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate()).thenReturn(
-        List.of(kranstege));
+    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate())
+        .thenReturn(List.of(kranstege));
 
-    when(hospRepository.findByPersonId(kranstege.getPersonId())).thenReturn(
-        DR_KRANSTEGE_HOSP_PERSON);
+    when(hospRepository.findByPersonId(kranstege.getPersonId()))
+        .thenReturn(DR_KRANSTEGE_HOSP_PERSON);
 
     service.update();
 
@@ -87,14 +102,15 @@ class UpdateHospServiceTest {
     when(hospRepository.needUpdateFromHosp()).thenReturn(true);
 
     final var kranstege = kranstegeBuilder().build();
-    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate()).thenReturn(
-        List.of(kranstege));
+    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate())
+        .thenReturn(List.of(kranstege));
 
-    when(hospRepository.findByPersonId(kranstege.getPersonId())).thenReturn(
-        kranstegeHospPersonBuilder()
-            .licensedHealthcareProfessions(
-                List.of(new LicensedHealtcareProfession("NA", "Naprapat")))
-            .build());
+    when(hospRepository.findByPersonId(kranstege.getPersonId()))
+        .thenReturn(
+            kranstegeHospPersonBuilder()
+                .licensedHealthcareProfessions(
+                    List.of(new LicensedHealtcareProfession("NA", "Naprapat")))
+                .build());
 
     service.update();
 
@@ -111,13 +127,11 @@ class UpdateHospServiceTest {
     when(hospRepository.needUpdateFromHosp()).thenReturn(true);
 
     final var kranstege = kranstegeBuilder().build();
-    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate()).thenReturn(
-        List.of(kranstege));
+    when(privatePractitionerRepository.findPrivatePractitionersNeedingHospUpdate())
+        .thenReturn(List.of(kranstege));
 
-    when(hospRepository.findByPersonId(kranstege.getPersonId())).thenReturn(
-        kranstegeHospPersonBuilder()
-            .licensedHealthcareProfessions(List.of())
-            .build());
+    when(hospRepository.findByPersonId(kranstege.getPersonId()))
+        .thenReturn(kranstegeHospPersonBuilder().licensedHealthcareProfessions(List.of()).build());
 
     service.update();
 

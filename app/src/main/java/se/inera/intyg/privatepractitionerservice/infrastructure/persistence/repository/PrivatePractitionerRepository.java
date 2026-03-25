@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
 import java.time.LocalDateTime;
@@ -40,12 +58,14 @@ public class PrivatePractitionerRepository {
   private int hsaIdNotificationInterval;
 
   public Optional<PrivatePractitioner> findByPersonId(String personId) {
-    return privatlakareEntityRepository.findByPersonId(personId)
+    return privatlakareEntityRepository
+        .findByPersonId(personId)
         .map(privatlakareEntityConverter::convert);
   }
 
   public Optional<PrivatePractitioner> findByHsaId(String hsaId) {
-    return privatlakareEntityRepository.findByHsaId(hsaId)
+    return privatlakareEntityRepository
+        .findByHsaId(hsaId)
         .map(privatlakareEntityConverter::convert);
   }
 
@@ -60,7 +80,8 @@ public class PrivatePractitionerRepository {
   }
 
   public PrivatePractitioner save(PrivatePractitioner privatePractitioner) {
-    return privatlakareEntityRepository.findByPersonId(privatePractitioner.getPersonId())
+    return privatlakareEntityRepository
+        .findByPersonId(privatePractitioner.getPersonId())
         .map(existingEntity -> updateExisting(existingEntity, privatePractitioner))
         .orElseGet(() -> createNew(privatePractitioner));
   }
@@ -68,7 +89,6 @@ public class PrivatePractitionerRepository {
   /**
    * Resets (deletes) all private practitioner entities and resets the hsaidgenerationcounter. Used
    * in testability scenarios.
-   *
    */
   public void clear() {
     privatlakareEntityRepository.deleteAll();
@@ -76,8 +96,8 @@ public class PrivatePractitionerRepository {
     privatlakareIdEntityRepository.setIdSequence(1);
   }
 
-  private PrivatePractitioner updateExisting(PrivatlakareEntity existingEntity,
-      PrivatePractitioner privatePractitioner) {
+  private PrivatePractitioner updateExisting(
+      PrivatlakareEntity existingEntity, PrivatePractitioner privatePractitioner) {
     setDefaultValues(privatePractitioner, existingEntity);
 
     if (existingEntity.getEnhetStartdatum() == null) {
@@ -115,15 +135,13 @@ public class PrivatePractitionerRepository {
 
   private void sendAdminNotification() {
     final var latestGeneratedHsaId = privatlakareIdEntityRepository.findLatestGeneratedHsaId();
-    if (latestGeneratedHsaId != 0
-        && latestGeneratedHsaId % hsaIdNotificationInterval
-        == 0) {
+    if (latestGeneratedHsaId != 0 && latestGeneratedHsaId % hsaIdNotificationInterval == 0) {
       mailService.sendHsaGenerationEmail(latestGeneratedHsaId);
     }
   }
 
-  private void setDefaultValues(PrivatePractitioner privatePractitioner,
-      PrivatlakareEntity entity) {
+  private void setDefaultValues(
+      PrivatePractitioner privatePractitioner, PrivatlakareEntity entity) {
     entity.setFullstandigtNamn(privatePractitioner.getName());
     entity.setEnhetsNamn(privatePractitioner.getCareUnitName());
     entity.setVardgivareNamn(privatePractitioner.getCareProviderName());
@@ -145,7 +163,6 @@ public class PrivatePractitionerRepository {
     entity.updateVerksamhetstyper(privatePractitioner.getHealthcareServiceType());
 
     setHospInfo(privatePractitioner, entity);
-
   }
 
   private void setHospInfo(PrivatePractitioner privatePractitioner, PrivatlakareEntity entity) {
@@ -159,37 +176,29 @@ public class PrivatePractitionerRepository {
   }
 
   private String generateHsaId(PrivatlakareIdEntity privatlakareIdEntity) {
-    return "SE165565594230-WEBCERT" + StringUtils.leftPad(
-        Integer.toString(privatlakareIdEntity.getId()),
-        5,
-        '0'
-    );
+    return "SE165565594230-WEBCERT"
+        + StringUtils.leftPad(Integer.toString(privatlakareIdEntity.getId()), 5, '0');
   }
 
   private List<SpecialitetEntity> getSpecialiteter(List<Speciality> specialities) {
     return specialities.stream()
-        .map(speciality -> new SpecialitetEntity(
-            speciality.name(),
-            speciality.code()
-        ))
+        .map(speciality -> new SpecialitetEntity(speciality.name(), speciality.code()))
         .collect(Collectors.toCollection(ArrayList::new));
   }
 
   private List<RestriktionEntity> getRestrictions(List<Restriction> restrictions) {
     return restrictions.stream()
-        .map(
-            restriction -> new RestriktionEntity(restriction.code(),
-                restriction.name()))
+        .map(restriction -> new RestriktionEntity(restriction.code(), restriction.name()))
         .collect(Collectors.toCollection(ArrayList::new));
   }
 
   private List<LegitimeradYrkesgruppEntity> getLegitimeradeYrkesgrupper(
       List<LicensedHealtcareProfession> licensedHealtcareProfessions) {
     return licensedHealtcareProfessions.stream()
-        .map(licensedHealtcareProfession -> new LegitimeradYrkesgruppEntity(
-            licensedHealtcareProfession.name(),
-            licensedHealtcareProfession.code()
-        ))
+        .map(
+            licensedHealtcareProfession ->
+                new LegitimeradYrkesgruppEntity(
+                    licensedHealtcareProfession.name(), licensedHealtcareProfession.code()))
         .collect(Collectors.toCollection(ArrayList::new));
   }
 
@@ -200,27 +209,29 @@ public class PrivatePractitionerRepository {
   }
 
   public void remove(PrivatePractitioner privatePractitioner) {
-    privatlakareEntityRepository.findByPersonId(privatePractitioner.getPersonId())
+    privatlakareEntityRepository
+        .findByPersonId(privatePractitioner.getPersonId())
         .ifPresentOrElse(
             privatlakareEntityRepository::delete,
-            () -> log.warn("Tried to remove non-existing private practitioner with personId '{}'",
-                hashUtility.hash(privatePractitioner.getPersonId()))
-        );
+            () ->
+                log.warn(
+                    "Tried to remove non-existing private practitioner with personId '{}'",
+                    hashUtility.hash(privatePractitioner.getPersonId())));
   }
 
   public void addEmailNotification(String personId, LocalDateTime sent) {
-    privatlakareEntityRepository.findByPersonId(personId)
+    privatlakareEntityRepository
+        .findByPersonId(personId)
         .ifPresentOrElse(
-            entity -> epostEntityRepository.save(
-                EpostEntity.builder()
-                    .privatlakareId(entity.getPrivatlakareId())
-                    .skickadDatum(sent)
-                    .build()
-            ),
-            () -> log.warn(
-                "Tried to add email notification to non-existing private practitioner with personId '{}'",
-                hashUtility.hash(personId)
-            )
-        );
+            entity ->
+                epostEntityRepository.save(
+                    EpostEntity.builder()
+                        .privatlakareId(entity.getPrivatlakareId())
+                        .skickadDatum(sent)
+                        .build()),
+            () ->
+                log.warn(
+                    "Tried to add email notification to non-existing private practitioner with personId '{}'",
+                    hashUtility.hash(personId)));
   }
 }

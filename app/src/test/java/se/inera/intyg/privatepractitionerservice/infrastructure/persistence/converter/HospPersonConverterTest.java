@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.converter;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,29 +45,24 @@ import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.Hosp
 @ExtendWith(MockitoExtension.class)
 class HospPersonConverterTest {
 
-  @Mock
-  private HashUtility hashUtility;
-  @InjectMocks
-  private HospPersonConverter hospPersonConverter;
+  @Mock private HashUtility hashUtility;
+  @InjectMocks private HospPersonConverter hospPersonConverter;
 
   @Nested
   class HospConverterTest {
 
-
     @Test
     void shouldReturnEmptyIfHospCredentialsPersonNumberIsNull() {
-      final var actual = hospPersonConverter.convert(
-          HospCredentialsForPerson.builder()
-              .personalIdentityNumber(null)
-              .build()
-      );
+      final var actual =
+          hospPersonConverter.convert(
+              HospCredentialsForPerson.builder().personalIdentityNumber(null).build());
       assertEquals(HospPerson.builder().build(), actual);
     }
 
     @Test
     void shouldReturnHospPersonIfHospCredentialsExist() {
-      assertEquals(HospPerson.class,
-          hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS).getClass());
+      assertEquals(
+          HospPerson.class, hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS).getClass());
     }
 
     @Test
@@ -58,9 +70,7 @@ class HospPersonConverterTest {
 
       final var actual = hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS);
 
-      assertEquals(kranstegeHospPersonBuilder()
-          .hospUpdated(null)
-          .build(), actual);
+      assertEquals(kranstegeHospPersonBuilder().hospUpdated(null).build(), actual);
     }
   }
 
@@ -71,33 +81,33 @@ class HospPersonConverterTest {
     void shouldConvertLicensedHealthcareProfessions() {
       final var actual = hospPersonConverter.convert(DR_KRANSTEGE_HOSP_CREDENTIALS);
 
-      assertEquals(DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS,
-          actual.getLicensedHealthcareProfessions());
+      assertEquals(
+          DR_KRANSTEGE_LICENSED_HEALTHCARE_PROFESSIONS, actual.getLicensedHealthcareProfessions());
     }
 
     @Test
     void shouldReturnEmptyListIfLicensedHealthcareProfessionsIsNull() {
-      final var hospCredentials = kranstegeHospCredentialsBuilder().healthCareProfessionalLicence(
-          null).build();
+      final var hospCredentials =
+          kranstegeHospCredentialsBuilder().healthCareProfessionalLicence(null).build();
 
       final var actual = hospPersonConverter.convert(hospCredentials);
 
-      assertTrue(actual.getLicensedHealthcareProfessions().isEmpty(),
+      assertTrue(
+          actual.getLicensedHealthcareProfessions().isEmpty(),
           "Expected empty when HealthcareProfessions is null");
     }
 
     @Test
     void shouldThrowExceptionIfInvalidHealthcareProfessions() {
-      final var hospCredentials = kranstegeHospCredentialsBuilder()
-          .healthCareProfessionalLicence(
-              List.of(
-                  HealthCareProfessionalLicence.builder()
-                      .healthCareProfessionalLicenceCode("")
-                      .healthCareProfessionalLicenceName(null)
-                      .build()
-              )
-          )
-          .build();
+      final var hospCredentials =
+          kranstegeHospCredentialsBuilder()
+              .healthCareProfessionalLicence(
+                  List.of(
+                      HealthCareProfessionalLicence.builder()
+                          .healthCareProfessionalLicenceCode("")
+                          .healthCareProfessionalLicenceName(null)
+                          .build()))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> hospPersonConverter.convert(hospCredentials));
     }
@@ -115,28 +125,24 @@ class HospPersonConverterTest {
 
     @Test
     void shouldReturnEmptyListIfHCPSpecialityCodesIsNull() {
-      final var hospCredentials = kranstegeHospCredentialsBuilder().healthCareProfessionalLicenceSpeciality(
-          null).build();
+      final var hospCredentials =
+          kranstegeHospCredentialsBuilder().healthCareProfessionalLicenceSpeciality(null).build();
 
       final var actual = hospPersonConverter.convert(hospCredentials);
 
-      assertTrue(actual.getSpecialities().isEmpty(),
+      assertTrue(
+          actual.getSpecialities().isEmpty(),
           "Expected empty specialities when HCPSpecialityCodes is null");
-
     }
 
     @Test
     void shouldThrowExceptionIfInvalidSpecialities() {
-      final var hospCredentials = kranstegeHospCredentialsBuilder()
-          .healthCareProfessionalLicenceSpeciality(
-              List.of(
-                  HCPSpecialityCodes.builder()
-                      .specialityCode("")
-                      .specialityName(null)
-                      .build()
-              )
-          )
-          .build();
+      final var hospCredentials =
+          kranstegeHospCredentialsBuilder()
+              .healthCareProfessionalLicenceSpeciality(
+                  List.of(
+                      HCPSpecialityCodes.builder().specialityCode("").specialityName(null).build()))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> hospPersonConverter.convert(hospCredentials));
     }
@@ -158,23 +164,23 @@ class HospPersonConverterTest {
 
       final var actual = hospPersonConverter.convert(hospCredentials);
 
-      assertTrue(actual.getRestrictions().isEmpty(),
+      assertTrue(
+          actual.getRestrictions().isEmpty(),
           "Expected empty restrictions when RestrictionsDTO is null");
     }
 
     @Test
     void shouldThrowExceptionIfInvalidRestrictions() {
-      final var hospCredentials = kranstegeHospCredentialsBuilder()
-          .restrictions(
-              List.of(
-                  RestrictionDTO.builder()
-                      .restrictionName("")
-                      .restrictionCode(null)
-                      .healthCareProfessionalLicenceCode("")
-                      .build()
-              )
-          )
-          .build();
+      final var hospCredentials =
+          kranstegeHospCredentialsBuilder()
+              .restrictions(
+                  List.of(
+                      RestrictionDTO.builder()
+                          .restrictionName("")
+                          .restrictionCode(null)
+                          .healthCareProfessionalLicenceCode("")
+                          .build()))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> hospPersonConverter.convert(hospCredentials));
     }

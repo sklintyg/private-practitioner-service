@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 
 import static org.awaitility.Awaitility.await;
@@ -33,13 +51,14 @@ public class MailHogUtil {
       await()
           .atMost(Duration.ofSeconds(5))
           .pollInterval(Duration.ofMillis(150))
-          .until(() -> {
-            try {
-              return !hasMessages(getUrl, null);
-            } catch (Exception e) {
-              return false;
-            }
-          });
+          .until(
+              () -> {
+                try {
+                  return !hasMessages(getUrl, null);
+                } catch (Exception e) {
+                  return false;
+                }
+              });
     } catch (Exception e) {
       log.warn("Failed to reset MailHog messages", e);
     }
@@ -49,8 +68,8 @@ public class MailHogUtil {
     assertEmail(address, subject, body, null);
   }
 
-  public void assertEmail(String address, String subject, String body,
-      Integer totalExpectedMessages) {
+  public void assertEmail(
+      String address, String subject, String body, Integer totalExpectedMessages) {
     final var messages = getMessages(totalExpectedMessages);
 
     if (messages == null) {
@@ -69,28 +88,15 @@ public class MailHogUtil {
       final var to = msg.path("To").get(0);
       final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
 
-      final var actualSubject = decode(
-          msg
-              .path("Content")
-              .path("Headers")
-              .path("Subject")
-              .get(0)
-              .asText()
-      );
+      final var actualSubject =
+          decode(msg.path("Content").path("Headers").path("Subject").get(0).asText());
 
       final var actualBody =
-          decodeQuotedPrintable(
-              decode(
-                  msg
-                      .path("Content")
-                      .path("Body")
-                      .asText()
-              )
-          );
+          decodeQuotedPrintable(decode(msg.path("Content").path("Body").asText()));
 
-      if (address.equals(actualAddress) &&
-          subject.equals(actualSubject) &&
-          actualBody.contains(body)) {
+      if (address.equals(actualAddress)
+          && subject.equals(actualSubject)
+          && actualBody.contains(body)) {
         found = true;
         break;
       }
@@ -98,9 +104,13 @@ public class MailHogUtil {
 
     if (!found) {
       StringBuilder errorMsg = new StringBuilder("No email found matching criteria:\n");
-      errorMsg.append("Expected - Address: ").append(address)
-          .append(", Subject: ").append(subject)
-          .append(", Body contains: ").append(body)
+      errorMsg
+          .append("Expected - Address: ")
+          .append(address)
+          .append(", Subject: ")
+          .append(subject)
+          .append(", Body contains: ")
+          .append(body)
           .append("\n");
       errorMsg.append("Actual messages found:\n");
 
@@ -108,16 +118,21 @@ public class MailHogUtil {
         final var msg = items.get(i);
         final var to = msg.path("To").get(0);
         final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
-        final var actualSubject = decode(
-            msg.path("Content").path("Headers").path("Subject").get(0).asText()
-        );
-        final var actualBody = decodeQuotedPrintable(
-            decode(msg.path("Content").path("Body").asText())
-        );
+        final var actualSubject =
+            decode(msg.path("Content").path("Headers").path("Subject").get(0).asText());
+        final var actualBody =
+            decodeQuotedPrintable(decode(msg.path("Content").path("Body").asText()));
 
-        errorMsg.append("Message ").append(i).append(" - Address: ").append(actualAddress)
-            .append(", Subject: ").append(actualSubject)
-            .append(", Body: ").append(actualBody).append("\n");
+        errorMsg
+            .append("Message ")
+            .append(i)
+            .append(" - Address: ")
+            .append(actualAddress)
+            .append(", Subject: ")
+            .append(actualSubject)
+            .append(", Body: ")
+            .append(actualBody)
+            .append("\n");
       }
 
       throw new AssertionError(errorMsg.toString());
@@ -173,10 +188,9 @@ public class MailHogUtil {
 
   private static String decodeQuotedPrintable(String body) {
     try {
-      final var in = MimeUtility.decode(
-          new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)),
-          "quoted-printable"
-      );
+      final var in =
+          MimeUtility.decode(
+              new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)), "quoted-printable");
       return new String(in.readAllBytes(), StandardCharsets.UTF_8);
     } catch (Exception e) {
       log.warn("Could not decode quoted printable body: {}", body, e);

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,10 +38,8 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 @ExtendWith(MockitoExtension.class)
 class GetHospInformationServiceTest {
 
-  @Mock
-  private HospRepository hospRepository;
-  @InjectMocks
-  private GetHospInformationService getHospInformationService;
+  @Mock private HospRepository hospRepository;
+  @InjectMocks private GetHospInformationService getHospInformationService;
 
   @Test
   void shouldThrowExceptionIfPersonIdIsNull() {
@@ -33,33 +49,26 @@ class GetHospInformationServiceTest {
 
   @Test
   void shouldThrowExceptionIfPersonIdIsEmpty() {
-    final var request = GetHospInformationRequest.builder()
-        .personId("")
-        .build();
+    final var request = GetHospInformationRequest.builder().personId("").build();
     assertThrows(IllegalArgumentException.class, () -> getHospInformationService.get(request));
   }
 
   @Test
   void shouldThrowExceptionIfPersonIdIsBlank() {
-    final var request = GetHospInformationRequest.builder()
-        .personId("   ")
-        .build();
+    final var request = GetHospInformationRequest.builder().personId("   ").build();
     assertThrows(IllegalArgumentException.class, () -> getHospInformationService.get(request));
   }
 
   @Test
   void shouldReturnEmptyHospInformationIfNotFound() {
-    final var expected = GetHospInformationResponse.builder()
-        .personId(DR_KRANSTEGE_PERSON_ID)
-        .build();
+    final var expected =
+        GetHospInformationResponse.builder().personId(DR_KRANSTEGE_PERSON_ID).build();
 
-    final var request = GetHospInformationRequest.builder()
-        .personId(DR_KRANSTEGE_PERSON_ID)
-        .build();
+    final var request =
+        GetHospInformationRequest.builder().personId(DR_KRANSTEGE_PERSON_ID).build();
 
-    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(HospPerson.builder()
-        .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
-        .build());
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(HospPerson.builder().personalIdentityNumber(DR_KRANSTEGE_PERSON_ID).build());
 
     final var actual = getHospInformationService.get(request);
 
@@ -68,12 +77,11 @@ class GetHospInformationServiceTest {
 
   @Test
   void shouldReturnHospInformationWhenFound() {
-    final var request = GetHospInformationRequest.builder()
-        .personId(DR_KRANSTEGE_PERSON_ID)
-        .build();
+    final var request =
+        GetHospInformationRequest.builder().personId(DR_KRANSTEGE_PERSON_ID).build();
 
-    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
-        DR_KRANSTEGE_HOSP_PERSON);
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(DR_KRANSTEGE_HOSP_PERSON);
 
     final var actual = getHospInformationService.get(request);
 

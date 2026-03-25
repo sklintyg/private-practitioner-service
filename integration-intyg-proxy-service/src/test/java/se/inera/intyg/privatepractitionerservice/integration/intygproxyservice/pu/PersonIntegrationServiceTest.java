@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,13 +40,10 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.p
 @ExtendWith(MockitoExtension.class)
 class PersonIntegrationServiceTest {
 
-  @Mock
-  private GetPersonFromIntygProxyService getPersonFromIntygProxyService;
-  @Mock
-  private PersonSvarConverter personSvarConverter;
+  @Mock private GetPersonFromIntygProxyService getPersonFromIntygProxyService;
+  @Mock private PersonSvarConverter personSvarConverter;
 
-  @InjectMocks
-  private PersonIntegrationService personIntegrationService;
+  @InjectMocks private PersonIntegrationService personIntegrationService;
 
   private static final String PERSON_ID = "197705232382";
   public static final String KRANSTEGE_FIRST_NAME = "Frida";
@@ -41,35 +56,29 @@ class PersonIntegrationServiceTest {
 
     @Test
     void shouldThrowIllegalArgumentExceptionIfPersonRequestIsNull() {
-      assertThrows(IllegalArgumentException.class,
-          () -> personIntegrationService.getPerson(null)
-      );
+      assertThrows(IllegalArgumentException.class, () -> personIntegrationService.getPerson(null));
     }
 
     @Test
     void shouldThrowIllegalArgumentExceptionIfPersonRequestContainsNullPersonId() {
       final var personRequest = new GetPersonIntegrationRequest(null);
-      assertThrows(IllegalArgumentException.class,
-          () -> personIntegrationService.getPerson(personRequest)
-      );
+      assertThrows(
+          IllegalArgumentException.class, () -> personIntegrationService.getPerson(personRequest));
     }
 
     @Test
     void shouldThrowIllegalArgumentExceptionIfPersonRequestContainsEmptyPersonId() {
       final var personRequest = new GetPersonIntegrationRequest("");
-      assertThrows(IllegalArgumentException.class,
-          () -> personIntegrationService.getPerson(personRequest)
-      );
+      assertThrows(
+          IllegalArgumentException.class, () -> personIntegrationService.getPerson(personRequest));
     }
 
     @Test
     void shouldReturnStatusErrorIfCommunicationErrorWithIntygProxyOccurs() {
       final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
-      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenThrow(
-          RuntimeException.class);
-      assertThrows(RuntimeException.class,
-          () -> personIntegrationService.getPerson(personRequest)
-      );
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest))
+          .thenThrow(RuntimeException.class);
+      assertThrows(RuntimeException.class, () -> personIntegrationService.getPerson(personRequest));
     }
 
     @Test
@@ -77,12 +86,11 @@ class PersonIntegrationServiceTest {
       final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
       final var personSvarDTO = new PersonSvarDTO(null, StatusDTO.NOT_FOUND);
 
-      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
-          personSvarDTO);
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest))
+          .thenReturn(personSvarDTO);
 
-      assertThrows(IllegalStateException.class,
-          () -> personIntegrationService.getPerson(personRequest)
-      );
+      assertThrows(
+          IllegalStateException.class, () -> personIntegrationService.getPerson(personRequest));
     }
 
     @Test
@@ -90,12 +98,11 @@ class PersonIntegrationServiceTest {
       final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
       final var personSvarDTO = new PersonSvarDTO(null, StatusDTO.ERROR);
 
-      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
-          personSvarDTO);
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest))
+          .thenReturn(personSvarDTO);
 
-      assertThrows(IllegalStateException.class,
-          () -> personIntegrationService.getPerson(personRequest)
-      );
+      assertThrows(
+          IllegalStateException.class, () -> personIntegrationService.getPerson(personRequest));
     }
   }
 
@@ -107,8 +114,8 @@ class PersonIntegrationServiceTest {
       final var personRequest = new GetPersonIntegrationRequest(PERSON_ID);
       final var personSvarDTO = getPersonResponse();
 
-      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
-          personSvarDTO);
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest))
+          .thenReturn(personSvarDTO);
 
       final var actual = personIntegrationService.getPerson(personRequest);
 
@@ -121,8 +128,8 @@ class PersonIntegrationServiceTest {
       final var personSvarDTO = getPersonResponse();
       final var expectedStatus = Status.FOUND;
 
-      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
-          personSvarDTO);
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest))
+          .thenReturn(personSvarDTO);
       when(personSvarConverter.convertStatus(personSvarDTO.status())).thenReturn(expectedStatus);
 
       final var actual = personIntegrationService.getPerson(personRequest);
@@ -136,8 +143,8 @@ class PersonIntegrationServiceTest {
       final var personSvarDTO = getPersonResponse();
       final var expectedPerson = getPerson();
 
-      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest)).thenReturn(
-          personSvarDTO);
+      when(getPersonFromIntygProxyService.getPersonFromIntygProxy(personRequest))
+          .thenReturn(personSvarDTO);
       when(personSvarConverter.convertPerson(personSvarDTO.person())).thenReturn(expectedPerson);
 
       final var actual = personIntegrationService.getPerson(personRequest);
@@ -146,12 +153,8 @@ class PersonIntegrationServiceTest {
     }
   }
 
-
   private static Person getPerson() {
-    return Person.builder()
-        .name(KRANSTEGE_FULL_NAME)
-        .personId(PERSON_ID)
-        .build();
+    return Person.builder().name(KRANSTEGE_FULL_NAME).personId(PERSON_ID).build();
   }
 
   private static PersonSvarDTO getPersonResponse() {
@@ -161,5 +164,4 @@ class PersonIntegrationServiceTest {
   private static PersonDTO getPersonDTO() {
     return new PersonDTO(PERSON_ID, KRANSTEGE_FIRST_NAME, KRANSTEGE_LAST_NAME);
   }
-
 }

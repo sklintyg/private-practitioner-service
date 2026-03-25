@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,14 +37,10 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 @ExtendWith(MockitoExtension.class)
 class PrivatePractitionerServiceTest {
 
-  @Mock
-  private PrivatePractitionerRepository privatePractitionerRepository;
-  @Mock
-  private PrivatePractitionerConverter privatePractitionerConverter;
-  @Mock
-  private UpdatePrivatePractitionerFromPUService updatePrivatePractitionerFromPUService;
-  @InjectMocks
-  private PrivatePractitionerService privatePractitionerService;
+  @Mock private PrivatePractitionerRepository privatePractitionerRepository;
+  @Mock private PrivatePractitionerConverter privatePractitionerConverter;
+  @Mock private UpdatePrivatePractitionerFromPUService updatePrivatePractitionerFromPUService;
+  @InjectMocks private PrivatePractitionerService privatePractitionerService;
 
   @Test
   void shouldReturnNullIfPersonOrHsaIdIsNull() {
@@ -50,11 +64,10 @@ class PrivatePractitionerServiceTest {
 
     final var personId = "personId";
     final var privatePractitioner = PrivatePractitioner.builder().hsaId("HSA123").build();
-    when(privatePractitionerRepository.findByPersonId(personId)).thenReturn(
-        Optional.of(privatePractitioner)
-    );
-    when(updatePrivatePractitionerFromPUService.updateFromPu(privatePractitioner)).thenReturn(
-        privatePractitioner);
+    when(privatePractitionerRepository.findByPersonId(personId))
+        .thenReturn(Optional.of(privatePractitioner));
+    when(updatePrivatePractitionerFromPUService.updateFromPu(privatePractitioner))
+        .thenReturn(privatePractitioner);
     when(privatePractitionerConverter.convert(privatePractitioner)).thenReturn(expected);
 
     final var actual = privatePractitionerService.getPrivatePractitioner(personId);
@@ -68,12 +81,9 @@ class PrivatePractitionerServiceTest {
 
     final var hsaId = "hsaId";
     final var privatePractitioner = PrivatePractitioner.builder().hsaId("HSA123").build();
-    when(privatePractitionerRepository.findByPersonId(hsaId)).thenReturn(
-        Optional.empty()
-    );
-    when(privatePractitionerRepository.findByHsaId(hsaId)).thenReturn(
-        Optional.of(privatePractitioner)
-    );
+    when(privatePractitionerRepository.findByPersonId(hsaId)).thenReturn(Optional.empty());
+    when(privatePractitionerRepository.findByHsaId(hsaId))
+        .thenReturn(Optional.of(privatePractitioner));
     when(privatePractitionerConverter.convert(privatePractitioner)).thenReturn(expected);
 
     final var actual = privatePractitionerService.getPrivatePractitioner(hsaId);
@@ -83,23 +93,20 @@ class PrivatePractitionerServiceTest {
 
   @Test
   void shouldReturnPrivatePractitionersWhenExists() {
-    final var expected = List.of(
-        PrivatePractitionerDTO.builder().hsaId("HSA123").build(),
-        PrivatePractitionerDTO.builder().hsaId("HSA456").build()
-    );
+    final var expected =
+        List.of(
+            PrivatePractitionerDTO.builder().hsaId("HSA123").build(),
+            PrivatePractitionerDTO.builder().hsaId("HSA456").build());
 
     final var privatePractitionerOne = PrivatePractitioner.builder().hsaId("HSA123").build();
     final var privatePractitionerTwo = PrivatePractitioner.builder().hsaId("HSA456").build();
 
-    when(privatePractitionerRepository.findAll()).thenReturn(
-        List.of(privatePractitionerOne, privatePractitionerTwo)
-    );
-    when(privatePractitionerConverter.convert(privatePractitionerOne)).thenReturn(
-        expected.getFirst()
-    );
-    when(privatePractitionerConverter.convert(privatePractitionerTwo)).thenReturn(
-        expected.getLast()
-    );
+    when(privatePractitionerRepository.findAll())
+        .thenReturn(List.of(privatePractitionerOne, privatePractitionerTwo));
+    when(privatePractitionerConverter.convert(privatePractitionerOne))
+        .thenReturn(expected.getFirst());
+    when(privatePractitionerConverter.convert(privatePractitionerTwo))
+        .thenReturn(expected.getLast());
 
     final var actual = privatePractitionerService.getPrivatePractitioners();
 

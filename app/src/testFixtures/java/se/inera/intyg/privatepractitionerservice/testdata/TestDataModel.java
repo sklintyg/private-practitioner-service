@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.testdata;
 
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_ADDRESS;
@@ -43,18 +61,13 @@ public class TestDataModel {
   public static final HealthcareServiceType HEALTHCARE_SERVICE_TYPE_MEDICAL_SERVICE =
       new HealthcareServiceType(
           HEALTHCARE_SERVICE_TYPE_CODE_MEDICAL_SERVICE,
-          HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE
-      );
+          HEALTHCARE_SERVICE_TYPE_DESCRIPTION_MEDICAL_SERVICE);
 
-  public static final Position POSITION_SPECIALIST_DOCTOR = new Position(
-      POSITION_CODE_SPECIALIST_DOCTOR,
-      POSITION_DESCRIPTION_SPECIALIST_DOCTOR
-  );
+  public static final Position POSITION_SPECIALIST_DOCTOR =
+      new Position(POSITION_CODE_SPECIALIST_DOCTOR, POSITION_DESCRIPTION_SPECIALIST_DOCTOR);
 
-  public static final TypeOfCare TYPE_OF_CARE_OUTPATIENT = new TypeOfCare(
-      TYPE_OF_CARE_CODE_OUTPATIENT,
-      TYPE_OF_CARE_DESCRIPTION_OUTPATIENT
-  );
+  public static final TypeOfCare TYPE_OF_CARE_OUTPATIENT =
+      new TypeOfCare(TYPE_OF_CARE_CODE_OUTPATIENT, TYPE_OF_CARE_DESCRIPTION_OUTPATIENT);
 
   public static PrivatePractitioner.PrivatePractitionerBuilder kranstegeBuilder() {
     return PrivatePractitioner.builder()

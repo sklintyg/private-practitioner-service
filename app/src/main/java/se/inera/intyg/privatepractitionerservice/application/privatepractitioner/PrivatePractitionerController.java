@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner;
 
 import java.util.List;
@@ -44,24 +62,29 @@ public class PrivatePractitionerController {
   private final EraseService eraseService;
 
   @PostMapping("")
-  @PerformanceLogging(eventAction = "register-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CREATION)
+  @PerformanceLogging(
+      eventAction = "register-private-practitioner",
+      eventType = MdcLogConstants.EVENT_TYPE_CREATION)
   public ResponseEntity<PrivatePractitionerDTO> registerPrivatePractitioner(
       @RequestBody CreateRegistrationRequest createRegistrationRequest) {
-    final var privatePractitionerDTO = createRegistrationService.createRegistration(
-        createRegistrationRequest
-    );
+    final var privatePractitionerDTO =
+        createRegistrationService.createRegistration(createRegistrationRequest);
     return ResponseEntity.ok(privatePractitionerDTO);
   }
 
   @GetMapping("/configuration")
-  @PerformanceLogging(eventAction = "registration-configuration", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "registration-configuration",
+      eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
   public ResponseEntity<RegistrationConfigurationResponse> getRegistrationConfiguration() {
     final var registrationConfigurationResponse = registrationConfigurationService.get();
     return ResponseEntity.ok(registrationConfigurationResponse);
   }
 
   @PostMapping("/hosp")
-  @PerformanceLogging(eventAction = "get-hosp-information", eventType = MdcLogConstants.EVENT_TYPE_INFO)
+  @PerformanceLogging(
+      eventAction = "get-hosp-information",
+      eventType = MdcLogConstants.EVENT_TYPE_INFO)
   public ResponseEntity<GetHospInformationResponse> getHospInformation(
       @RequestBody GetHospInformationRequest getHospInformationRequest) {
     final var getHospInformationResponse = getHospInformationService.get(getHospInformationRequest);
@@ -69,11 +92,13 @@ public class PrivatePractitionerController {
   }
 
   @GetMapping("")
-  @PerformanceLogging(eventAction = "get-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "get-private-practitioner",
+      eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
   public ResponseEntity<PrivatePractitionerDTO> getPrivatePractitioner(
       @RequestParam String personOrHsaId) {
-    final var privatePractitioner = privatePractitionerService.getPrivatePractitioner(
-        personOrHsaId);
+    final var privatePractitioner =
+        privatePractitionerService.getPrivatePractitioner(personOrHsaId);
 
     if (privatePractitioner == null) {
       return ResponseEntity.notFound().build();
@@ -83,14 +108,18 @@ public class PrivatePractitionerController {
   }
 
   @GetMapping("/all")
-  @PerformanceLogging(eventAction = "get-private-practitioners", eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "get-private-practitioners",
+      eventType = MdcLogConstants.EVENT_TYPE_ACCESSED)
   public ResponseEntity<List<PrivatePractitionerDTO>> getPrivatePractitioners() {
     final var privatePractitioners = privatePractitionerService.getPrivatePractitioners();
     return ResponseEntity.ok(privatePractitioners);
   }
 
   @PostMapping("/validate")
-  @PerformanceLogging(eventAction = "validate-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_INFO)
+  @PerformanceLogging(
+      eventAction = "validate-private-practitioner",
+      eventType = MdcLogConstants.EVENT_TYPE_INFO)
   public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
       @RequestBody ValidatePrivatePractitionerRequest request) {
     final var response = validatePrivatePractitionerService.validate(request.getPersonId());
@@ -98,13 +127,17 @@ public class PrivatePractitionerController {
   }
 
   @DeleteMapping("/{id}")
-  @PerformanceLogging(eventAction = "erase-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_DELETION)
+  @PerformanceLogging(
+      eventAction = "erase-private-practitioner",
+      eventType = MdcLogConstants.EVENT_TYPE_DELETION)
   public void erasePrivatePractitioner(@PathVariable("id") String careProviderId) {
     eraseService.erasePrivatePractitioner(careProviderId);
   }
 
   @PutMapping("")
-  @PerformanceLogging(eventAction = "update-private-practitioner", eventType = MdcLogConstants.EVENT_TYPE_CHANGE)
+  @PerformanceLogging(
+      eventAction = "update-private-practitioner",
+      eventType = MdcLogConstants.EVENT_TYPE_CHANGE)
   public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(
       @RequestBody UpdatePrivatePractitionerRequest request) {
     final var updatedPrivatePractitioner = updatePrivatePractitionerService.update(request);

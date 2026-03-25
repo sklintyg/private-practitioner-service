@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import lombok.RequiredArgsConstructor;
@@ -25,8 +43,7 @@ public class UpdatePrivatePractitionerService {
   private final MonitoringLogService monitoringLogService;
 
   @Transactional
-  public PrivatePractitionerDTO update(
-      UpdatePrivatePractitionerRequest request) {
+  public PrivatePractitionerDTO update(UpdatePrivatePractitionerRequest request) {
 
     validator.validate(request);
 
@@ -36,26 +53,25 @@ public class UpdatePrivatePractitionerService {
     final var savedPrivatePractitioner = repository.save(updatedPrivatePractitioner);
 
     monitoringLogService.logUserDetailsChanged(
-        savedPrivatePractitioner.getPersonId(),
-        savedPrivatePractitioner.getHsaId()
-    );
+        savedPrivatePractitioner.getPersonId(), savedPrivatePractitioner.getHsaId());
 
     return converter.convert(savedPrivatePractitioner);
   }
 
-
   private PrivatePractitioner getExistingPrivatePractitioner(
       UpdatePrivatePractitionerRequest request) {
-    return repository.findByPersonId(request.getPersonId())
-        .orElseThrow(() -> new PrivatlakarportalServiceException(
-            PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
-            "Private practitioner with personId %s not found.".formatted(
-                hashUtility.hash(request.getPersonId()))));
+    return repository
+        .findByPersonId(request.getPersonId())
+        .orElseThrow(
+            () ->
+                new PrivatlakarportalServiceException(
+                    PrivatlakarportalErrorCodeEnum.BAD_REQUEST,
+                    "Private practitioner with personId %s not found."
+                        .formatted(hashUtility.hash(request.getPersonId()))));
   }
 
   private PrivatePractitioner updateFields(
-      PrivatePractitioner existing,
-      UpdatePrivatePractitionerRequest request) {
+      PrivatePractitioner existing, UpdatePrivatePractitionerRequest request) {
     existing.setPosition(request.getPosition());
     existing.setCareProviderName(request.getCareUnitName());
     existing.setCareUnitName(request.getCareUnitName());

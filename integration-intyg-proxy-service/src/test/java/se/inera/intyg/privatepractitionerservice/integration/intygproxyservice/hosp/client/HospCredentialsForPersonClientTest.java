@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,15 +48,11 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.h
 class HospCredentialsForPersonClientTest {
 
   private static final GetCredentialsForPersonRequestDTO GET_CREDENTIALS_FOR_PERSON_REQUEST_DTO =
-      GetCredentialsForPersonRequestDTO.builder()
-          .personId("personId")
-          .build();
+      GetCredentialsForPersonRequestDTO.builder().personId("personId").build();
 
-  @Mock
-  private RestClient restClient;
+  @Mock private RestClient restClient;
 
-  @InjectMocks
-  private HospCredentialsForPersonClient credentialsForPersonClient;
+  @InjectMocks private HospCredentialsForPersonClient credentialsForPersonClient;
 
   private ResponseSpec responseSpec;
 
@@ -55,25 +69,26 @@ class HospCredentialsForPersonClientTest {
 
     when(restClient.post()).thenReturn(requestBodyUriSpec);
     when(requestBodyUriSpec.uri(uri)).thenReturn(requestBodyUriSpec);
-    when(requestBodyUriSpec.body(any(GetCredentialsForPersonRequestDTO.class))).thenReturn(
-        requestBodyUriSpec);
+    when(requestBodyUriSpec.body(any(GetCredentialsForPersonRequestDTO.class)))
+        .thenReturn(requestBodyUriSpec);
     when(requestBodyUriSpec.header(LOG_TRACE_ID_HEADER, "traceId")).thenReturn(requestBodyUriSpec);
-    when(requestBodyUriSpec.header(LOG_SESSION_ID_HEADER, "sessionId")).thenReturn(
-        requestBodyUriSpec);
+    when(requestBodyUriSpec.header(LOG_SESSION_ID_HEADER, "sessionId"))
+        .thenReturn(requestBodyUriSpec);
     when(requestBodyUriSpec.contentType(MediaType.APPLICATION_JSON)).thenReturn(requestBodyUriSpec);
     when(requestBodyUriSpec.retrieve()).thenReturn(responseSpec);
   }
 
   @Test
   void shallReturnGetCitizenCertificatesResponse() {
-    final var expectedResponse = GetCredentialsForPersonResponseDTO.builder()
-        .credentials(new HospCredentialsForPerson())
-        .build();
+    final var expectedResponse =
+        GetCredentialsForPersonResponseDTO.builder()
+            .credentials(new HospCredentialsForPerson())
+            .build();
 
     doReturn(expectedResponse).when(responseSpec).body(GetCredentialsForPersonResponseDTO.class);
 
-    final var actualResponse = credentialsForPersonClient.get(
-        GET_CREDENTIALS_FOR_PERSON_REQUEST_DTO);
+    final var actualResponse =
+        credentialsForPersonClient.get(GET_CREDENTIALS_FOR_PERSON_REQUEST_DTO);
 
     assertEquals(expectedResponse, actualResponse);
   }

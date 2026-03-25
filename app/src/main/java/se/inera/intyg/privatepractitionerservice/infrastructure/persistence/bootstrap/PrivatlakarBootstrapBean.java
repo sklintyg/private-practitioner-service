@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.bootstrap;
 
 import static se.inera.intyg.privatepractitionerservice.testability.common.TestabilityConstants.TESTABILITY_INIT_DATA_PROFILE;
@@ -29,7 +47,8 @@ public class PrivatlakarBootstrapBean {
       final var resolver = new PathMatchingResourcePatternResolver();
       final var files = resolver.getResources("classpath:bootstrap-privatlakare/*.json");
       for (Resource res : files) {
-        log.info("Loading private practitioner and adding it to db if it does not already exist {}",
+        log.info(
+            "Loading private practitioner and adding it to db if it does not already exist {}",
             res.getFilename());
         addPrivatlakare(res);
       }
@@ -39,8 +58,8 @@ public class PrivatlakarBootstrapBean {
   }
 
   private void addPrivatlakare(Resource res) throws IOException {
-    final var privatlakareEntity = new CustomObjectMapper().readValue(res.getInputStream(),
-        PrivatlakareEntity.class);
+    final var privatlakareEntity =
+        new CustomObjectMapper().readValue(res.getInputStream(), PrivatlakareEntity.class);
     if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId()).isEmpty()) {
       privatlakareEntityRepository.save(privatlakareEntity);
       log.info("Private practitioner {} created", privatlakareEntity.getFullstandigtNamn());
@@ -52,13 +71,14 @@ public class PrivatlakarBootstrapBean {
       final var resolver = new PathMatchingResourcePatternResolver();
       final var files = resolver.getResources("classpath:bootstrap-privatlakare/*.json");
       for (Resource res : files) {
-        final var privatlakareEntity = new CustomObjectMapper().readValue(res.getInputStream(),
-            PrivatlakareEntity.class);
+        final var privatlakareEntity =
+            new CustomObjectMapper().readValue(res.getInputStream(), PrivatlakareEntity.class);
         if (personIds.contains(privatlakareEntity.getPersonId())) {
           log.info(
               "Loading private practitioner and adding it to db if it does not already exist {}",
               res.getFilename());
-          if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId())
+          if (privatlakareEntityRepository
+              .findByPersonId(privatlakareEntity.getPersonId())
               .isEmpty()) {
             privatlakareEntityRepository.save(privatlakareEntity);
             log.info("Private practitioner {} created", privatlakareEntity.getFullstandigtNamn());
@@ -68,6 +88,5 @@ public class PrivatlakarBootstrapBean {
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
-
   }
 }

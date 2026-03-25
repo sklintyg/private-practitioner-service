@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,29 +47,23 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 @ExtendWith(MockitoExtension.class)
 class CreateRegistrationServiceTest {
 
-  @Mock
-  private CreateRegistrationRequestValidator createRegistrationRequestValidator;
-  @Mock
-  private PrivatePractitionerFactory privatePractitionerFactory;
-  @Mock
-  private PrivatePractitionerRepository privatePractitionerRepository;
-  @Mock
-  private HospRepository hospRepository;
-  @Mock
-  private NotifyPrivatePractitionerRegistration notifyPrivatePractitionerRegistration;
-  @Mock
-  private PrivatePractitionerConverter privatePractitionerConverter;
-  @InjectMocks
-  private CreateRegistrationService createRegistrationService;
+  @Mock private CreateRegistrationRequestValidator createRegistrationRequestValidator;
+  @Mock private PrivatePractitionerFactory privatePractitionerFactory;
+  @Mock private PrivatePractitionerRepository privatePractitionerRepository;
+  @Mock private HospRepository hospRepository;
+  @Mock private NotifyPrivatePractitionerRegistration notifyPrivatePractitionerRegistration;
+  @Mock private PrivatePractitionerConverter privatePractitionerConverter;
+  @InjectMocks private CreateRegistrationService createRegistrationService;
 
   @Test
   void shouldThrowIfValidatorThrows() {
     doThrow(new IllegalArgumentException())
-        .when(createRegistrationRequestValidator).validate(DR_KRANSTEGE_REGISTATION_REQUEST);
+        .when(createRegistrationRequestValidator)
+        .validate(DR_KRANSTEGE_REGISTATION_REQUEST);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST));
   }
 
   @Test
@@ -81,9 +93,7 @@ class CreateRegistrationServiceTest {
         .thenReturn(privatePractitionerMock);
 
     when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
-        .thenReturn(HospPerson.builder()
-            .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
-            .build());
+        .thenReturn(HospPerson.builder().personalIdentityNumber(DR_KRANSTEGE_PERSON_ID).build());
 
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -97,10 +107,8 @@ class CreateRegistrationServiceTest {
     final var kranstege = kranstegeBuilder().build();
     when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(kranstege);
     when(privatePractitionerRepository.save(kranstege)).thenReturn(savePrivatePractitioner);
-    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
-        HospPerson.builder()
-            .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
-            .build());
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(HospPerson.builder().personalIdentityNumber(DR_KRANSTEGE_PERSON_ID).build());
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     verify(hospRepository).addToCertifier(savePrivatePractitioner);
@@ -112,14 +120,12 @@ class CreateRegistrationServiceTest {
     final var savePrivatePractitioner = mock(PrivatePractitioner.class);
 
     when(privatePractitionerMock.getPersonId()).thenReturn(DR_KRANSTEGE_PERSON_ID);
-    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST)).thenReturn(
-        privatePractitionerMock);
-    when(privatePractitionerRepository.save(privatePractitionerMock)).thenReturn(
-        savePrivatePractitioner);
-    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
-        HospPerson.builder()
-            .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
-            .build());
+    when(privatePractitionerFactory.create(DR_KRANSTEGE_REGISTATION_REQUEST))
+        .thenReturn(privatePractitionerMock);
+    when(privatePractitionerRepository.save(privatePractitionerMock))
+        .thenReturn(savePrivatePractitioner);
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(HospPerson.builder().personalIdentityNumber(DR_KRANSTEGE_PERSON_ID).build());
 
     createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
@@ -135,13 +141,11 @@ class CreateRegistrationServiceTest {
     when(privatePractitionerRepository.save(kranstege)).thenReturn(savePrivatePractitioner);
     when(privatePractitionerConverter.convert(savePrivatePractitioner))
         .thenReturn(DR_KRANSTEGE_DTO);
-    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID)).thenReturn(
-        HospPerson.builder()
-            .personalIdentityNumber(DR_KRANSTEGE_PERSON_ID)
-            .build());
+    when(hospRepository.findByPersonId(DR_KRANSTEGE_PERSON_ID))
+        .thenReturn(HospPerson.builder().personalIdentityNumber(DR_KRANSTEGE_PERSON_ID).build());
 
-    final var actual = createRegistrationService.createRegistration(
-        DR_KRANSTEGE_REGISTATION_REQUEST);
+    final var actual =
+        createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertEquals(DR_KRANSTEGE_DTO, actual);
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.application.privatepractitioner;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,35 +54,26 @@ class PrivatePractitionerControllerTest {
 
   private static final String PERSONAL_IDENTITY_NUMBER = "191212121212";
 
-  @Mock
-  private CreateRegistrationService createRegistrationService;
-  @Mock
-  private UpdatePrivatePractitionerService updatePrivatePractitionerService;
-  @Mock
-  private PrivatePractitionerService privatePractitionerService;
-  @Mock
-  private RegistrationConfigurationService registrationConfigurationService;
-  @Mock
-  private GetHospInformationService getHospInformationService;
-  @Mock
-  private ValidatePrivatePractitionerService validatePrivatePractitionerService;
-  @Mock
-  private EraseService eraseService;
-  @InjectMocks
-  private PrivatePractitionerController privatePractitionerController;
+  @Mock private CreateRegistrationService createRegistrationService;
+  @Mock private UpdatePrivatePractitionerService updatePrivatePractitionerService;
+  @Mock private PrivatePractitionerService privatePractitionerService;
+  @Mock private RegistrationConfigurationService registrationConfigurationService;
+  @Mock private GetHospInformationService getHospInformationService;
+  @Mock private ValidatePrivatePractitionerService validatePrivatePractitionerService;
+  @Mock private EraseService eraseService;
+  @InjectMocks private PrivatePractitionerController privatePractitionerController;
 
   @Test
   void shouldRegisterPrivatePractitioner() {
     when(createRegistrationService.createRegistration(DR_KRANSTEGE_REGISTATION_REQUEST))
         .thenReturn(DR_KRANSTEGE_DTO);
 
-    final var actual = privatePractitionerController.registerPrivatePractitioner(
-        DR_KRANSTEGE_REGISTATION_REQUEST);
+    final var actual =
+        privatePractitionerController.registerPrivatePractitioner(DR_KRANSTEGE_REGISTATION_REQUEST);
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
-        () -> assertEquals(DR_KRANSTEGE_DTO, actual.getBody())
-    );
+        () -> assertEquals(DR_KRANSTEGE_DTO, actual.getBody()));
   }
 
   @Test
@@ -75,15 +84,13 @@ class PrivatePractitionerControllerTest {
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
-        () -> assertEquals(REGISTER_CONFIGURATION_RESPONSE, actual.getBody())
-    );
+        () -> assertEquals(REGISTER_CONFIGURATION_RESPONSE, actual.getBody()));
   }
 
   @Test
   void shouldReturnHospInformation() {
-    final var request = GetHospInformationRequest.builder()
-        .personId(DR_KRANSTEGE_PERSON_ID)
-        .build();
+    final var request =
+        GetHospInformationRequest.builder().personId(DR_KRANSTEGE_PERSON_ID).build();
 
     when(getHospInformationService.get(request)).thenReturn(DR_KRANSTEGE_HOSP_INFORMATION);
 
@@ -91,16 +98,15 @@ class PrivatePractitionerControllerTest {
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
-        () -> assertEquals(DR_KRANSTEGE_HOSP_INFORMATION, actual.getBody())
-    );
+        () -> assertEquals(DR_KRANSTEGE_HOSP_INFORMATION, actual.getBody()));
   }
 
   @Test
   void shouldReturnPrivatePractitioners() {
-    final var expected = List.of(
-        PrivatePractitionerDTO.builder().hsaId("123").build(),
-        PrivatePractitionerDTO.builder().hsaId("456").build()
-    );
+    final var expected =
+        List.of(
+            PrivatePractitionerDTO.builder().hsaId("123").build(),
+            PrivatePractitionerDTO.builder().hsaId("456").build());
 
     when(privatePractitionerService.getPrivatePractitioners()).thenReturn(expected);
 
@@ -108,8 +114,7 @@ class PrivatePractitionerControllerTest {
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
-        () -> assertEquals(expected, actual.getBody())
-    );
+        () -> assertEquals(expected, actual.getBody()));
   }
 
   @Test
@@ -119,13 +124,12 @@ class PrivatePractitionerControllerTest {
     when(privatePractitionerService.getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER))
         .thenReturn(expected);
 
-    final var actual = privatePractitionerController.getPrivatePractitioner(
-        PERSONAL_IDENTITY_NUMBER);
+    final var actual =
+        privatePractitionerController.getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER);
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
-        () -> assertEquals(expected, actual.getBody())
-    );
+        () -> assertEquals(expected, actual.getBody()));
   }
 
   @Test
@@ -133,8 +137,8 @@ class PrivatePractitionerControllerTest {
     when(privatePractitionerService.getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER))
         .thenReturn(null);
 
-    final var actual = privatePractitionerController.getPrivatePractitioner(
-        PERSONAL_IDENTITY_NUMBER);
+    final var actual =
+        privatePractitionerController.getPrivatePractitioner(PERSONAL_IDENTITY_NUMBER);
 
     assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
   }
@@ -144,16 +148,14 @@ class PrivatePractitionerControllerTest {
     when(validatePrivatePractitionerService.validate(DR_KRANSTEGE_PERSON_ID))
         .thenReturn(ValidatePrivatePractitionerResponse.builder().build());
 
-    final var actual = privatePractitionerController.validatePrivatePractitioner(
-        ValidatePrivatePractitionerRequest.builder()
-            .personId(DR_KRANSTEGE_PERSON_ID)
-            .build()
-    );
+    final var actual =
+        privatePractitionerController.validatePrivatePractitioner(
+            ValidatePrivatePractitionerRequest.builder().personId(DR_KRANSTEGE_PERSON_ID).build());
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
-        () -> assertEquals(ValidatePrivatePractitionerResponse.builder().build(), actual.getBody())
-    );
+        () ->
+            assertEquals(ValidatePrivatePractitionerResponse.builder().build(), actual.getBody()));
   }
 
   @Test
@@ -165,15 +167,14 @@ class PrivatePractitionerControllerTest {
 
   @Test
   void shouldUpdatePrivatePractitioner() {
-    when(updatePrivatePractitionerService.update(DR_KRANSTEGE_UPDATE_REQUEST)).thenReturn(
-        DR_KRANSTEGE_DTO);
+    when(updatePrivatePractitionerService.update(DR_KRANSTEGE_UPDATE_REQUEST))
+        .thenReturn(DR_KRANSTEGE_DTO);
 
-    final var actual = privatePractitionerController.updatePrivatePractitioner(
-        DR_KRANSTEGE_UPDATE_REQUEST);
+    final var actual =
+        privatePractitionerController.updatePrivatePractitioner(DR_KRANSTEGE_UPDATE_REQUEST);
 
     assertAll(
         () -> assertEquals(HttpStatus.OK, actual.getStatusCode()),
-        () -> assertEquals(DR_KRANSTEGE_DTO, actual.getBody())
-    );
+        () -> assertEquals(DR_KRANSTEGE_DTO, actual.getBody()));
   }
 }

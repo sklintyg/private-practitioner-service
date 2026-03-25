@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository;
 
 import static se.inera.intyg.privatepractitionerservice.application.privatepractitioner.service.HospConstants.OK;
@@ -24,35 +42,35 @@ public class HospRepository {
   private final HospUppdateringEntityRepository hospUppdateringEntityRepository;
 
   public void addToCertifier(PrivatePractitioner privatePractitioner) {
-    final var result = hospService.handleHospCertificationPersonResponseType(
-        privatePractitioner.getHsaId(),
-        "add",
-        privatePractitioner.getPersonId(),
-        null
-    );
+    final var result =
+        hospService.handleHospCertificationPersonResponseType(
+            privatePractitioner.getHsaId(), "add", privatePractitioner.getPersonId(), null);
 
-    log.info("Registered for '{}' certifier in HOSP with resultCode: '{}' and resultText '{}'",
-        privatePractitioner.getHsaId(), result.getResultCode(), result.getResultText()
-    );
+    log.info(
+        "Registered for '{}' certifier in HOSP with resultCode: '{}' and resultText '{}'",
+        privatePractitioner.getHsaId(),
+        result.getResultCode(),
+        result.getResultText());
   }
 
   public boolean removeFromCertifier(PrivatePractitioner privatePractitioner, String reason) {
-    final var result = hospService.handleHospCertificationPersonResponseType(
-        privatePractitioner.getHsaId(),
-        "remove",
-        privatePractitioner.getPersonId(),
-        reason
-    );
+    final var result =
+        hospService.handleHospCertificationPersonResponseType(
+            privatePractitioner.getHsaId(), "remove", privatePractitioner.getPersonId(), reason);
 
     if (!OK.equals(result.getResultCode())) {
-      log.info("handleCertifier returned result '{}' for certifierId '{}'", result.getResultText(),
+      log.info(
+          "handleCertifier returned result '{}' for certifierId '{}'",
+          result.getResultText(),
           privatePractitioner.getHsaId());
       return false;
     }
 
-    log.info("Removed for '{}' certifier in HOSP with resultCode: '{}' and resultText '{}'",
-        privatePractitioner.getHsaId(), result.getResultCode(), result.getResultText()
-    );
+    log.info(
+        "Removed for '{}' certifier in HOSP with resultCode: '{}' and resultText '{}'",
+        privatePractitioner.getHsaId(),
+        result.getResultCode(),
+        result.getResultText());
 
     return true;
   }
@@ -63,18 +81,18 @@ public class HospRepository {
 
     return hospPerson.getLicensedHealthcareProfessions().isEmpty()
         ? HospPerson.builder()
-        .personalIdentityNumber(personId)
-        .hospUpdated(hospService.getHospLastUpdate())
-        .build()
+            .personalIdentityNumber(personId)
+            .hospUpdated(hospService.getHospLastUpdate())
+            .build()
         : hospPerson.withHospUpdated(hospService.getHospLastUpdate());
   }
 
   public Optional<HospPerson> updatedHospPerson(PrivatePractitioner privatePractitioner) {
     final var hospLastUpdate = hospService.getHospLastUpdate();
     if (!privatePractitioner.needHospUpdate(hospLastUpdate)) {
-      log.info("No update needed for hosp person '{}'",
-          hashUtility.hash(privatePractitioner.getPersonId())
-      );
+      log.info(
+          "No update needed for hosp person '{}'",
+          hashUtility.hash(privatePractitioner.getPersonId()));
       return Optional.empty();
     }
 
@@ -87,10 +105,11 @@ public class HospRepository {
       log.warn("Hosp last update is null, cannot determine if update is needed");
       return false;
     }
-    return hospUppdateringEntityRepository.findHospUppdatering()
-        .map(hospUppdateringEntity ->
-            hospUppdateringEntity.getSenasteHospUppdatering().isBefore(hospLastUpdate)
-        )
+    return hospUppdateringEntityRepository
+        .findHospUppdatering()
+        .map(
+            hospUppdateringEntity ->
+                hospUppdateringEntity.getSenasteHospUppdatering().isBefore(hospLastUpdate))
         .orElse(true);
   }
 
@@ -100,8 +119,8 @@ public class HospRepository {
       log.warn("Hosp last update is null, cannot update stored hosp update");
       return;
     }
-    final var hospUppdateringEntity = hospUppdateringEntityRepository.findHospUppdatering()
-        .orElse(new HospUppdateringEntity());
+    final var hospUppdateringEntity =
+        hospUppdateringEntityRepository.findHospUppdatering().orElse(new HospUppdateringEntity());
     hospUppdateringEntity.setSenasteHospUppdatering(hospLastUpdate);
     hospUppdateringEntityRepository.save(hospUppdateringEntity);
   }
