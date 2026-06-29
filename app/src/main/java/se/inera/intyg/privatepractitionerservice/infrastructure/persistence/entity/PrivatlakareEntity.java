@@ -22,6 +22,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -35,7 +36,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.UuidGenerator.Style;
 
 /** Created by pebe on 2015-06-24. */
 @Data
@@ -47,8 +49,8 @@ import org.hibernate.annotations.GenericGenerator;
 public class PrivatlakareEntity {
 
   @Id
-  @GenericGenerator(name = "uuid", strategy = "uuid2")
-  @GeneratedValue(generator = "uuid")
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @UuidGenerator(style = Style.RANDOM)
   @Column(name = "PRIVATLAKARE_ID", nullable = false)
   private String privatlakareId;
 
