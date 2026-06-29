@@ -18,19 +18,9 @@
  */
 package se.inera.intyg.privatepractitionerservice.infrastructure.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.EnableAsync;
-import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 @EnableAsync
-public class ApplicationConfig {
-
-  @Bean
-  @Primary
-  public JsonMapper objectMapper() {
-    return CustomObjectMapper.create();
-  }
-}
+public class ApplicationConfig {}

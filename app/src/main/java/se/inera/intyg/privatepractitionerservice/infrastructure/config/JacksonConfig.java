@@ -19,19 +19,17 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.json.JsonMapper;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-public final class CustomObjectMapper {
+@Configuration
+public class JacksonConfig {
 
-  private CustomObjectMapper() {
-    throw new IllegalStateException("Utility class");
-  }
-
-  public static JsonMapper create() {
-    return JsonMapper.builder()
-        .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.ALWAYS))
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .build();
+  @Bean
+  JsonMapperBuilderCustomizer jsonMapperBuilderCustomizer() {
+    return builder ->
+        builder.changeDefaultPropertyInclusion(
+            incl -> incl.withValueInclusion(JsonInclude.Include.ALWAYS));
   }
 }

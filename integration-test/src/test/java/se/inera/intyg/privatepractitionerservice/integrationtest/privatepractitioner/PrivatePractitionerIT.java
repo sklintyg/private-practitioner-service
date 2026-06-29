@@ -61,7 +61,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
-import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO;
@@ -70,6 +69,7 @@ import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Int
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.ApiUtil;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.MailHogUtil;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.TestabilityApiUtil;
+import tools.jackson.databind.json.JsonMapper;
 
 @ActiveProfiles({"integration-test", "testability"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -78,6 +78,7 @@ class PrivatePractitionerIT {
   @LocalServerPort private int port;
 
   @Autowired private TestRestTemplate restTemplate;
+  @Autowired private JsonMapper jsonMapper;
 
   private ApiUtil api;
   private TestabilityApiUtil testabilityApi;
@@ -102,7 +103,7 @@ class PrivatePractitionerIT {
     this.mailHogUtil =
         new MailHogUtil(
             restTemplate,
-            CustomObjectMapper.create(),
+            jsonMapper,
             Containers.mailHogContainer.getHost(),
             Containers.mailHogContainer.getMappedPort(8025));
   }
