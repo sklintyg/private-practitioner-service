@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -79,7 +79,7 @@ public class TestabilityApiUtil {
         this.restTemplate.exchange(
             requestUrl,
             HttpMethod.DELETE,
-            new HttpEntity<>(null, null),
+            new HttpEntity<Void>(null, new HttpHeaders()),
             new ParameterizedTypeReference<>() {},
             Collections.emptyMap());
 

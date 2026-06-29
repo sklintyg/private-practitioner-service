@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import tools.jackson.databind.JsonNode;
@@ -55,7 +55,7 @@ public class MailHogUtil {
               () -> {
                 try {
                   return !hasMessages(getUrl, null);
-                } catch (Exception e) {
+                } catch (Exception _) {
                   return false;
                 }
               });
@@ -86,13 +86,13 @@ public class MailHogUtil {
     for (int i = 0; i < items.size(); i++) {
       final var msg = items.get(i);
       final var to = msg.path("To").get(0);
-      final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
+      final var actualAddress = to.get("Mailbox").asString() + "@" + to.get("Domain").asString();
 
       final var actualSubject =
-          decode(msg.path("Content").path("Headers").path("Subject").get(0).asText());
+          decode(msg.path("Content").path("Headers").path("Subject").get(0).asString());
 
       final var actualBody =
-          decodeQuotedPrintable(decode(msg.path("Content").path("Body").asText()));
+          decodeQuotedPrintable(decode(msg.path("Content").path("Body").asString()));
 
       if (address.equals(actualAddress)
           && subject.equals(actualSubject)
@@ -117,11 +117,11 @@ public class MailHogUtil {
       for (int i = 0; i < items.size(); i++) {
         final var msg = items.get(i);
         final var to = msg.path("To").get(0);
-        final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
+        final var actualAddress = to.get("Mailbox").asString() + "@" + to.get("Domain").asString();
         final var actualSubject =
-            decode(msg.path("Content").path("Headers").path("Subject").get(0).asText());
+            decode(msg.path("Content").path("Headers").path("Subject").get(0).asString());
         final var actualBody =
-            decodeQuotedPrintable(decode(msg.path("Content").path("Body").asText()));
+            decodeQuotedPrintable(decode(msg.path("Content").path("Body").asString()));
 
         errorMsg
             .append("Message ")

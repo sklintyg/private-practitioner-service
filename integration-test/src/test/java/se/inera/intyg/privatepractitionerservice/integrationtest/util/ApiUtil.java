@@ -20,7 +20,7 @@ package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -65,14 +65,12 @@ public class ApiUtil {
     final var requestUrl =
         "http://localhost:" + port + "/internalapi/privatepractitioner/%s".formatted(hsaId);
     final var headers = new HttpHeaders();
-    final var response =
-        this.restTemplate.exchange(
-            requestUrl,
-            HttpMethod.DELETE,
-            new HttpEntity<>(headers),
-            new ParameterizedTypeReference<PrivatePractitionerDTO>() {},
-            Collections.emptyMap());
-    return response;
+    return this.restTemplate.exchange(
+        requestUrl,
+        HttpMethod.DELETE,
+        new HttpEntity<>(headers),
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(

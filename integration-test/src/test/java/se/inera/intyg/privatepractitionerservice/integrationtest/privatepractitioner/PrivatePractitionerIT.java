@@ -55,9 +55,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
@@ -72,6 +73,7 @@ import se.inera.intyg.privatepractitionerservice.integrationtest.util.Testabilit
 import tools.jackson.databind.json.JsonMapper;
 
 @ActiveProfiles({"integration-test", "testability"})
+@AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class PrivatePractitionerIT {
 
@@ -99,7 +101,7 @@ class PrivatePractitionerIT {
         new MockServerClient(
             Containers.mockServerContainer.getHost(),
             Containers.mockServerContainer.getServerPort());
-    this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient);
+    this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient, jsonMapper);
     this.mailHogUtil =
         new MailHogUtil(
             restTemplate,
