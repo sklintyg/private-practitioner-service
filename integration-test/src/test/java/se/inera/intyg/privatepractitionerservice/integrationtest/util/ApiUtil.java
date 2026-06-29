@@ -18,14 +18,10 @@
  */
 package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.resttestclient.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.client.EntityExchangeResult;
+import org.springframework.test.web.servlet.client.RestTestClient;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.CreateRegistrationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationRequest;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.GetHospInformationResponse;
@@ -38,101 +34,112 @@ import se.inera.intyg.privatepractitionerservice.application.privatepractitioner
 @RequiredArgsConstructor
 public class ApiUtil {
 
-  private final TestRestTemplate restTemplate;
-  private final int port;
+  private final RestTestClient restClient;
 
   public ResponseEntity<PrivatePractitionerDTO> registerPrivatePractitioner(
       CreateRegistrationRequest request) {
-    final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner";
-    final var headers = new HttpHeaders();
-    final var response =
-        this.restTemplate.exchange(
-            requestUrl,
-            HttpMethod.POST,
-            new HttpEntity<>(request, headers),
-            new ParameterizedTypeReference<PrivatePractitionerDTO>() {},
-            Collections.emptyMap());
+    final var result =
+        restClient
+            .post()
+            .uri("/internalapi/privatepractitioner")
+            .body(request)
+            .exchange()
+            .expectBody(PrivatePractitionerDTO.class)
+            .returnResult();
+
+    final var response = toResponseEntity(result);
 
     if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-      final var body = response.getBody();
-      TestabilityApiUtil.addPrivatePractitionerPersonId(body.getPersonId());
+      TestabilityApiUtil.addPrivatePractitionerPersonId(response.getBody().getPersonId());
     }
 
     return response;
   }
 
   public ResponseEntity<PrivatePractitionerDTO> erasePrivatePractitioner(String hsaId) {
-    final var requestUrl =
-        "http://localhost:" + port + "/internalapi/privatepractitioner/%s".formatted(hsaId);
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.DELETE,
-        new HttpEntity<>(headers),
-        new ParameterizedTypeReference<>() {},
-        Collections.emptyMap());
+    final var result =
+        restClient
+            .delete()
+            .uri("/internalapi/privatepractitioner/{hsaId}", hsaId)
+            .exchange()
+            .expectBody(PrivatePractitionerDTO.class)
+            .returnResult();
+
+    return toResponseEntity(result);
   }
 
   public ResponseEntity<PrivatePractitionerDTO> updatePrivatePractitioner(
       UpdatePrivatePractitionerRequest request) {
-    final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner";
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.PUT,
-        new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {},
-        Collections.emptyMap());
+    final var result =
+        restClient
+            .put()
+            .uri("/internalapi/privatepractitioner")
+            .body(request)
+            .exchange()
+            .expectBody(PrivatePractitionerDTO.class)
+            .returnResult();
+
+    return toResponseEntity(result);
   }
 
   public ResponseEntity<GetHospInformationResponse> hospInformation(
       GetHospInformationRequest request) {
-    final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner/hosp";
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.POST,
-        new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {},
-        Collections.emptyMap());
+    final var result =
+        restClient
+            .post()
+            .uri("/internalapi/privatepractitioner/hosp")
+            .body(request)
+            .exchange()
+            .expectBody(GetHospInformationResponse.class)
+            .returnResult();
+
+    return toResponseEntity(result);
   }
 
   public ResponseEntity<RegistrationConfigurationResponse> registrationConfiguration() {
-    final var requestUrl =
-        "http://localhost:" + port + "/internalapi/privatepractitioner/configuration";
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.GET,
-        new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {},
-        Collections.emptyMap());
+    final var result =
+        restClient
+            .get()
+            .uri("/internalapi/privatepractitioner/configuration")
+            .exchange()
+            .expectBody(RegistrationConfigurationResponse.class)
+            .returnResult();
+
+    return toResponseEntity(result);
   }
 
   public ResponseEntity<ValidatePrivatePractitionerResponse> validatePrivatePractitioner(
       ValidatePrivatePractitionerRequest request) {
-    final var requestUrl = "http://localhost:" + port + "/internalapi/privatepractitioner/validate";
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.POST,
-        new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {},
-        Collections.emptyMap());
+    final var result =
+        restClient
+            .post()
+            .uri("/internalapi/privatepractitioner/validate")
+            .body(request)
+            .exchange()
+            .expectBody(ValidatePrivatePractitionerResponse.class)
+            .returnResult();
+
+    return toResponseEntity(result);
   }
 
   public ResponseEntity<PrivatePractitionerDTO> getPrivatePractitioner(String personOrHsaId) {
-    final var requestUrl =
-        "http://localhost:"
-            + port
-            + "/internalapi/privatepractitioner?personOrHsaId="
-            + personOrHsaId;
-    final var headers = new HttpHeaders();
-    return this.restTemplate.exchange(
-        requestUrl,
-        HttpMethod.GET,
-        new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {},
-        Collections.emptyMap());
+    final var result =
+        restClient
+            .get()
+            .uri(
+                uriBuilder ->
+                    uriBuilder
+                        .path("/internalapi/privatepractitioner")
+                        .queryParam("personOrHsaId", personOrHsaId)
+                        .build())
+            .exchange()
+            .expectBody(PrivatePractitionerDTO.class)
+            .returnResult();
+
+    return toResponseEntity(result);
+  }
+
+  private static <T> ResponseEntity<T> toResponseEntity(EntityExchangeResult<T> result) {
+    return ResponseEntity.status(result.getStatus()).body(result.getResponseBody());
   }
 }

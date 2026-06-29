@@ -25,29 +25,30 @@ import jakarta.mail.internet.MimeUtility;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClient;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
-@RequiredArgsConstructor
 public class MailHogUtil {
 
-  private final TestRestTemplate restTemplate;
+  private final RestClient restClient;
   private final JsonMapper objectMapper;
-  private final String host;
-  private final int port;
+
+  public MailHogUtil(JsonMapper objectMapper, String host, int port) {
+    this.objectMapper = objectMapper;
+    this.restClient =
+        RestClient.builder().baseUrl("http://%s:%s".formatted(host, port)).build();
+  }
 
   public void reset() {
-    final var deleteUrl = "http://%s:%s/api/v1/messages".formatted(host, port);
-    final var getUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
+    final var deleteUrl = "/api/v1/messages";
+    final var getUrl = "/api/v2/messages";
 
     try {
-      restTemplate.delete(deleteUrl);
+      restClient.delete().uri(deleteUrl).retrieve().toBodilessEntity();
       await()
           .atMost(Duration.ofSeconds(5))
           .pollInterval(Duration.ofMillis(150))
@@ -140,7 +141,7 @@ public class MailHogUtil {
   }
 
   private JsonNode getMessages(Integer expectedAmount) {
-    final var requestUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
+    final var requestUrl = "/api/v2/messages";
 
     try {
       await()
@@ -148,7 +149,7 @@ public class MailHogUtil {
           .pollInterval(Duration.ofMillis(200))
           .until(() -> hasMessages(requestUrl, expectedAmount));
 
-      final ResponseEntity<String> res = restTemplate.getForEntity(requestUrl, String.class);
+      final var res = restClient.get().uri(requestUrl).retrieve().toEntity(String.class);
 
       if (res.getStatusCode() != HttpStatus.OK) {
         log.warn("Failed to retrieve messages from MailHog. Status: {}", res.getStatusCode());
@@ -164,7 +165,7 @@ public class MailHogUtil {
 
   private boolean hasMessages(String requestUrl, Integer expectedAmount) {
     try {
-      final var res = restTemplate.getForEntity(requestUrl, String.class);
+      final var res = restClient.get().uri(requestUrl).retrieve().toEntity(String.class);
       if (res.getStatusCode() == HttpStatus.OK && res.getBody() != null) {
         final var messages = objectMapper.readTree(res.getBody());
         final var total = messages.path("total").asInt(0);

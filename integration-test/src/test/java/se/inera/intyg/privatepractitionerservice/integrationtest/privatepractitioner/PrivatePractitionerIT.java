@@ -55,12 +55,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
-import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.client.RestTestClient;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
@@ -73,13 +72,11 @@ import se.inera.intyg.privatepractitionerservice.integrationtest.util.Testabilit
 import tools.jackson.databind.json.JsonMapper;
 
 @ActiveProfiles({"integration-test", "testability"})
-@AutoConfigureTestRestTemplate
+@AutoConfigureRestTestClient
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class PrivatePractitionerIT {
 
-  @LocalServerPort private int port;
-
-  @Autowired private TestRestTemplate restTemplate;
+  @Autowired private RestTestClient restClient;
   @Autowired private JsonMapper jsonMapper;
 
   private ApiUtil api;
@@ -95,8 +92,8 @@ class PrivatePractitionerIT {
 
   @BeforeEach
   void setUp() {
-    this.api = new ApiUtil(restTemplate, port);
-    this.testabilityApi = new TestabilityApiUtil(restTemplate, port);
+    this.api = new ApiUtil(restClient);
+    this.testabilityApi = new TestabilityApiUtil(restClient);
     this.mockServerClient =
         new MockServerClient(
             Containers.mockServerContainer.getHost(),
@@ -104,7 +101,6 @@ class PrivatePractitionerIT {
     this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient, jsonMapper);
     this.mailHogUtil =
         new MailHogUtil(
-            restTemplate,
             jsonMapper,
             Containers.mailHogContainer.getHost(),
             Containers.mailHogContainer.getMappedPort(8025));
