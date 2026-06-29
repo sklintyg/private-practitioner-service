@@ -102,7 +102,7 @@ class PrivatePractitionerIT {
     this.mailHogUtil =
         new MailHogUtil(
             restTemplate,
-            new CustomObjectMapper(),
+            CustomObjectMapper.create(),
             Containers.mailHogContainer.getHost(),
             Containers.mailHogContainer.getMappedPort(8025));
   }

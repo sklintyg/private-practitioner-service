@@ -23,12 +23,12 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PRESCRIPTION_CODE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
+import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HCPSpecialityCodes;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HealthCareProfessionalLicence;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
@@ -54,7 +54,8 @@ public class IntygProxyServiceMock {
       mockServerClient
           .when(HttpRequest.request("/api/v1/credentialsForPerson"))
           .respond(
-              HttpResponse.response(new ObjectMapper().writeValueAsString(credentialsForPerson))
+              HttpResponse.response(
+                      CustomObjectMapper.create().writeValueAsString(credentialsForPerson))
                   .withStatusCode(200)
                   .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {
@@ -67,7 +68,7 @@ public class IntygProxyServiceMock {
       mockServerClient
           .when(HttpRequest.request("/api/v1/certificationPerson"))
           .respond(
-              HttpResponse.response(new ObjectMapper().writeValueAsString(response))
+              HttpResponse.response(CustomObjectMapper.create().writeValueAsString(response))
                   .withStatusCode(200)
                   .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {
@@ -80,7 +81,7 @@ public class IntygProxyServiceMock {
       mockServerClient
           .when(HttpRequest.request("/api/v1/person"))
           .respond(
-              HttpResponse.response(new ObjectMapper().writeValueAsString(response))
+              HttpResponse.response(CustomObjectMapper.create().writeValueAsString(response))
                   .withStatusCode(200)
                   .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {

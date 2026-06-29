@@ -19,19 +19,19 @@
 package se.inera.intyg.privatepractitionerservice.infrastructure.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
-public class CustomObjectMapper extends ObjectMapper {
+public final class CustomObjectMapper {
 
-  private static final long serialVersionUID = 1L;
+  private CustomObjectMapper() {
+    throw new IllegalStateException("Utility class");
+  }
 
-  public CustomObjectMapper() {
-    setSerializationInclusion(JsonInclude.Include.ALWAYS);
-    configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    registerModule(new JavaTimeModule());
+  public static JsonMapper create() {
+    return JsonMapper.builder()
+        .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.ALWAYS))
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .build();
   }
 }

@@ -21,8 +21,6 @@ package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.internet.MimeUtility;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -32,13 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 @RequiredArgsConstructor
 public class MailHogUtil {
 
   private final TestRestTemplate restTemplate;
-  private final ObjectMapper objectMapper;
+  private final JsonMapper objectMapper;
   private final String host;
   private final int port;
 
