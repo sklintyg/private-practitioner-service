@@ -37,10 +37,10 @@ public class MailHogUtil {
   private final RestClient restClient;
   private final JsonMapper objectMapper;
 
-  public MailHogUtil(JsonMapper objectMapper, String host, int port) {
+  public MailHogUtil(
+      RestClient.Builder restClientBuilder, JsonMapper objectMapper, String host, int port) {
     this.objectMapper = objectMapper;
-    this.restClient =
-        RestClient.builder().baseUrl("http://%s:%s".formatted(host, port)).build();
+    this.restClient = restClientBuilder.baseUrl("http://%s:%s".formatted(host, port)).build();
   }
 
   public void reset() {

@@ -60,6 +60,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.client.RestTestClient;
+import org.springframework.web.client.RestClient;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
@@ -77,6 +78,7 @@ import tools.jackson.databind.json.JsonMapper;
 class PrivatePractitionerIT {
 
   @Autowired private RestTestClient restClient;
+  @Autowired private RestClient.Builder restClientBuilder;
   @Autowired private JsonMapper jsonMapper;
 
   private ApiUtil api;
@@ -101,6 +103,7 @@ class PrivatePractitionerIT {
     this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient, jsonMapper);
     this.mailHogUtil =
         new MailHogUtil(
+            restClientBuilder,
             jsonMapper,
             Containers.mailHogContainer.getHost(),
             Containers.mailHogContainer.getMappedPort(8025));

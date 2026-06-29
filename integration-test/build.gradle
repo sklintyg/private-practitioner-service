@@ -9,7 +9,7 @@ dependencies {
     testImplementation 'org.awaitility:awaitility'
     testImplementation "org.mock-server:mockserver-client-java"
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-mail'
+    testImplementation 'org.eclipse.angus:angus-mail'
     testImplementation 'org.springframework.boot:spring-boot-starter-restclient'
     testImplementation 'org.springframework.boot:spring-boot-resttestclient'
     testImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
