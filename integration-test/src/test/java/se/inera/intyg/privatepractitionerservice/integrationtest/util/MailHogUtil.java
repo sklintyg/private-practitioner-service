@@ -21,33 +21,34 @@ package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.internet.MimeUtility;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClient;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
-@RequiredArgsConstructor
 public class MailHogUtil {
 
-  private final TestRestTemplate restTemplate;
-  private final ObjectMapper objectMapper;
-  private final String host;
-  private final int port;
+  private final RestClient restClient;
+  private final JsonMapper objectMapper;
+
+  public MailHogUtil(
+      RestClient.Builder restClientBuilder, JsonMapper objectMapper, String host, int port) {
+    this.objectMapper = objectMapper;
+    this.restClient = restClientBuilder.baseUrl("http://%s:%s".formatted(host, port)).build();
+  }
 
   public void reset() {
-    final var deleteUrl = "http://%s:%s/api/v1/messages".formatted(host, port);
-    final var getUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
+    final var deleteUrl = "/api/v1/messages";
+    final var getUrl = "/api/v2/messages";
 
     try {
-      restTemplate.delete(deleteUrl);
+      restClient.delete().uri(deleteUrl).retrieve().toBodilessEntity();
       await()
           .atMost(Duration.ofSeconds(5))
           .pollInterval(Duration.ofMillis(150))
@@ -55,7 +56,7 @@ public class MailHogUtil {
               () -> {
                 try {
                   return !hasMessages(getUrl, null);
-                } catch (Exception e) {
+                } catch (Exception _) {
                   return false;
                 }
               });
@@ -86,13 +87,13 @@ public class MailHogUtil {
     for (int i = 0; i < items.size(); i++) {
       final var msg = items.get(i);
       final var to = msg.path("To").get(0);
-      final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
+      final var actualAddress = to.get("Mailbox").asString() + "@" + to.get("Domain").asString();
 
       final var actualSubject =
-          decode(msg.path("Content").path("Headers").path("Subject").get(0).asText());
+          decode(msg.path("Content").path("Headers").path("Subject").get(0).asString());
 
       final var actualBody =
-          decodeQuotedPrintable(decode(msg.path("Content").path("Body").asText()));
+          decodeQuotedPrintable(decode(msg.path("Content").path("Body").asString()));
 
       if (address.equals(actualAddress)
           && subject.equals(actualSubject)
@@ -117,11 +118,11 @@ public class MailHogUtil {
       for (int i = 0; i < items.size(); i++) {
         final var msg = items.get(i);
         final var to = msg.path("To").get(0);
-        final var actualAddress = to.get("Mailbox").asText() + "@" + to.get("Domain").asText();
+        final var actualAddress = to.get("Mailbox").asString() + "@" + to.get("Domain").asString();
         final var actualSubject =
-            decode(msg.path("Content").path("Headers").path("Subject").get(0).asText());
+            decode(msg.path("Content").path("Headers").path("Subject").get(0).asString());
         final var actualBody =
-            decodeQuotedPrintable(decode(msg.path("Content").path("Body").asText()));
+            decodeQuotedPrintable(decode(msg.path("Content").path("Body").asString()));
 
         errorMsg
             .append("Message ")
@@ -140,7 +141,7 @@ public class MailHogUtil {
   }
 
   private JsonNode getMessages(Integer expectedAmount) {
-    final var requestUrl = "http://%s:%s/api/v2/messages".formatted(host, port);
+    final var requestUrl = "/api/v2/messages";
 
     try {
       await()
@@ -148,7 +149,7 @@ public class MailHogUtil {
           .pollInterval(Duration.ofMillis(200))
           .until(() -> hasMessages(requestUrl, expectedAmount));
 
-      final ResponseEntity<String> res = restTemplate.getForEntity(requestUrl, String.class);
+      final var res = restClient.get().uri(requestUrl).retrieve().toEntity(String.class);
 
       if (res.getStatusCode() != HttpStatus.OK) {
         log.warn("Failed to retrieve messages from MailHog. Status: {}", res.getStatusCode());
@@ -164,7 +165,7 @@ public class MailHogUtil {
 
   private boolean hasMessages(String requestUrl, Integer expectedAmount) {
     try {
-      final var res = restTemplate.getForEntity(requestUrl, String.class);
+      final var res = restClient.get().uri(requestUrl).retrieve().toEntity(String.class);
       if (res.getStatusCode() == HttpStatus.OK && res.getBody() != null) {
         final var messages = objectMapper.readTree(res.getBody());
         final var total = messages.path("total").asInt(0);

@@ -23,7 +23,6 @@ import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstan
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_PRESCRIPTION_CODE;
 import static se.inera.intyg.privatepractitionerservice.testdata.TestDataConstants.DR_KRANSTEGE_SPECIALITIES;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.HttpRequest;
@@ -41,11 +40,13 @@ import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.h
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.PersonSvarDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.pu.client.dto.StatusDTO;
+import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 public class IntygProxyServiceMock {
 
   private final MockServerClient mockServerClient;
+  private final JsonMapper jsonMapper;
 
   public void credentialsForPersonResponse(
       GetCredentialsForPersonResponseDTO credentialsForPerson) {
@@ -54,7 +55,7 @@ public class IntygProxyServiceMock {
       mockServerClient
           .when(HttpRequest.request("/api/v1/credentialsForPerson"))
           .respond(
-              HttpResponse.response(new ObjectMapper().writeValueAsString(credentialsForPerson))
+              HttpResponse.response(jsonMapper.writeValueAsString(credentialsForPerson))
                   .withStatusCode(200)
                   .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {
@@ -67,7 +68,7 @@ public class IntygProxyServiceMock {
       mockServerClient
           .when(HttpRequest.request("/api/v1/certificationPerson"))
           .respond(
-              HttpResponse.response(new ObjectMapper().writeValueAsString(response))
+              HttpResponse.response(jsonMapper.writeValueAsString(response))
                   .withStatusCode(200)
                   .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {
@@ -80,7 +81,7 @@ public class IntygProxyServiceMock {
       mockServerClient
           .when(HttpRequest.request("/api/v1/person"))
           .respond(
-              HttpResponse.response(new ObjectMapper().writeValueAsString(response))
+              HttpResponse.response(jsonMapper.writeValueAsString(response))
                   .withStatusCode(200)
                   .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {

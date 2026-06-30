@@ -18,11 +18,11 @@
  */
 package se.inera.intyg.privatepractitionerservice.testability.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest.TestabilityCreateRegistrationRequestBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = TestabilityCreateRegistrationRequestBuilder.class)
 @Value

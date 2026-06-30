@@ -55,13 +55,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.client.RestTestClient;
+import org.springframework.web.client.RestClient;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.ValidatePrivatePractitionerRequest;
-import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson;
 import se.inera.intyg.privatepractitionerservice.integration.api.hosp.model.HospCredentialsForPerson.RestrictionDTO;
 import se.inera.intyg.privatepractitionerservice.integration.intygproxyservice.hosp.client.dto.GetCredentialsForPersonResponseDTO;
@@ -70,14 +70,16 @@ import se.inera.intyg.privatepractitionerservice.integrationtest.environment.Int
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.ApiUtil;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.MailHogUtil;
 import se.inera.intyg.privatepractitionerservice.integrationtest.util.TestabilityApiUtil;
+import tools.jackson.databind.json.JsonMapper;
 
 @ActiveProfiles({"integration-test", "testability"})
+@AutoConfigureRestTestClient
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class PrivatePractitionerIT {
 
-  @LocalServerPort private int port;
-
-  @Autowired private TestRestTemplate restTemplate;
+  @Autowired private RestTestClient restClient;
+  @Autowired private RestClient.Builder restClientBuilder;
+  @Autowired private JsonMapper jsonMapper;
 
   private ApiUtil api;
   private TestabilityApiUtil testabilityApi;
@@ -92,17 +94,17 @@ class PrivatePractitionerIT {
 
   @BeforeEach
   void setUp() {
-    this.api = new ApiUtil(restTemplate, port);
-    this.testabilityApi = new TestabilityApiUtil(restTemplate, port);
+    this.api = new ApiUtil(restClient);
+    this.testabilityApi = new TestabilityApiUtil(restClient);
     this.mockServerClient =
         new MockServerClient(
             Containers.mockServerContainer.getHost(),
             Containers.mockServerContainer.getServerPort());
-    this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient);
+    this.intygProxyServiceMock = new IntygProxyServiceMock(mockServerClient, jsonMapper);
     this.mailHogUtil =
         new MailHogUtil(
-            restTemplate,
-            new CustomObjectMapper(),
+            restClientBuilder,
+            jsonMapper,
             Containers.mailHogContainer.getHost(),
             Containers.mailHogContainer.getMappedPort(8025));
   }

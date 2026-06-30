@@ -29,9 +29,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
-import se.inera.intyg.privatepractitionerservice.infrastructure.config.CustomObjectMapper;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.entity.PrivatlakareEntity;
 import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repository.PrivatlakareEntityRepository;
+import tools.jackson.databind.json.JsonMapper;
 
 @Profile({"dev", TESTABILITY_INIT_DATA_PROFILE})
 @Slf4j
@@ -40,6 +40,7 @@ import se.inera.intyg.privatepractitionerservice.infrastructure.persistence.repo
 public class PrivatlakarBootstrapBean {
 
   private final PrivatlakareEntityRepository privatlakareEntityRepository;
+  private final JsonMapper jsonMapper;
 
   @PostConstruct
   public void initData() {
@@ -59,7 +60,7 @@ public class PrivatlakarBootstrapBean {
 
   private void addPrivatlakare(Resource res) throws IOException {
     final var privatlakareEntity =
-        new CustomObjectMapper().readValue(res.getInputStream(), PrivatlakareEntity.class);
+        jsonMapper.readValue(res.getInputStream(), PrivatlakareEntity.class);
     if (privatlakareEntityRepository.findByPersonId(privatlakareEntity.getPersonId()).isEmpty()) {
       privatlakareEntityRepository.save(privatlakareEntity);
       log.info("Private practitioner {} created", privatlakareEntity.getFullstandigtNamn());
@@ -72,7 +73,7 @@ public class PrivatlakarBootstrapBean {
       final var files = resolver.getResources("classpath:bootstrap-privatlakare/*.json");
       for (Resource res : files) {
         final var privatlakareEntity =
-            new CustomObjectMapper().readValue(res.getInputStream(), PrivatlakareEntity.class);
+            jsonMapper.readValue(res.getInputStream(), PrivatlakareEntity.class);
         if (personIds.contains(privatlakareEntity.getPersonId())) {
           log.info(
               "Loading private practitioner and adding it to db if it does not already exist {}",

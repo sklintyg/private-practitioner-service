@@ -21,18 +21,14 @@ package se.inera.intyg.privatepractitionerservice.integrationtest.util;
 import static se.inera.intyg.privatepractitionerservice.integrationtest.util.PrivatePractitionerUtil.privatePractitionerPersonId;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.client.EntityExchangeResult;
+import org.springframework.test.web.servlet.client.RestTestClient;
 import se.inera.intyg.privatepractitionerservice.application.privatepractitioner.dto.PrivatePractitionerDTO;
 import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCreateRegistrationRequest;
 
@@ -40,23 +36,22 @@ import se.inera.intyg.privatepractitionerservice.testability.dto.TestabilityCrea
 @RequiredArgsConstructor
 public class TestabilityApiUtil {
 
-  private final TestRestTemplate restTemplate;
-  private final int port;
+  private final RestTestClient restClient;
   private static final List<String> privatePractitionerPersonIds = new ArrayList<>();
 
   public ResponseEntity<PrivatePractitionerDTO> addPrivatePractitioner(
       TestabilityCreateRegistrationRequest request) {
-    final var requestUrl = "http://localhost:%s/testability/privatepractitioner".formatted(port);
-    final var headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
+    final var result =
+        restClient
+            .post()
+            .uri("/testability/privatepractitioner")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(request)
+            .exchange()
+            .expectBody(PrivatePractitionerDTO.class)
+            .returnResult();
 
-    final ResponseEntity<PrivatePractitionerDTO> response =
-        this.restTemplate.exchange(
-            requestUrl,
-            HttpMethod.POST,
-            new HttpEntity<>(request, headers),
-            new ParameterizedTypeReference<>() {},
-            Collections.emptyMap());
+    final var response = toResponseEntity(result);
 
     if (privatePractitionerPersonId(response.getBody()) != null) {
       privatePractitionerPersonIds.add(privatePractitionerPersonId(response.getBody()));
@@ -73,21 +68,23 @@ public class TestabilityApiUtil {
       return;
     }
 
-    final var requestUrl = "http://localhost:%s/testability/clear".formatted(port);
+    final var result =
+        restClient
+            .delete()
+            .uri("/testability/clear")
+            .exchange()
+            .expectBody(Void.class)
+            .returnResult();
 
-    final ResponseEntity<Void> response =
-        this.restTemplate.exchange(
-            requestUrl,
-            HttpMethod.DELETE,
-            new HttpEntity<>(null, null),
-            new ParameterizedTypeReference<>() {},
-            Collections.emptyMap());
-
-    if (response.getStatusCode() != HttpStatus.OK) {
+    if (result.getStatus() != HttpStatus.OK) {
       log.error(
-          "Could not clear practitioners using testability with request '%s'! StatusCode: '%s'"
-              .formatted(requestUrl, response.getStatusCode()));
+          "Could not clear practitioners using testability! StatusCode: '%s'"
+              .formatted(result.getStatus()));
     }
     privatePractitionerPersonIds.clear();
+  }
+
+  private static <T> ResponseEntity<T> toResponseEntity(EntityExchangeResult<T> result) {
+    return ResponseEntity.status(result.getStatus()).body(result.getResponseBody());
   }
 }

@@ -36,7 +36,7 @@ public class IntygProxyServiceRestClientConfig {
   private String intygProxyServiceBaseUrl;
 
   @Bean(name = "intygProxyServiceRestClient")
-  public RestClient ipsRestClient() {
-    return RestClient.create(intygProxyServiceBaseUrl);
+  public RestClient ipsRestClient(RestClient.Builder builder) {
+    return builder.baseUrl(intygProxyServiceBaseUrl).build();
   }
 }
