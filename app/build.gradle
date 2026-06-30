@@ -41,6 +41,9 @@ dependencies {
 
     testCompileOnly "jakarta.persistence:jakarta.persistence-api"
 
+    testFixturesCompileOnly "jakarta.persistence:jakarta.persistence-api"
+    testFixturesCompileOnly "org.hibernate.orm:hibernate-core"
+
     testImplementation "org.assertj:assertj-core"
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "org.mockito:mockito-core"
